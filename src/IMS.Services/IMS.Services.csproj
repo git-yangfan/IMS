@@ -41,7 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FailureService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IMS.Data\IMS.Data.csproj">
+      <Project>{e500c549-b7aa-4bfd-b6e4-5d311a9490a9}</Project>
+      <Name>IMS.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IMS.Model\IMS.Model.csproj">
+      <Project>{aa89dcf3-5e2c-4f1d-9f08-d8016824d580}</Project>
+      <Name>IMS.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

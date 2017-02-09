@@ -13,7 +13,7 @@ namespace IMS.Data
     public class RepositoryBase<T> : IDataRepository<T>
         where T : class
     {
-        IDbConnection conn;
+       public  IDbConnection conn;
         IDbTransaction trans;
         public RepositoryBase()
         {
