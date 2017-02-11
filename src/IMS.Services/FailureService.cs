@@ -12,12 +12,12 @@ namespace IMS.Services
     {
         SubSystemRepository subSystemRepository = new SubSystemRepository();
         FailureReportRepository failureRepository = new FailureReportRepository();
-        public List<SubSystem> GetSubSystemList(int lev, int pid)
+        public IEnumerable<SubSystem> GetSubSystemList(int lev, int pid)
         {
-            List<SubSystem> subSystemList = new List<SubSystem>();
+            IEnumerable<SubSystem> subSystemList=null;
             if (lev == 0)
             {
-                //subSystemList = subSystemRepository.GetList<SubSystem>(new { Level = 0 }, null, false);
+                subSystemList = subSystemRepository.GetAll().Where(c=>c.Lev==0);
             }
             else if (lev == 1)
             {

@@ -46,9 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FailureReportRepository.cs" />
     <Compile Include="IDataRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryBase.cs" />
+    <Compile Include="SubSystemRepository.cs" />
     <Compile Include="Utils\DataUtils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +66,13 @@
       <Project>{0a1c43ee-7591-4a43-b268-264301796f7c}</Project>
       <Name>Dapper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\IMS.Model\IMS.Model.csproj">
+      <Project>{aa89dcf3-5e2c-4f1d-9f08-d8016824d580}</Project>
+      <Name>IMS.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
