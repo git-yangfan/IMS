@@ -1,0 +1,75 @@
+﻿@{
+    ViewBag.Title = "FailureReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>FailureReport</h2>
+
+@section ContentBody{
+    <div class="row">
+        <div class="col-lg-8 col-md-8 col-sm-8">
+            <span>故障设备</span>:<select id="failureEquipment">
+                <option>请选择</option>
+            </select>
+            <span>故障时间</span>  @Html.TextBox("failureTime")
+            @{Html.RenderAction("SubSystem", "Partial");}
+            <span>故障现象</span><textarea></textarea>
+            <span>故障描述</span><textarea></textarea>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            //GetFirstLevelSubSysList();
+            $("#firstFailureLocation").change(function () {
+                GetSecondLevelSubSysList();
+            });
+        });
+        function GetFirstLevelSubSysList() {
+            if ($("#firstFailureLocation").val() != -1) {
+                $.getJSON(
+                    "/Partial/GetSubSystemList",
+                    { lev: 0, parentId: 0 },
+                    function (data) {
+                        $.each(data, function (i, item) {
+                            $("<option></option>").val(item["ID"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
+                        })
+                    });
+            }
+        }
+        function GetSecondLevelSubSysList() {
+            $("#secondFailureLocation").empty();
+            if ($("#secondFailureLocation").val() != -1) {
+                $.getJSON(
+                "/Partial/GetSubSystemList",
+                { lev: 1, parentId: $("#firstFailureLocation").val() },
+                function (data) {
+                    $.each(data, function (i, item) {
+                        $("<option></option>").val(item["ID"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
+                    })
+                });
+                $("#secondFailureLocation").change(function () {
+                    GetThirdLevelSubSysList();
+                });
+            }
+        }
+
+        function GetThirdLevelSubSysList() {
+            $("#thirdFailureLocation").empty();
+            if ($("#secondFailureLocation").val() != -1) {
+                $.getJSON(
+                "/Partial/GetSubSystemList",
+                { lev: 2, parentId: $("#secondFailureLocation").val() },
+                function (data) {
+                    $.each(data, function (i, item) {
+                        $("<option></option>").val(item["ID"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
+                    })
+                });
+            }
+        }
+    </script>
+}
+
+
+
+

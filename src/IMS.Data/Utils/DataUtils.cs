@@ -12,7 +12,7 @@ namespace IMS.Data.Utils
     {
         public static IDbConnection GetConn()
         {
-            ConnectionStringSettings connectionStringSettings = ConfigurationManager.ConnectionStrings["IMS_Oralce"];
+            ConnectionStringSettings connectionStringSettings = ConfigurationManager.ConnectionStrings["IMS_Oracle"];
             string strConn = connectionStringSettings.ConnectionString;
             string providerName = connectionStringSettings.ProviderName;
 

@@ -12,24 +12,27 @@ namespace IMS.Web.Controllers.Partial
     {
         //
         // GET: /Partial/
-        private SubSystemRepository subSystemRepository = new SubSystemRepository();
+
+        SubSystemRepository subSystemRepository;
         public ActionResult Index()
         {
             return View();
+
         }
-        public ActionResult SubSystem() 
+        
+        public ActionResult SubSystem()
         {
             return PartialView();
         }
-        public ActionResult GetSubSystemList(int lev, int parentId) 
+        public JsonResult GetSubSystemList(int lev, int parentId)
         {
-            subSystemRepository.GetList(new { Lev = 0 });
-            IEnumerable<SubSystem> subSystemList = subSystemRepository.GetSubSystemList(lev,parentId);
-            if (subSystemList!=null)
+            subSystemRepository = new SubSystemRepository();           
+            IEnumerable<SubSystem> subSystemList = subSystemRepository.GetSubSystemList(lev, parentId);
+            if (subSystemList != null)
             {
                 return Json(subSystemList);
             }
             return Json(subSystemList);
         }
-	}
+    }
 }
