@@ -14,19 +14,7 @@ namespace IMS.Data
         public IEnumerable<SubSystem> GetSubSystemList(int lev, int pid)
         {
             IEnumerable<SubSystem> subSystemList = null;
-            if (lev == 0)
-            {
-                subSystemList = this.GetList(new { Lev = 0 });
-            }
-            else if (lev == 1)
-            {
-
-            }
-            else if (lev == 2)
-            {
-
-            }
-
+            subSystemList = this.GetList(new { Lev = lev, Pid = pid });
             return subSystemList;
         }
     }

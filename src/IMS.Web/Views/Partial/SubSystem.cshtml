@@ -12,3 +12,53 @@
 <select id="thirdFailureLocation">
     <option value="-1">请选择</option>
 </select>
+<script type="text/javascript">
+        $(function () {
+            GetFirstLevelSubSysList();
+            $("#firstFailureLocation").change(function () {
+                GetSecondLevelSubSysList();
+            });
+        });
+        function GetFirstLevelSubSysList() {
+            alert($("#firstFailureLocation").val());
+                $.getJSON(
+                    "/Partial/GetSubSystemList",
+                    { lev: 0, parentId: 0 },
+                    function (data) {
+                        $.each(data, function (i, item) {
+                            $("<option></option>").val(item["ID"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
+                        })
+                    });
+          
+        }
+        function GetSecondLevelSubSysList() {
+            $("#secondFailureLocation").empty();
+            if ($("#secondFailureLocation").val() != "-1") {
+                $.getJSON(
+                "/Partial/GetSubSystemList",
+                { lev: 1, parentId: $("#firstFailureLocation").val() },
+                function (data) {
+                    $.each(data, function (i, item) {
+                        $("<option></option>").val(item["ID"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
+                    })
+                });
+                $("#secondFailureLocation").change(function () {
+                    GetThirdLevelSubSysList();
+                });
+            }
+        }
+
+        function GetThirdLevelSubSysList() {
+            $("#thirdFailureLocation").empty();
+            if ($("#secondFailureLocation").val() != "-1") {
+                $.getJSON(
+                "/Partial/GetSubSystemList",
+                { lev: 2, parentId: $("#secondFailureLocation").val() },
+                function (data) {
+                    $.each(data, function (i, item) {
+                        $("<option></option>").val(item["ID"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
+                    })
+                });
+            }
+        }
+</script>

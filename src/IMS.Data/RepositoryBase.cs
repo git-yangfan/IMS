@@ -18,6 +18,7 @@ namespace IMS.Data
         public RepositoryBase()
         {
             conn = Utils.DataUtils.GetConn();
+            conn.Open();
             trans = conn.BeginTransaction();
         }
 
