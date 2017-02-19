@@ -2,7 +2,7 @@
 <span>一级故障部位</span>
 <select id="firstFailureLocation">
     <option value="-1">请选择</option>
-    <option value="1">a</option>
+   
 </select>
 <span>二级故障部位</span>
 <select id="secondFailureLocation">
@@ -20,45 +20,44 @@
             });
         });
         function GetFirstLevelSubSysList() {
-            alert($("#firstFailureLocation").val());
-                $.getJSON(
+                $.post(
                     "/Partial/GetSubSystemList",
                     { lev: 0, parentId: 0 },
                     function (data) {
                         $.each(data, function (i, item) {
-                            $("<option></option>").val(item["ID"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
+                            $("<option></option>").val(item["Id"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
                         })
                     });
           
         }
         function GetSecondLevelSubSysList() {
             $("#secondFailureLocation").empty();
-            if ($("#secondFailureLocation").val() != "-1") {
-                $.getJSON(
+            $("<option></option>").val("-1").text("请选择").appendTo($("#secondFailureLocation"));
+            $("#thirdFailureLocation").empty();
+            $("<option></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
+                $.post(
                 "/Partial/GetSubSystemList",
-                { lev: 1, parentId: $("#firstFailureLocation").val() },
+                { lev: 1, parentId: $("#firstFailureLocation").val()},
                 function (data) {
                     $.each(data, function (i, item) {
-                        $("<option></option>").val(item["ID"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
+                        $("<option></option>").val(item["Id"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
                     })
                 });
                 $("#secondFailureLocation").change(function () {
                     GetThirdLevelSubSysList();
                 });
             }
-        }
-
         function GetThirdLevelSubSysList() {
             $("#thirdFailureLocation").empty();
-            if ($("#secondFailureLocation").val() != "-1") {
-                $.getJSON(
+            $("<option></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
+                $.post(
                 "/Partial/GetSubSystemList",
                 { lev: 2, parentId: $("#secondFailureLocation").val() },
                 function (data) {
                     $.each(data, function (i, item) {
-                        $("<option></option>").val(item["ID"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
+                        $("<option></option>").val(item["Id"]).text(item["Name"]).appendTo($("#thirdFailureLocation"));
                     })
                 });
             }
-        }
+        
 </script>

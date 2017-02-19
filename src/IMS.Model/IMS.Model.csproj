@@ -41,7 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FailureReport.cs" />
+    <Compile Include="SBXX.cs" />
+    <Compile Include="GZShenQing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SubSystem.cs" />
   </ItemGroup>

@@ -11,7 +11,7 @@ namespace IMS.Services
     public class FailureService
     {
         SubSystemRepository subSystemRepository = new SubSystemRepository();
-        FailureReportRepository failureRepository = new FailureReportRepository();
+        GZShenQingRepository failureRepository = new GZShenQingRepository();
         public IEnumerable<SubSystem> GetSubSystemList(int lev, int pid)
         {
             IEnumerable<SubSystem> subSystemList=null;
@@ -30,7 +30,7 @@ namespace IMS.Services
 
             return subSystemList;
         }
-        public void AddFailureReport(FailureReport failureReport)
+        public void AddFailureReport(GZShenQing failureReport)
         {
             if (failureReport!=null)
             {

@@ -8,17 +8,53 @@
 @section ContentBody{
     <div class="row">
         <div class="col-lg-8 col-md-8 col-sm-8">
-            <span>故障设备</span>:<select id="failureEquipment">
-                <option>请选择</option>
+            <span>故障设备</span>:<select id="failureDevice">
+                <option value="-1">请选择</option>
             </select>
             <span>故障时间</span>  @Html.TextBox("failureTime")
             @{Html.RenderAction("SubSystem", "Partial");}
-            <span>故障现象</span><textarea></textarea>
-            <span>故障描述</span><textarea></textarea>
+            <span>故障现象</span><textarea id="GZXianXiang"></textarea>
+            <span>故障描述</span><textarea id="GZMS"></textarea>
         </div>
-    </div>
 
- 
+    </div>
+    <div class="row align-right">
+        <div class="col-lg-8 col-md-8 col-sm-8">
+            <input type="button" value="提交" onclick="SubmitFailure()" />
+            <input type="button" value="重置" />
+        </div>
+
+    </div>
+    <script>
+        $(function () {
+            GetShortNameList();
+        });
+        function GetShortNameList() {
+            $.post(
+                "/Failure/GetShortNameList",
+                function (data) {
+                    $.each(data, function (i, item) {
+                        $("<option></option>").val(item["SBBH"]).text(item["SBJC"]).appendTo($("#failureDevice"));
+                    })
+                });
+        };
+
+        function SubmitFailure() {
+            $.post(
+                "/Failure/AddNewFailure",
+                {
+                    SBBH: $("#failureDevice option:selected").val(),
+                    Fssj: "2017/2/19",
+                    GZXianXiang: $("#GZXianXiang").val(),
+                    GZMS: $("#GZMS").val(),
+                    GZBWA: $("#firstFailureLocation option:selected").text(),
+                    GZBWB: $("#secondFailureLocation option:selected").text(),
+                    GZBWC: $("#thirdFailureLocation option:selected").text(),
+                },
+                function (data) { }
+                );
+        }
+    </script>
 }
 
 
