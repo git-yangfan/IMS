@@ -20,7 +20,6 @@ namespace IMS.Data
             }
             catch (Exception)
             {
-
                 throw;
             }
 

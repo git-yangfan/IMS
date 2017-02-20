@@ -1,0 +1,87 @@
+﻿@{
+    ViewBag.Title = "AllApplications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<h2>AllApplications</h2>
+
+@section ContentBody{
+
+    <div class="row">
+        <table class="event-calendar animate-onscroll">
+            <thead>
+                <tr class="calendar-days">
+                    <th>序号</th>
+                    <th>故障设备简称</th>
+                    <th>故障发生时间</th>
+                    <th>故障部位</th>
+                    <th>故障现象</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="ApplicationsBody">
+                <tr>
+                    <td class="not-this-month"></td>
+                    <td class="no-events"><span class="day">1</span></td>
+                    <td class="no-events"><span class="day">3</span></td>
+                    <td class="no-events"><span class="day">4</span></td>
+                    <td class="no-events"><span class="day">5</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <div id="ModifyDiv">
+            <h6>已申请故障修改</h6>
+            故障设备：<input id="gzdevice" type="text" />
+            故障发生时间：<input id="gzfssj" type="text" />
+            @{Html.RenderAction("SubSystem", "Partial");}
+            故障现象：<textarea id="gzxianxiang"></textarea>
+            <input type="hidden" id="forGZShenQingId" />
+            <a href="javascript:void()" onclick="Modify()">修改</a>
+            <a href="javascript:void()" onclick="Cancel()">取消</a>
+
+        </div>
+    </div>
+    <script>
+        var cachData = [];
+        $(function () {
+            $.post(
+                "/Failure/GetAllApplicationsByUserName",
+                { name: "报告人A" },
+                function (data) {
+                    if (data != "") {
+                        jsondata = data;
+                        var trhtml = "";
+                        $.each(data, function (i, item) {
+                            trhtml += "<tr><td >" + i + "</td>";
+                            trhtml += "<td >" + item["SBBH"] + "</td>";
+                            trhtml += "<td >" + item["fssj"] + "</td>";
+                            trhtml += "<td >" + item["GZBWA"] + "/" + item["GZBWB"] + "/" + item["GZBWC"] + "</td>";
+                            trhtml += "<td >" + item["gzxianxiang"] + "</td>";
+                            trhtml += "<td><a id=" + i + " href='javascript:void();' onclick='Pop(this.id)' > 修改</a>";
+                            trhtml += "<a id=" + i + " href='javascript:void();' onclick='Delete(this.id)' > 删除</a>";
+                            trhtml += "</td></tr>";
+                            $("#ApplicationsBody").html(trhtml);
+                        });
+                    }
+                });
+        });
+
+        function Pop(index) {
+            $("#gzdevice").val(cachData[index].SBBH);
+            $("#gzfssj").val(cachData[index].fssj);
+            $("#firstFailureLocation").find("option[text=" + cachData[index].GZBWA + "]").attr("selected", true);
+            $("#gzxianxiang").val(cachData[index].gzxianxiang);
+            $("#forGZShenQingId").val(cachData[index].id);
+        };
+
+        function Modify()
+        {
+            alert($("#forGZShenQingId").val());
+        }
+
+    </script>
+}

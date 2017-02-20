@@ -49,7 +49,11 @@ namespace IMS.Web.Controllers.Failure
 
         }
 
-        public JsonResult GetAllApplicationsByName(string name) 
+        public ActionResult AllApplications() 
+        {
+            return View();
+        }
+        public ActionResult GetAllApplicationsByUserName(string name) 
         {
             IEnumerable<GZShenQing> AllApplicationsList = GZShenQingRepository.GetAllApplicationsByName(name);
             if (AllApplicationsList != null)

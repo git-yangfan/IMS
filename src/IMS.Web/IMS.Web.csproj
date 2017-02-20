@@ -2063,6 +2063,7 @@
     <Content Include="Views\Home\HomePage.cshtml" />
     <Content Include="Views\Partial\SubSystem.cshtml" />
     <Content Include="Views\Failure\FailureReport.cshtml" />
+    <Content Include="Views\Failure\AllApplications.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
