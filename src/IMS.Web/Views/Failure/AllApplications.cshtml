@@ -53,7 +53,7 @@
                 { name: "报告人A" },
                 function (data) {
                     if (data != "") {
-                        jsondata = data;
+                        cachData = data;
                         var trhtml = "";
                         $.each(data, function (i, item) {
                             trhtml += "<tr><td >" + i + "</td>";
@@ -73,7 +73,7 @@
         function Pop(index) {
             $("#gzdevice").val(cachData[index].SBBH);
             $("#gzfssj").val(cachData[index].fssj);
-            $("#firstFailureLocation").find("option[text=" + cachData[index].GZBWA + "]").attr("selected", true);
+            $("#firstFailureLocation").find("option[text='" + cachData[index].GZBWA + "']").attr("selected", true);
             $("#gzxianxiang").val(cachData[index].gzxianxiang);
             $("#forGZShenQingId").val(cachData[index].id);
         };
