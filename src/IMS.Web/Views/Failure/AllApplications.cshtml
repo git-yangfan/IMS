@@ -73,9 +73,11 @@
         function Pop(index) {
             $("#gzdevice").val(cachData[index].SBBH);
             $("#gzfssj").val(cachData[index].fssj);
-            $("#firstFailureLocation").find("option[text='" + cachData[index].GZBWA + "']").attr("selected", true);
+            
+            $("#firstFailureLocation").find("option[text='主轴']").attr("selected", true);
             $("#gzxianxiang").val(cachData[index].gzxianxiang);
-            $("#forGZShenQingId").val(cachData[index].id);
+            alert(cachData[index].Id);
+            $("#forGZShenQingId").val(cachData[index].Id);
         };
 
         function Modify()
