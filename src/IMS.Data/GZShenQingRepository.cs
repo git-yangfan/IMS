@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OracleSugar;
 
 namespace IMS.Data
 {
@@ -43,13 +44,22 @@ namespace IMS.Data
         {
             try
             {
-                IEnumerable<GZShenQing> AllApplicationsList =this.GetList(new { bgrxm = name }, null,false);
+                IEnumerable<GZShenQing> AllApplicationsList = this.GetList(new { bgrxm = name }, null, false);
                 return AllApplicationsList;
             }
             catch (Exception)
             {
 
                 throw;
+            }
+        }
+
+        public IEnumerable<GZShenQing> Test(string name)
+        {
+
+            using (var client = DbConfig.GetInstance())
+            {
+                return client.Queryable<GZShenQing>().Where(d => d.bgrxm == name).ToList();
             }
         }
     }
