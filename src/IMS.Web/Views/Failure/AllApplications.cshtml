@@ -75,7 +75,8 @@
             $("#gzfssj").val(cachData[index].fssj);
             $("#firstFailureLocation").find('option[text="" + cachData[index].GZBWA + ""]').attr("selected", true);
             $("#gzxianxiang").val(cachData[index].gzxianxiang);
-            $("#forGZShenQingId").val(cachData[index].id);
+            alert(cachData[index].Id);
+            $("#forGZShenQingId").val(cachData[index].Id);
         };
 
         function Modify()
