@@ -1,41 +1,73 @@
 ﻿using IMS.Data;
-using IMS.Model;
+using IMS.Model.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OracleSugar;
 
 namespace IMS.Services
 {
     public class FailureService
     {
-        SubSystemRepository subSystemRepository = new SubSystemRepository();
-        GZShenQingRepository failureRepository = new GZShenQingRepository();
+
         public IEnumerable<SubSystem> GetSubSystemList(int lev, int pid)
         {
-            IEnumerable<SubSystem> subSystemList=null;
-            if (lev == 0)
+            IEnumerable<SubSystem> subSystemList = null;
+            using (var client = DbConfig.GetInstance())
             {
-                subSystemList = subSystemRepository.GetAll().Where(c=>c.Lev==0);
+                subSystemList = client.Queryable<SubSystem>().Where(s => s.Lev == lev).Where(s => s.Pid == pid).ToList();
             }
-            else if (lev == 1)
-            {
-
-            }
-            else if (lev == 2)
-            {
-
-            }
-
             return subSystemList;
+
+
         }
-        public void AddFailureReport(GZShenQing failureReport)
+
+        public IEnumerable<GZShenQing> GetAllApplicationsByName(string name)
         {
-            if (failureReport!=null)
+
+            IEnumerable<GZShenQing> allApplicationsList = null;
+            using (var client = DbConfig.GetInstance())
             {
-                failureRepository.Insert(failureReport);
+                allApplicationsList = client.Queryable<GZShenQing>().Where(c => c.bgrxm == name).ToList();
             }
+            return allApplicationsList;
+
+        }
+        public IEnumerable<SBXX> GetShortNameList()
+        {
+            IEnumerable<SBXX> shortNameList = null;
+            using (var client = DbConfig.GetInstance())
+            {
+                shortNameList = client.Queryable<SBXX>().ToList();
+            }
+
+            return shortNameList;
+        }
+        public bool AddNewFailure(GZShenQing gZShenQing)
+        {
+            if (gZShenQing != null)
+            {
+                try
+                {
+                    using (var client = DbConfig.GetInstance())
+                    {
+                        var id=client
+                        var result = client.Insert<GZShenQing>(gZShenQing);
+                        return true;
+                    }
+
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            else
+                return false;
 
         }
     }

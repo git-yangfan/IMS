@@ -1,10 +1,9 @@
 ﻿
-using IMS.Data;
-using IMS.Model;
+using IMS.Data.Services;
+using IMS.Json;
+using IMS.Model.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace IMS.Web.Controllers.Failure
@@ -14,19 +13,20 @@ namespace IMS.Web.Controllers.Failure
         //
         // GET: /Failure/
 
-        private GZShenQingRepository GZShenQingRepository = new GZShenQingRepository();
+        private FailureService failureService = new FailureService();
         public ActionResult FailureReport()
         {
             return View();
 
         }
 
-        public JsonResult GetShortNameList()
+
+        public ActionResult GetShortNameList()
         {
-            IEnumerable<SBXX> ShortNameList = GZShenQingRepository.GetShortNameList();
+            IEnumerable<SBXX> ShortNameList = failureService.GetShortNameList();
             if (ShortNameList != null)
             {
-                return Json(ShortNameList);
+                return Content(ShortNameList.ToJsonString());
             }
             else
                 return Json("");
@@ -34,31 +34,28 @@ namespace IMS.Web.Controllers.Failure
 
         public void AddNewFailure()
         {
-            GZShenQing GZTiJiao = new GZShenQing();
-            GZTiJiao.SBBH = Request.Params["SBBH"];
-            GZTiJiao.fssj = Convert.ToDateTime(Request.Params["Fssj"]);
-            GZTiJiao.gzxianxiang = Request.Params["GZXianXiang"];
-            GZTiJiao.gzms = Request.Params["GZMS"];
-            GZTiJiao.GZBWA = Request.Params["GZBWA"];
-            GZTiJiao.GZBWB = Request.Params["GZBWB"];
-            GZTiJiao.GZBWC = Request.Params["GZBWC"];
-            GZTiJiao.bgrxm = "CESHI";
-            GZTiJiao.bgsj = DateTime.Now;
-            GZTiJiao.sfkyxg = 0;
-            GZShenQingRepository.AddNewFailure(GZTiJiao);
+            GZShenQing GZShenQing = new GZShenQing();
+            GZShenQing.SBBH = Request.Params["SBBH"];
+            GZShenQing.fssj = Convert.ToDateTime(Request.Params["Fssj"]);
+            GZShenQing.gzxianxiang = Request.Params["GZXianXiang"];
+            GZShenQing.gzms = Request.Params["GZMS"];
+            GZShenQing.GZBWA = Request.Params["GZBWA"];
+            GZShenQing.GZBWB = Request.Params["GZBWB"];
+            GZShenQing.GZBWC = Request.Params["GZBWC"];
+            GZShenQing.bgrxm = "报告人A";
+            GZShenQing.bgsj = DateTime.Now;
+            GZShenQing.sfkyxg = 0;
+            failureService.AddNewFailure(GZShenQing);
 
         }
 
-        public ActionResult AllApplications() 
+
+        public ActionResult GetAllApplicationsByUserName(string name)
         {
-            return View();
-        }
-        public ActionResult GetAllApplicationsByUserName(string name) 
-        {
-            IEnumerable<GZShenQing> AllApplicationsList = GZShenQingRepository.GetAllApplicationsByName(name);
+            var AllApplicationsList = failureService.GetAllApplicationsByName(name);
             if (AllApplicationsList != null)
             {
-                return Json(AllApplicationsList);
+                return Content(AllApplicationsList.ToJsonString());
             }
             else
                 return Json("");

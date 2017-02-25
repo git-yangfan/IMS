@@ -1,9 +1,6 @@
-﻿using IMS.Data;
-using IMS.Model;
-using System;
+﻿using IMS.Data.Services;
+using IMS.Model.Model;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace IMS.Web.Controllers.Partial
@@ -13,7 +10,7 @@ namespace IMS.Web.Controllers.Partial
         //
         // GET: /Partial/
 
-        SubSystemRepository subSystemRepository;
+        FailureService failureService=new FailureService();
         public ActionResult Index()
         {
             return View();
@@ -25,10 +22,9 @@ namespace IMS.Web.Controllers.Partial
         }
         public JsonResult GetSubSystemList(int lev, int parentId)
         {
-            subSystemRepository = new SubSystemRepository();
             if (lev != -1)
             {
-                IEnumerable<SubSystem> subSystemList = subSystemRepository.GetSubSystemList(lev, parentId);
+                IEnumerable<SubSystem> subSystemList = failureService.GetSubSystemList(lev, parentId);
                 if (subSystemList != null)
                 {
                     return Json(subSystemList);

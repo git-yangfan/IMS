@@ -51,12 +51,14 @@
             $.post(
                 "/Failure/GetAllApplicationsByUserName",
                 { name: "报告人A" },
-                function (data) {
-                    if (data != "") {
+                function (Data) {
+                    if (Data != "") {
+                        var data = $.parseJSON(Data);
                         cachData = data;
                         var trhtml = "";
                         $.each(data, function (i, item) {
-                            trhtml += "<tr><td >" + i + "</td>";
+                            var index = i + 1;
+                            trhtml += "<tr><td >" + index+ "</td>";
                             trhtml += "<td >" + item["SBBH"] + "</td>";
                             trhtml += "<td >" + item["fssj"] + "</td>";
                             trhtml += "<td >" + item["GZBWA"] + "/" + item["GZBWB"] + "/" + item["GZBWC"] + "</td>";

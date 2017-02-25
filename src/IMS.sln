@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMS.Web", "IMS.Web\IMS.Web.csproj", "{F9B7E26E-BE14-411C-A4B7-AB69669FF903}"
 EndProject
@@ -11,7 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMS.Data", "IMS.Data\IMS.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMS.Model", "IMS.Model\IMS.Model.csproj", "{AA89DCF3-5E2C-4F1D-9F08-D8016824D580}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMS.Services", "IMS.Services\IMS.Services.csproj", "{C9843C66-7C45-4507-8930-E6A7DFAB5FC9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D9B75953-84C3-496D-8F2B-4F93F0D82693}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +40,6 @@ Global
 		{AA89DCF3-5E2C-4F1D-9F08-D8016824D580}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA89DCF3-5E2C-4F1D-9F08-D8016824D580}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA89DCF3-5E2C-4F1D-9F08-D8016824D580}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9843C66-7C45-4507-8930-E6A7DFAB5FC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9843C66-7C45-4507-8930-E6A7DFAB5FC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9843C66-7C45-4507-8930-E6A7DFAB5FC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9843C66-7C45-4507-8930-E6A7DFAB5FC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
