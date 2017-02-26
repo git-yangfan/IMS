@@ -4,8 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>IMS</title>
+    <link href="~/Content/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap/table/bootstrap-table.css" rel="stylesheet" />
 
-    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="~/Content/css/fontello.css" rel="stylesheet" type="text/css">
     <link href="~/Content/css/flexslider.css" rel="stylesheet" />
     <link href="~/Content/js/revolution-slider/css/settings.css" rel="stylesheet" />
@@ -15,6 +16,23 @@
     <link href="~/Content/css/cloud-zoom.css" rel="stylesheet" />
     <link href="~/Content/jackbox/css/jackbox.min.css" rel="stylesheet" />
     <link href="~/Content/css/site.css" rel="stylesheet" />
+
+    <!--[if IE 9]>
+            <link rel="stylesheet" href="css/ie9.css">
+        <![endif]-->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <link href="css/jackbox-ie8.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="css/ie.css">
+    <![endif]-->
+    <!--[if gt IE 8]>
+        <link href="css/jackbox-ie9.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <!--[if IE 7]>
+        <link rel="stylesheet" href="css/fontello-ie7.css">
+    <![endif]-->
+
+
     <style type="text/css">
         .no-fouc {
             display: none;
@@ -271,20 +289,22 @@
                         </li>
                         <!-- /系统管理 -->
                         <!-- Shop -->
-                        <!--<li>
+                        <li>
 
-                            <span>Shop</span>
+                            <span>维修申请</span>
 
                             <ul>
+                                <li>
+                                    @Html.ActionLink("故障申请", "FailureReport")
+                                </li>
 
-                                <li><a href="shop-frontpage.html">Front page</a></li>
-                                <li><a href="shop-productpage.html">Product page</a></li>
-                                <li><a href="shop-cart.html">Shopping cart</a></li>
-                                <li><a href="shop-checkout.html">Checkout</a></li>
+
+
+                                <li>@Html.ActionLink("报告列表", "AllApplications")</li>
 
                             </ul>
 
-                        </li>-->
+                        </li>
                         <!-- /Shop -->
                         <!-- Donate -->
                         <li class="donate-button ">
@@ -346,12 +366,14 @@
         <a href="#" id="button-to-top"><i class="icons icon-up-dir"></i></a>
 
     </div>
-    
-    
+
+
     <!-- /Container -->
     <!-- JavaScript -->
     <!-- Bootstrap -->
-    <script type="text/javascript" src="~/Content/js/bootstrap.min.js"></script>
+    <script src="~/Content/bootstrap/js/bootstrap.js"></script>
+    <script src="~/Content/bootstrap/table/bootstrap-table.js"></script>
+    <script src="~/Content/bootstrap/table/locale/bootstrap-table-zh-CN.js"></script>
     <!-- Modernizr -->
     <script type="text/javascript" src="~/Content/js/modernizr.js"></script>
     <!-- Sliders/Carousels -->

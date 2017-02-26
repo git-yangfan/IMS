@@ -9,82 +9,249 @@
 
 @section ContentBody{
 
+    <table id="tb_departments"></table>
+
     <div class="row">
-        <table class="event-calendar animate-onscroll">
+        <table>
             <thead>
-                <tr class="calendar-days">
+                <tr>
                     <th>序号</th>
                     <th>故障设备简称</th>
                     <th>故障发生时间</th>
                     <th>故障部位</th>
                     <th>故障现象</th>
+                    <th>故障描述</th>
                     <th>操作</th>
                 </tr>
             </thead>
-            <tbody id="ApplicationsBody">
-                <tr>
-                    <td class="not-this-month"></td>
-                    <td class="no-events"><span class="day">1</span></td>
-                    <td class="no-events"><span class="day">3</span></td>
-                    <td class="no-events"><span class="day">4</span></td>
-                    <td class="no-events"><span class="day">5</span></td>
-                </tr>
-            </tbody>
+            <tbody id="ApplicationsBody"></tbody>
         </table>
 
 
         <div id="ModifyDiv">
-            <h6>已申请故障修改</h6>
-            故障设备：<input id="gzdevice" type="text" />
-            故障发生时间：<input id="gzfssj" type="text" />
-            @{Html.RenderAction("SubSystem", "Partial");}
-            故障现象：<textarea id="gzxianxiang"></textarea>
+
             <input type="hidden" id="forGZShenQingId" />
-            <a href="javascript:void()" onclick="Modify()">修改</a>
+            @*<a href="javascript:void()" onclick="Modify()">修改</a>*@
             <a href="javascript:void()" onclick="Cancel()">取消</a>
 
         </div>
     </div>
+
+
+    <div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">已申请故障修改</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="txt_rolename">故障设备</label>
+                            <input type="text" name="txt_rolename" class="form-control" id="gzdevice">
+                        </div>
+                        <div class="form-group">
+                            <label for="txt_roledesc">故障发生时间</label>
+                            <input type="text" name="txt_roledesc" class="form-control" id="gzfssj">
+                        </div>
+                        <div class="form-group">
+                            @{Html.RenderAction("SubSystem", "Partial");}
+                        </div>
+                        <div class="form-group">
+                            <label for="txt_defaulturl_Web">故障现象</label>
+                            <input type="text" name="txt_defaulturl_Web" class="form-control" id="gzxianxiang">
+                        </div>
+                        <div class="form-group">
+                            <label for="txt_defaulturl_Web">故障描述</label>
+                            <input type="text" name="txt_defaulturl_Web" class="form-control" id="gzms">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                        <button type="button" id="btn_submit" class="btn btn-primary" onclick="Modify()" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
+                    </div>
+                </div>
+
+
+                @*<h6>已申请故障修改</h6>
+                    故障设备：<input id="gzdevice" type="text" />
+                    故障发生时间：<input id="gzfssj" type="text" />
+                    @{Html.RenderAction("SubSystem", "Partial");}
+                    故障现象：<textarea id="gzxianxiang"></textarea>
+                    故障描述：<textarea id="gzms"></textarea>*@
+            </div>
+        </div>
+    </div>
+
+
+
+
     <script>
         var cachData = [];
-        $(function () {
-            $.post(
-                "/Failure/GetAllApplicationsByUserName",
-                { name: "报告人A" },
-                function (Data) {
-                    if (Data != "") {
-                        var data = $.parseJSON(Data);
-                        cachData = data;
-                        var trhtml = "";
-                        $.each(data, function (i, item) {
-                            var index = i + 1;
-                            trhtml += "<tr><td >" + index+ "</td>";
-                            trhtml += "<td >" + item["SBBH"] + "</td>";
-                            trhtml += "<td >" + item["fssj"] + "</td>";
-                            trhtml += "<td >" + item["GZBWA"] + "/" + item["GZBWB"] + "/" + item["GZBWC"] + "</td>";
-                            trhtml += "<td >" + item["gzxianxiang"] + "</td>";
-                            trhtml += "<td><a id=" + i + " href='javascript:void();' onclick='Pop(this.id)' > 修改</a>";
-                            trhtml += "<a id=" + i + " href='javascript:void();' onclick='Delete(this.id)' > 删除</a>";
-                            trhtml += "</td></tr>";
-                            $("#ApplicationsBody").html(trhtml);
-                        });
-                    }
-                });
-        });
 
+        $(function () {
+            LoadAllApplications();
+            //1.初始化Table
+            var oTable = new TableInit();
+            oTable.Init();
+
+            //2.初始化Button的点击事件
+            var oButtonInit = new ButtonInit();
+            oButtonInit.Init();
+        });
+        function LoadAllApplications() {
+            $.post(
+                 "/Failure/GetAllApplicationsByUserName",
+                 { name: "报告人A" },
+                 function (Data) {
+                     if (Data != "") {
+                         ddd = Data;
+                         var data = $.parseJSON(Data);
+                         cachData = data;
+                         var trhtml = "";
+                         $.each(data, function (i, item) {
+                             trhtml += "<tr><td >" + item["Id"] + "</td>";
+                             trhtml += "<td >" + item["SBJC"] + "</td>";
+                             trhtml += "<td >" + item["fssj"] + "</td>";
+                             trhtml += "<td >" + item["GZBWA"] + "/" + item["GZBWB"] + "/" + item["GZBWC"] + "</td>";
+                             trhtml += "<td >" + item["gzxianxiang"] + "</td>";
+                             trhtml += "<td >" + item["gzms"] + "</td>";
+                             trhtml += "<td><a id=" + i + " href='javascript:void();' onclick='Pop(this.id)' > 修改</a>";
+                             trhtml += "<a id=" + item["Id"] + " href='javascript:void();' onclick='Delete(this.id)' > 删除</a>";
+                             trhtml += "</td></tr>";
+                             $("#ApplicationsBody").html(trhtml);
+                         });
+                     }
+                 });
+        };
+        //这里有问题不知道怎么给select赋值
         function Pop(index) {
-            $("#gzdevice").val(cachData[index].SBBH);
+            $("#gzdevice").val(cachData[index].SBJC);
             $("#gzfssj").val(cachData[index].fssj);
             $("#firstFailureLocation").find('option[text="" + cachData[index].GZBWA + ""]').attr("selected", true);
             $("#gzxianxiang").val(cachData[index].gzxianxiang);
-            alert(cachData[index].Id);
+            $("#gzms").val(cachData[index].gzms);
             $("#forGZShenQingId").val(cachData[index].Id);
         };
 
-        function Modify()
-        {
-            alert($("#forGZShenQingId").val());
+        function Modify() {
+            $.post(
+               "/Failure/UpDateFailureInfo",
+               {
+                   GZShenQingId: $("#forGZShenQingId").val(),
+                   Fssj: "2017/2/19",
+                   GZXianXiang: $("#gzxianxiang").val(),
+                   GZMS: $("#gzms").val(),
+                   GZBWA: $("#firstFailureLocation option:selected").text(),
+                   GZBWB: $("#secondFailureLocation option:selected").text(),
+                   GZBWC: $("#thirdFailureLocation option:selected").text(),
+               },
+               function (Data) {
+                   $('#tb_departments').bootstrapTable('refresh', { url: '/Failure/GetAllApplicationsByUserName1' });
+               });
+        };
+
+        function Delete(id) {
+            $.post(
+              "/Failure/DeleteFailure",
+              {
+                  GZShenQingId: id,
+              },
+              function (Data) {
+                  LoadAllApplications();
+              });
         }
+
+
+
+
+        var TableInit = function () {
+            var oTableInit = new Object();
+            //初始化Table
+            oTableInit.Init = function () {
+                $('#tb_departments').bootstrapTable({
+                    url: '/Failure/GetAllApplicationsByUserName1',         //请求后台的URL（*）
+                    method: 'post',                      //请求方式（*）
+                    toolbar: '#toolbar',                //工具按钮用哪个容器
+                    striped: true,                      //是否显示行间隔色
+                    cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                    pagination: true,                   //是否显示分页（*）
+                    sortable: true,                     //是否启用排序
+                    sortOrder: "asc",                   //排序方式
+                    sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                    pageNumber: 1,                       //初始化加载第一页，默认第一页
+                    pageSize: 10,                       //每页的记录行数（*）
+                    pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                    search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                    strictSearch: true,
+                    showColumns: true,                  //是否显示所有的列
+                    showRefresh: true,                  //是否显示刷新按钮
+                    minimumCountColumns: 1,             //最少允许的列数
+                    clickToSelect: true,                //是否启用点击选中行
+                    height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                    uniqueId: "SBBH",                     //每一行的唯一标识，一般为主键列
+                    showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
+                    cardView: false,                    //是否显示详细视图
+                    detailView: false,                   //是否显示父子表
+                    queryParams: oTableInit.queryParams,
+                    columns: [
+                        { field: 'Id', title: '序号' },
+                        { field: 'SBJC', title: '故障设备' },
+                        { field: 'fssj', title: '发生时间' },
+                        { field: 'GZBWForAll', title: '故障部位' },
+                        { field: 'gzxianxiang', title: '故障现象' },
+                        { field: 'gzms', title: '故障描述' },
+                        { field: 'GZBWB', title: '操作', align: 'center', events: operateEvents, formatter: operateFormatter }
+                    ]
+                });
+            }
+
+            //得到查询的参数
+            oTableInit.queryParams = function (params) {
+                var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                    name: "报告人A",   //页面大小
+                    limit: params.limit,   //页面大小
+                    offset: params.offset,  //页码
+                    //order: params.order,
+                    //ordername: params.sort,
+                    //offset: params.offset,  //页码
+                    //departmentname: $("#txt_search_departmentname").val(),
+                    //statu: $("#txt_search_statu").val()
+                };
+                return temp;
+            };
+            return oTableInit;
+        };
+
+        function operateFormatter(value, row, index) {
+            return [
+                '<button id="btn_edit" type="button" class="edit btn btn-default">',
+                '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>修改',
+                '</button>',
+                '<button id="btn_delete" type="button" class="remove btn btn-default">',
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除',
+                ' </button>'
+            ].join('');
+        }
+        window.operateEvents = {
+            'click .edit': function (e, value, row, index) {
+                $("#gzdevice").val(row.SBJC);
+                $("#gzfssj").val(row.fssj);
+                $("#firstFailureLocation").find('option[text="" + cachData[index].GZBWA + ""]').attr("selected", true);
+                $("#gzxianxiang").val(row.gzxianxiang);
+                $("#gzms").val(row.gzms);
+                $("#forGZShenQingId").val(row.Id);
+                $('#myModal').modal();
+            },
+            'click .remove': function (e, value, row, index) {
+                $table.bootstrapTable('remove', {
+                    field: 'Id',
+                    values: [row.Id]
+                });
+            }
+        };
 
     </script>
 }

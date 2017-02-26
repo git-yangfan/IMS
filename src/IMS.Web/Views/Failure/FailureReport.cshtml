@@ -34,9 +34,14 @@
                 "/Failure/GetShortNameList",
                 function (Data) {
                     var data = $.parseJSON(Data);
-                    $.each(data, function (i, item) {
-                        $("<option></option>").val(item["SBBH"]).text(item["SBJC"]).appendTo($("#failureDevice"));
-                    })
+                    if (data.Status == "200") {
+                        $.each(data.DataList, function (i, item) {
+                            $("<option></option>").val(item["SBBH"]).text(item["SBJC"]).appendTo($("#failureDevice"));
+                        })
+                    }
+                    else {
+                        alert(data.Msg);
+                    }
                 });
         };
         function SubmitFailure() {

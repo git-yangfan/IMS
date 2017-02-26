@@ -20,6 +20,20 @@ namespace IMS
         {
             this.Data = data;
         }
+
+        public Result(ResultStatus status, List<T> dataList)
+            : base(status)
+        {
+            this.DataList = dataList;
+        }
+        public Result(ResultStatus status,string msg, List<T> dataList)
+            : base(status)
+        {
+            this.DataList = dataList;
+            this.Msg = msg;
+        }
+
         public T Data { get; set; }
+        private IEnumerable<T> DataList { get; set; }
     }
 }
