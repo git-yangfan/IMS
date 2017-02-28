@@ -1,5 +1,6 @@
 ﻿using IMS.Data.Services;
 using IMS.Model.Model;
+using IMS.Model.ViewModel;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
@@ -20,6 +21,10 @@ namespace IMS.Web.Controllers.Partial
         {
             return PartialView();
         }
+        public ActionResult EngineerSelect() 
+        {
+            return PartialView();
+        }
         public JsonResult GetSubSystemList(int lev, int parentId)
         {
             if (lev != -1)
@@ -31,6 +36,19 @@ namespace IMS.Web.Controllers.Partial
                 }
             }
             return Json("");
+        }
+
+     
+        public ActionResult GetName(string type,string teamName) 
+        {
+            List<EngineerViewModel> engineerVMList = CommonService.GetName(type,teamName);
+            if (engineerVMList != null)
+            {
+                return Json(engineerVMList);
+            }
+            else
+                return Json("");
+            
         }
     }
 }

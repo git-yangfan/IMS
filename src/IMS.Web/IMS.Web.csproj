@@ -158,6 +158,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Failure\FailureController.cs" />
+    <Compile Include="Controllers\Failure\FailureProcessController.cs" />
     <Compile Include="Controllers\Home\HomeController.cs" />
     <Compile Include="Controllers\Partial\PartialController.cs" />
     <Compile Include="Global.asax.cs">
@@ -168,10 +169,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\assets\song.mp3" />
+    <Content Include="Content\bootstrap\css\bootstrap-datetimepicker.css" />
+    <Content Include="Content\bootstrap\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap\css\bootstrap.css" />
     <Content Include="Content\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Content\bootstrap\js\bootstrap-datetimepicker.js" />
+    <Content Include="Content\bootstrap\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Content\bootstrap\js\bootstrap-datetimepicker.zh-CN.js" />
     <Content Include="Content\bootstrap\js\bootstrap.js" />
     <Content Include="Content\bootstrap\js\bootstrap.min.js" />
     <Content Include="Content\bootstrap\js\npm.js" />
@@ -2323,6 +2329,8 @@
     <Content Include="Views\Failure\AllApplications.cshtml" />
     <Content Include="Views\Failure\GetDepartment.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Partial\EngineerSelect.cshtml" />
+    <Content Include="Views\FailureProcess\Dispatch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

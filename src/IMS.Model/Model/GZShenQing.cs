@@ -13,14 +13,17 @@ namespace IMS.Model.Model
        /// </summary>
         public int Id { get; set; }
         public string SBBH { get; set; }
-        public DateTime fssj { get; set; }
-        public DateTime bgsj { get; set; }
-        public string bgrxm { get; set; }
-        public string gzxianxiang { get; set; }
-        public string gzms { get; set; }
+        public DateTime FSSJ { get; set; }
+        public DateTime BGSJ { get; set; }
+        public string BGRId { get; set; }
+        public string GZXianXiang { get; set; }
+        public string GZMS { get; set; }
         public string GZBWA { get; set; }
         public string GZBWB { get; set; }
         public string GZBWC { get; set; }
-        public int sfkyxg { get; set; }
+        public int SFKYXG { get; set; }
+        public DateTime HFSJ { set; get; }
+        public string DQZT { get; set; }
+        public string HFXX { get; set; }
     }
 }

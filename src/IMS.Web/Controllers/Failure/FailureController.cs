@@ -27,69 +27,60 @@ namespace IMS.Web.Controllers.Failure
         public ActionResult GetShortNameList()
         {
             List<SBXXViewModel> ShortNameList = failureService.GetShortNameList();
-            Result<SBXXViewModel> jsonResult=null;
             if (ShortNameList != null)
             {
-                jsonResult = new Result<SBXXViewModel>(ResultStatus.OK,  ShortNameList);
+                return Content(ShortNameList.ToJsonString());
                
             }
             else 
             {
-                jsonResult = new Result<SBXXViewModel>(ResultStatus.Failed,"Failed For Some Reasons",null);
+                 return Json("");
             }
-                 return Content(jsonResult.ToJsonString());
+                
         }
 
         public void AddNewFailure()
         {
-            GZShenQingViewModel GZShenQingViewModl = new GZShenQingViewModel();
-            GZShenQingViewModl.SBBH = Request.Params["SBBH"];
-            GZShenQingViewModl.fssj = Convert.ToDateTime(Request.Params["Fssj"]);
-            GZShenQingViewModl.gzxianxiang = Request.Params["GZXianXiang"];
-            GZShenQingViewModl.gzms = Request.Params["GZMS"];
-            GZShenQingViewModl.GZBWA = Request.Params["GZBWA"];
-            GZShenQingViewModl.GZBWB = Request.Params["GZBWB"];
-            GZShenQingViewModl.GZBWC = Request.Params["GZBWC"];
-            GZShenQingViewModl.bgrxm = "报告人A";
-            GZShenQingViewModl.bgsj = DateTime.Now;
-            GZShenQingViewModl.sfkyxg = 0;
-            failureService.AddNewFailure(GZShenQingViewModl);
+            MaintenanceApplicationViewModel MaintenanceApplicationVM = new MaintenanceApplicationViewModel();
+            MaintenanceApplicationVM.DeviceNo = Request.Params["sbbh"];
+            MaintenanceApplicationVM.BeginTime = Convert.ToDateTime(Request.Params["fssj"]);
+            MaintenanceApplicationVM.FailureAppearance = Request.Params["gzxianxiang"];
+            MaintenanceApplicationVM.FailureDescription = Request.Params["gzms"];
+            MaintenanceApplicationVM.FstLevFailureLocation = Request.Params["gzbwa"];
+            MaintenanceApplicationVM.SecLevFailureLocation = Request.Params["gzbwb"];
+            MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["gzbwc"];
+            MaintenanceApplicationVM.ReporterId = "报告人A";
+            MaintenanceApplicationVM.ReportTime = DateTime.Now;
+            MaintenanceApplicationVM.State = "审核中";
+            MaintenanceApplicationVM.Modifiable = 0;
+            failureService.AddNewFailure(MaintenanceApplicationVM);
 
         }
 
         public void UpDateFailureInfo() 
         {
-            GZShenQingViewModel GZShenQingViewModel = new GZShenQingViewModel();
-            int id =Convert.ToInt32( Request.Params["GZShenQingId"]);
-            GZShenQingViewModel.fssj = Convert.ToDateTime(Request.Params["Fssj"]);
-            GZShenQingViewModel.gzxianxiang = Request.Params["GZXianXiang"];
-            GZShenQingViewModel.gzms = Request.Params["GZMS"];
-            GZShenQingViewModel.GZBWA = Request.Params["GZBWA"];
-            GZShenQingViewModel.GZBWB = Request.Params["GZBWB"];
-            GZShenQingViewModel.GZBWC = Request.Params["GZBWC"];
-            GZShenQingViewModel.bgsj = DateTime.Now;
-            failureService.UpDateFailureInfo(id,GZShenQingViewModel);
+            MaintenanceApplicationViewModel MaintenanceApplicationVM = new MaintenanceApplicationViewModel();
+            int id = Convert.ToInt32(Request.Params["gzshenqingid"]);
+            MaintenanceApplicationVM.BeginTime = Convert.ToDateTime(Request.Params["fssj"]);
+            MaintenanceApplicationVM.FailureAppearance = Request.Params["gzxianxiang"];
+            MaintenanceApplicationVM.FailureDescription = Request.Params["gzms"];
+            MaintenanceApplicationVM.FstLevFailureLocation = Request.Params["gzbwa"];
+            MaintenanceApplicationVM.SecLevFailureLocation = Request.Params["gzbwb"];
+            MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["gzbwc"];
+            MaintenanceApplicationVM.ReportTime = DateTime.Now;
+            failureService.UpDateFailureInfo(id,MaintenanceApplicationVM);
         }
 
         public void DeleteFailure() 
         {
-            int id = Convert.ToInt32(Request.Params["GZShenQingId"]);
+            int id = Convert.ToInt32(Request.Params["gzshenqingid"]);
             failureService.DeleteFailureByID(id);
         }
       
-        public ActionResult GetAllApplicationsByUserName(string name)
+       
+        public ActionResult GetAllApplicationsByUserName(string name, int limit, int offset,string sbbh,string fssj)
         {
-            var AllApplicationsList = failureService.GetAllApplicationsByName(name);
-            if (AllApplicationsList != null)
-            {
-                return Content(AllApplicationsList.ToJsonString());
-            }
-            else
-                return Json("");
-        }
-        public ActionResult GetAllApplicationsByUserName1(string name, int limit, int offset)
-        {
-            var AllApplicationsList = failureService.GetAllApplicationsByName(name);
+            var AllApplicationsList = failureService.GetAllApplicationsByName(name,limit,offset,sbbh,fssj);
             if (AllApplicationsList != null)
             {
                 var total = AllApplicationsList.Count;
@@ -116,7 +107,7 @@ namespace IMS.Web.Controllers.Failure
             for (var i = 0; i < 50; i++)
             {
                 var oModel = new SBXXViewModel();
-                oModel.SBBH = Guid.NewGuid().ToString();
+                oModel.SBBH = i.ToString();
                 oModel.SBJC = "销售部" + i;
                 lstRes.Add(oModel);
             }

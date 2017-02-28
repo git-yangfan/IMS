@@ -19,30 +19,39 @@ namespace IMS.Data.Services
 
 
         }
-        public List<GZShenQingViewModel> GetAllApplicationsByName(string name)
+        public List<MaintenanceApplicationViewModel> GetAllApplicationsByName(string name, int limit, int offset, string sbbh, string fssj)
         {
 
             using (var client = DbConfig.GetInstance())
             {
-                List<GZShenQing> listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.bgrxm == name).ToList();
-                List<GZShenQingViewModel> gZShenQingViewModelList = new List<GZShenQingViewModel>();
-                foreach (var item in listWithSBBH)
+                List<GZShenQing> listWithSBBH = new List<GZShenQing>();
+                if (sbbh!=null&&!(String.Equals(sbbh,"-1")))
                 {
-                    GZShenQingViewModel gZSQ = new GZShenQingViewModel();
-                    gZSQ.SBJC = CommonService.GetShortName(item.SBBH);
-                    gZSQ.SBBH = item.SBBH;
-                    gZSQ.bgrxm = item.bgrxm;
-                    gZSQ.bgsj = item.bgsj;
-                    gZSQ.fssj = item.fssj;
-                    gZSQ.GZBWA = item.GZBWA;
-                    gZSQ.GZBWB = item.GZBWB;
-                    gZSQ.GZBWC = item.GZBWC;
-                    gZSQ.gzms = item.gzms;
-                    gZSQ.gzxianxiang = item.gzxianxiang;
-                    gZSQ.Id = item.Id;
-                    gZSQ.sfkyxg = item.sfkyxg;
-                    gZSQ.GZBWForAll = item.GZBWA + (item.GZBWB == "请选择" ? "" : "/" + item.GZBWB)+(item.GZBWC=="请选择"? "":"/"+item.GZBWC);
-                    gZShenQingViewModelList.Add(gZSQ);
+                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(g => g.SBBH == sbbh).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
+                }
+                else if (sbbh!=null&&!(String.Equals(sbbh,"-1"))&&!(String.Equals(fssj,null)))
+                {
+                    DateTime _fssj = Convert.ToDateTime(fssj);
+                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(g => g.SBBH == sbbh).Where(s => s.FSSJ == _fssj).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
+                }
+                else if (sbbh == null || (String.Equals(sbbh, "-1")) && !(String.Equals(fssj, string.Empty)))
+                {
+                    DateTime _fssj = Convert.ToDateTime(fssj);
+                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(s => s.FSSJ == _fssj).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
+                 
+                }
+                else
+                {
+                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).OrderBy(d=>d.FSSJ).Skip(offset).Take(limit).ToList();
+                }
+                List<MaintenanceApplicationViewModel> gZShenQingViewModelList = new List<MaintenanceApplicationViewModel>();
+                for (int i = 0; i < listWithSBBH.Count; i++)
+                {
+                    var item=listWithSBBH[i];
+                    MaintenanceApplicationViewModel gZShenQingViewModel = new MaintenanceApplicationViewModel(item);
+                    gZShenQingViewModel.Order = i+1;
+                    gZShenQingViewModel.DeviceShortName = CommonService.GetShortName(item.SBBH);
+                    gZShenQingViewModelList.Add(gZShenQingViewModel);
                 }
                 return gZShenQingViewModelList;
             }
@@ -53,19 +62,19 @@ namespace IMS.Data.Services
             List<SBXXViewModel> shortNameList = new List<SBXXViewModel>();
             using (var client = DbConfig.GetInstance())
             {
-              IEnumerable<SBXX>  ListWithAllInfo = client.Queryable<SBXX>().ToList();
-              foreach (var item in ListWithAllInfo)
-              {
-                  SBXXViewModel viewModel = new SBXXViewModel();
-                  viewModel.SBBH = item.SBBH;
-                  viewModel.SBJC = item.SBJC;
-                  shortNameList.Add(viewModel);
-              }
+                IEnumerable<SBXX> ListWithAllInfo = client.Queryable<SBXX>().ToList();
+                foreach (var item in ListWithAllInfo)
+                {
+                    SBXXViewModel viewModel = new SBXXViewModel();
+                    viewModel.SBBH = item.SBBH;
+                    viewModel.SBJC = item.SBJC;
+                    shortNameList.Add(viewModel);
+                }
             }
 
             return shortNameList;
         }
-        public bool AddNewFailure(GZShenQingViewModel gZShenQingViewModel)
+        public bool AddNewFailure(MaintenanceApplicationViewModel gZShenQingViewModel)
         {
             if (gZShenQingViewModel != null)
             {
@@ -88,23 +97,23 @@ namespace IMS.Data.Services
                 return false;
 
         }
-        private GZShenQing GZShenQingViewModelToModel(GZShenQingViewModel viewModel) 
+        private GZShenQing GZShenQingViewModelToModel(MaintenanceApplicationViewModel viewModel)
         {
             GZShenQing gZShenQing = new GZShenQing();
-            gZShenQing.bgrxm = viewModel.bgrxm;
-            gZShenQing.bgsj = viewModel.bgsj;
-            gZShenQing.fssj = viewModel.fssj;
-            gZShenQing.GZBWA = viewModel.GZBWA;
-            gZShenQing.GZBWB = viewModel.GZBWB;
-            gZShenQing.GZBWC = viewModel.GZBWC;
-            gZShenQing.gzxianxiang = viewModel.gzxianxiang;
-            gZShenQing.gzms = viewModel.gzms;
+            gZShenQing.BGRId = viewModel.ReporterId;
+            gZShenQing.BGSJ = viewModel.ReportTime;
+            gZShenQing.FSSJ = viewModel.BeginTime;
+            gZShenQing.GZBWA = viewModel.FstLevFailureLocation;
+            gZShenQing.GZBWB = viewModel.SecLevFailureLocation;
+            gZShenQing.GZBWC = viewModel.ThiLevFailureLocation;
+            gZShenQing.GZXianXiang = viewModel.FailureAppearance;
+            gZShenQing.GZMS = viewModel.FailureDescription;
             gZShenQing.Id = viewModel.Id;
-            gZShenQing.sfkyxg = viewModel.sfkyxg;
-            gZShenQing.SBBH = viewModel.SBBH;
+            gZShenQing.SFKYXG = viewModel.Modifiable;
+            gZShenQing.SBBH = viewModel.DeviceNo;
             return gZShenQing;
         }
-        public bool UpDateFailureInfo(int id, GZShenQingViewModel GZShenQingViewModel) 
+        public bool UpDateFailureInfo(int id, MaintenanceApplicationViewModel GZShenQingViewModel)
         {
             if (GZShenQingViewModel != null)
             {
@@ -112,18 +121,19 @@ namespace IMS.Data.Services
                 {
                     using (var client = DbConfig.GetInstance())
                     {
-                        
-                      bool result = client.Update<GZShenQing>(
-                            new {
-                                fssj=GZShenQingViewModel.fssj,
-                                gzms=GZShenQingViewModel.gzms,
-                                gzxianxiang=GZShenQingViewModel.gzxianxiang,
-                                gzbwa=GZShenQingViewModel.GZBWA,
-                                gzbwb=GZShenQingViewModel.GZBWB,
-                                gzbwc=GZShenQingViewModel.GZBWC
-                            },
-                            it => it.Id == id).ObjToBool();
-                      return result;
+
+                        bool result = client.Update<GZShenQing>(
+                              new
+                              {
+                                  fssj = GZShenQingViewModel.BeginTime,
+                                  gzms = GZShenQingViewModel.FailureDescription,
+                                  gzxianxiang = GZShenQingViewModel.FailureAppearance,
+                                  gzbwa = GZShenQingViewModel.FstLevFailureLocation,
+                                  gzbwb = GZShenQingViewModel.SecLevFailureLocation,
+                                  gzbwc = GZShenQingViewModel.ThiLevFailureLocation
+                              },
+                              it => it.Id == id).ObjToBool();
+                        return result;
                     }
 
 
@@ -137,11 +147,11 @@ namespace IMS.Data.Services
             else
                 return false;
         }
-        public bool DeleteFailureByID(int id) 
+        public bool DeleteFailureByID(int id)
         {
-            using (var client=DbConfig.GetInstance())
+            using (var client = DbConfig.GetInstance())
             {
-              return  client.Delete<GZShenQing>(it => it.Id == id).ObjToBool();
+                return client.Delete<GZShenQing>(it => it.Id == id).ObjToBool();
             }
         }
 
