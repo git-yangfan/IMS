@@ -11,6 +11,7 @@ namespace IMS.Model.Model
         public int Id { get; set; }
         public string SBBH { get; set; }
         public string SBJC { get; set; }
+        public string SSGD { get; set; }
 
     }
 }

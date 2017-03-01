@@ -2331,6 +2331,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Partial\EngineerSelect.cshtml" />
     <Content Include="Views\FailureProcess\Dispatch.cshtml" />
+    <Content Include="Views\Partial\SelectBar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

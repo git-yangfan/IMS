@@ -25,19 +25,19 @@ namespace IMS.Data.Services
             using (var client = DbConfig.GetInstance())
             {
                 List<GZShenQing> listWithSBBH = new List<GZShenQing>();
-                if (sbbh!=null&&!(String.Equals(sbbh,"-1")))
+                if (sbbh!=""&&!(String.Equals(sbbh,"-1")))
                 {
                     listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(g => g.SBBH == sbbh).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
                 }
-                else if (sbbh!=null&&!(String.Equals(sbbh,"-1"))&&!(String.Equals(fssj,null)))
+                else if (sbbh != "" && !(String.Equals(sbbh, "-1")) && !(String.Equals(fssj, string.Empty)))
                 {
-                    DateTime _fssj = Convert.ToDateTime(fssj);
-                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(g => g.SBBH == sbbh).Where(s => s.FSSJ == _fssj).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
+                    DateTime beginTime = Convert.ToDateTime(fssj);
+                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(g => g.SBBH == sbbh).Where(s => s.FSSJ == beginTime).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
                 }
-                else if (sbbh == null || (String.Equals(sbbh, "-1")) && !(String.Equals(fssj, string.Empty)))
+                else if (sbbh == "" || (String.Equals(sbbh, "-1")) && !(String.Equals(fssj, string.Empty)))
                 {
-                    DateTime _fssj = Convert.ToDateTime(fssj);
-                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(s => s.FSSJ == _fssj).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
+                    DateTime beginTime = Convert.ToDateTime(fssj);
+                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(s => s.FSSJ == beginTime).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
                  
                 }
                 else
@@ -57,23 +57,7 @@ namespace IMS.Data.Services
             }
 
         }
-        public List<SBXXViewModel> GetShortNameList()
-        {
-            List<SBXXViewModel> shortNameList = new List<SBXXViewModel>();
-            using (var client = DbConfig.GetInstance())
-            {
-                IEnumerable<SBXX> ListWithAllInfo = client.Queryable<SBXX>().ToList();
-                foreach (var item in ListWithAllInfo)
-                {
-                    SBXXViewModel viewModel = new SBXXViewModel();
-                    viewModel.SBBH = item.SBBH;
-                    viewModel.SBJC = item.SBJC;
-                    shortNameList.Add(viewModel);
-                }
-            }
-
-            return shortNameList;
-        }
+    
         public bool AddNewFailure(MaintenanceApplicationViewModel gZShenQingViewModel)
         {
             if (gZShenQingViewModel != null)

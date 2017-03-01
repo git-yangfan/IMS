@@ -14,9 +14,11 @@ namespace IMS.Model.ViewModel
       {
           this.EngineerName = userModel.Name;
           this.TeamName = userModel.BanZu;
+          this.EngineerId = userModel.Id;
       }
 
       public  string TeamName { set; get; }
       public  string  EngineerName { get; set; }
+      public int EngineerId { get; set; }
     }
 }

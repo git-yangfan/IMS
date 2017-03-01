@@ -48,6 +48,41 @@ namespace IMS.Data.Services
         }
 
 
+
+        public static List<DeviceViewModel> GetWorkSectionNameList()
+        {
+            List<DeviceViewModel> deviceVMList = new List<DeviceViewModel>();
+            using (var client = DbConfig.GetInstance())
+            {
+                IEnumerable<SBXX> ListWithAllInfo = client.Queryable<SBXX>().OrderBy(d => d.SSGD, OrderByType.Asc).ToList();
+                foreach (var item in ListWithAllInfo)
+                {
+                    DeviceViewModel viewModel = new DeviceViewModel();
+                    viewModel.WorkSection = item.SSGD;
+                    deviceVMList.Add(viewModel);
+                }
+            }
+            return deviceVMList;
+        }
+
+
+        public static List<DeviceViewModel> GetDeviceNamesBySection(string sectionName)
+        {
+            List<DeviceViewModel> deviceVMList = new List<DeviceViewModel>();
+            using (var client = DbConfig.GetInstance())
+            {
+                IEnumerable<SBXX> ListWithAllInfo = client.Queryable<SBXX>().Where(c=>c.SSGD==sectionName).ToList();
+                foreach (var item in ListWithAllInfo)
+                {
+                    DeviceViewModel viewModel = new DeviceViewModel();
+                    viewModel.DeviceName = item.SBJC;
+                    viewModel.DeviceNo = item.SBBH;
+                    deviceVMList.Add(viewModel);
+                }
+            }
+            return deviceVMList;
+        }
+
     }
 
 

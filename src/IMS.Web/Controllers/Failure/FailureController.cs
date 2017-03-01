@@ -24,20 +24,7 @@ namespace IMS.Web.Controllers.Failure
         {
             return View();
         }
-        public ActionResult GetShortNameList()
-        {
-            List<SBXXViewModel> ShortNameList = failureService.GetShortNameList();
-            if (ShortNameList != null)
-            {
-                return Content(ShortNameList.ToJsonString());
-               
-            }
-            else 
-            {
-                 return Json("");
-            }
-                
-        }
+     
 
         public void AddNewFailure()
         {
@@ -103,12 +90,12 @@ namespace IMS.Web.Controllers.Failure
 
         public JsonResult GetDepartment1()
         {
-            var lstRes = new List<SBXXViewModel>();
+            var lstRes = new List<DeviceViewModel>();
             for (var i = 0; i < 50; i++)
             {
-                var oModel = new SBXXViewModel();
-                oModel.SBBH = i.ToString();
-                oModel.SBJC = "销售部" + i;
+                var oModel = new DeviceViewModel();
+                oModel.DeviceNo = i.ToString();
+                oModel.DeviceName = "销售部" + i;
                 lstRes.Add(oModel);
             }
 

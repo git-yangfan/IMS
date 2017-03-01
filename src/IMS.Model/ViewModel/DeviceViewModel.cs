@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace IMS.Model.ViewModel
 {
-   public class SBXXViewModel
+   public class DeviceViewModel
     {
-        public string SBBH { get; set; }
-        public string SBJC { get; set; }
+        public string DeviceNo { get; set; }
+        public string DeviceName { get; set; }
+        public string WorkSection { get; set; }
     }
 }

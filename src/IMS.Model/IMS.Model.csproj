@@ -41,14 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\PGD.cs" />
     <Compile Include="Model\SBXX.cs" />
     <Compile Include="Model\GZShenQing.cs" />
     <Compile Include="Model\Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\SubSystem.cs" />
     <Compile Include="ViewModel\EngineerViewModel.cs" />
+    <Compile Include="ViewModel\FailureProcessViewModel.cs" />
     <Compile Include="ViewModel\MaintenanceApplicationViewModel.cs" />
-    <Compile Include="ViewModel\SBXXViewModel.cs" />
+    <Compile Include="ViewModel\DeviceViewModel.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

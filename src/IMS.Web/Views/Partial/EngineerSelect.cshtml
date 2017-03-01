@@ -42,7 +42,7 @@
             function (data) {
                 if (data != "") {
                     $.each(data, function (i, item) {
-                        $("<option></option>").text(item["EngineerName"]).appendTo($("#select_engineer"));
+                        $("<option></option>").val(item["EngineerId"]).text(item["EngineerName"]).appendTo($("#select_engineer"));
                     })
                 }
                 else {

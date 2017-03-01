@@ -11,7 +11,7 @@ namespace IMS.Web.Controllers.Partial
         //
         // GET: /Partial/
 
-        FailureService failureService=new FailureService();
+        FailureService failureService = new FailureService();
         public ActionResult Index()
         {
             return View();
@@ -21,7 +21,12 @@ namespace IMS.Web.Controllers.Partial
         {
             return PartialView();
         }
-        public ActionResult EngineerSelect() 
+        public ActionResult EngineerSelect()
+        {
+            return PartialView();
+        }
+
+        public ActionResult SelectBar() 
         {
             return PartialView();
         }
@@ -37,18 +42,42 @@ namespace IMS.Web.Controllers.Partial
             }
             return Json("");
         }
-
-     
-        public ActionResult GetName(string type,string teamName) 
+        public ActionResult GetName(string type, string teamName)
         {
-            List<EngineerViewModel> engineerVMList = CommonService.GetName(type,teamName);
+            List<EngineerViewModel> engineerVMList = CommonService.GetName(type, teamName);
             if (engineerVMList != null)
             {
                 return Json(engineerVMList);
             }
             else
                 return Json("");
-            
+
+        }
+
+        public JsonResult GetWorkSectionNameList() 
+        {
+            List<DeviceViewModel> deviceVMList =CommonService.GetWorkSectionNameList();
+            if (deviceVMList != null)
+            {
+                return Json(deviceVMList);
+            }
+            else
+            {
+                return Json("");
+            }
+        }
+
+        public JsonResult GetDeviceNamesBySection(string sectionName) 
+        {
+            List<DeviceViewModel> deviceVMList = CommonService.GetDeviceNamesBySection(sectionName);
+            if (deviceVMList != null)
+            {
+                return Json(deviceVMList);
+            }
+            else
+            {
+                return Json("");
+            }
         }
     }
 }
