@@ -19,45 +19,6 @@ namespace IMS.Data.Services
 
 
         }
-        public List<MaintenanceApplicationViewModel> GetAllApplicationsByName(string name, int limit, int offset, string sbbh, string fssj)
-        {
-
-            using (var client = DbConfig.GetInstance())
-            {
-                List<GZShenQing> listWithSBBH = new List<GZShenQing>();
-                if (sbbh!=""&&!(String.Equals(sbbh,"-1")))
-                {
-                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(g => g.SBBH == sbbh).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
-                }
-                else if (sbbh != "" && !(String.Equals(sbbh, "-1")) && !(String.Equals(fssj, string.Empty)))
-                {
-                    DateTime beginTime = Convert.ToDateTime(fssj);
-                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(g => g.SBBH == sbbh).Where(s => s.FSSJ == beginTime).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
-                }
-                else if (sbbh == "" || (String.Equals(sbbh, "-1")) && !(String.Equals(fssj, string.Empty)))
-                {
-                    DateTime beginTime = Convert.ToDateTime(fssj);
-                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).Where(s => s.FSSJ == beginTime).OrderBy(d => d.FSSJ).Skip(offset).Take(limit).ToList();
-                 
-                }
-                else
-                {
-                    listWithSBBH = client.Queryable<GZShenQing>().Where(c => c.BGRId == name).OrderBy(d=>d.FSSJ).Skip(offset).Take(limit).ToList();
-                }
-                List<MaintenanceApplicationViewModel> gZShenQingViewModelList = new List<MaintenanceApplicationViewModel>();
-                for (int i = 0; i < listWithSBBH.Count; i++)
-                {
-                    var item=listWithSBBH[i];
-                    MaintenanceApplicationViewModel gZShenQingViewModel = new MaintenanceApplicationViewModel(item);
-                    gZShenQingViewModel.Order = i+1;
-                    gZShenQingViewModel.DeviceShortName = CommonService.GetShortName(item.SBBH);
-                    gZShenQingViewModelList.Add(gZShenQingViewModel);
-                }
-                return gZShenQingViewModelList;
-            }
-
-        }
-    
         public bool AddNewFailure(MaintenanceApplicationViewModel gZShenQingViewModel)
         {
             if (gZShenQingViewModel != null)

@@ -120,8 +120,10 @@
                     offset: params.offset,  //页码
                     //order: params.order,
                     //ordername: params.sort,
-                    sbbh: $("#select_device option:selected").val(),
-                    fssj: $("#txt_search_fssj").val()
+                    sectionName: $("#select_worksection option:selected").text(),
+                    deviceNo: $("#select_device option:selected").val(),
+                    beginTime: $("#txt_begintime").val(),
+                    endTime: $("#txt_endtime").val()
                 };
                 return temp;
             };
@@ -140,6 +142,12 @@
         }
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
+                var modifiable = row.Modifiable;
+                if (modifiable == 1) {
+                    alert("申请已经受理，无法修改");
+                    return;
+
+                }
                 $("#gzdevice").val(row.DeviceShortName);
                 $("#gzfssj").val(row.BeginTime);
                 $("#firstFailureLocation").find('option[text="" + cachData[index].FstLevFaultLocation + ""]').attr("selected", true);

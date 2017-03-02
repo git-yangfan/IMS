@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\GZXX.cs" />
     <Compile Include="Model\PGD.cs" />
     <Compile Include="Model\SBXX.cs" />
     <Compile Include="Model\GZShenQing.cs" />

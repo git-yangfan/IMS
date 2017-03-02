@@ -65,9 +65,9 @@ namespace IMS.Web.Controllers.Failure
         }
       
        
-        public ActionResult GetAllApplicationsByUserName(string name, int limit, int offset,string sbbh,string fssj)
+        public ActionResult GetAllApplicationsByUserName(string name, int limit, int offset,string sectionName,string deviceNo,string beginTime,string endTime)
         {
-            var AllApplicationsList = failureService.GetAllApplicationsByName(name,limit,offset,sbbh,fssj);
+            var AllApplicationsList = CommonService.GetAllApplicationsByName(name,limit,offset,sectionName,deviceNo,beginTime,endTime);
             if (AllApplicationsList != null)
             {
                 var total = AllApplicationsList.Count;
@@ -75,13 +75,21 @@ namespace IMS.Web.Controllers.Failure
                 var d = new { total = total, rows = rows };
                 return Content(d.ToJsonString());
             }
-
             else
                 return Json("");
-           
         }
 
 
+
+
+
+
+
+
+        /// <summary>
+        /// 测试功能的
+        /// </summary>
+        /// <returns></returns>
         public ActionResult GetDepartment()
         {
             return View();

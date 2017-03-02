@@ -19,21 +19,21 @@ namespace IMS.Data.Services
                 return single.SBJC;
             }
         }
-       
 
-        public static List<EngineerViewModel> GetName(string type,string teamName)
+
+        public static List<EngineerViewModel> GetName(string type, string teamName)
         {
             List<EngineerViewModel> engineerVMList = new List<EngineerViewModel>();
             using (var client = DbConfig.GetInstance())
             {
                 List<Users> usersList = null;
-                if (string.Equals(type,"team"))
+                if (string.Equals(type, "team"))
                 {
                     usersList = client.Queryable<Users>().Select("BanZu").OrderBy("BanZu").GroupBy("BanZu").ToList();
                 }
-                if (string.Equals(type,"Engineer"))
+                if (string.Equals(type, "Engineer"))
                 {
-                      usersList = client.Queryable<Users>().Where(c=>c.BanZu==teamName).ToList();
+                    usersList = client.Queryable<Users>().Where(c => c.BanZu == teamName).ToList();
                 }
                 if (usersList.Count > 0)
                 {
@@ -71,7 +71,7 @@ namespace IMS.Data.Services
             List<DeviceViewModel> deviceVMList = new List<DeviceViewModel>();
             using (var client = DbConfig.GetInstance())
             {
-                IEnumerable<SBXX> ListWithAllInfo = client.Queryable<SBXX>().Where(c=>c.SSGD==sectionName).ToList();
+                IEnumerable<SBXX> ListWithAllInfo = client.Queryable<SBXX>().Where(c => c.SSGD == sectionName).ToList();
                 foreach (var item in ListWithAllInfo)
                 {
                     DeviceViewModel viewModel = new DeviceViewModel();
@@ -81,6 +81,59 @@ namespace IMS.Data.Services
                 }
             }
             return deviceVMList;
+        }
+
+
+        public static List<MaintenanceApplicationViewModel> GetAllApplicationsByName(string name, int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime)
+        {
+
+            using (var client = DbConfig.GetInstance())
+            {
+                List<GZShenQing> listWithDeviceNo = new List<GZShenQing>();
+                var sql = client.Queryable<GZShenQing>();
+                if (!String.Equals(sectionName, String.Empty) && !String.Equals(sectionName, "请选择"))
+                {
+                    sql.JoinTable<SBXX>((g, s) => g.SBBH == s.SBBH).Where<SBXX>((g, s) => s.SSGD == sectionName);
+                }
+                if (!String.Equals(deviceNo, String.Empty) && !String.Equals(deviceNo, "-1"))
+                {
+                    sql.Where(g => g.SBBH == deviceNo);
+                }
+                if (!String.Equals(beginTime, String.Empty))
+                {
+                    DateTime _beginTime = Convert.ToDateTime(beginTime);
+                    sql.Where(g => g.FSSJ > _beginTime);
+                }
+                if (!String.Equals(endTime, String.Empty))
+                {
+                    DateTime _endTime = Convert.ToDateTime(endTime);
+                    sql.Where(g => g.FSSJ < _endTime);
+
+                }
+                var a = sql.OrderBy(g => g.FSSJ).Skip(offset).Take(limit).ToSql();
+                try
+                {
+                    listWithDeviceNo = sql.OrderBy(g => g.FSSJ).Skip(offset).Take(limit).ToList();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+
+                List<MaintenanceApplicationViewModel> gZShenQingViewModelList = new List<MaintenanceApplicationViewModel>();
+                for (int i = 0; i < listWithDeviceNo.Count; i++)
+                {
+                    var item = listWithDeviceNo[i];
+                    MaintenanceApplicationViewModel gZShenQingViewModel = new MaintenanceApplicationViewModel(item);
+                    gZShenQingViewModel.Order = i + 1;
+                    gZShenQingViewModel.DeviceShortName = CommonService.GetShortName(item.SBBH);
+                    gZShenQingViewModelList.Add(gZShenQingViewModel);
+                }
+                return gZShenQingViewModelList;
+            }
+
         }
 
     }

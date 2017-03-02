@@ -145,8 +145,10 @@
                     offset: params.offset,  //页码
                     //order: params.order,
                     //ordername: params.sort,
-                    sbbh: $("#select_device option:selected").val(),
-                    fssj: $("#txt_search_fssj").val()
+                    sectionName: $("#select_worksection option:selected").text(),
+                    deviceNo: $("#select_device option:selected").val(),
+                    beginTime: $("#txt_begintime").val(),
+                    endTime: $("#txt_endtime").val()
                 };
                 return temp;
             };
@@ -193,10 +195,22 @@
 
         function Dispatch() {
             $.post(
-                "/FailureProcess/Dispatch2",
-                { applicationId: dispatchingrow.Id, engineerId: $("#select_engineer").val()},
-                function (data) { }
+                "/FailureProcess/Dispatch",
+                { applicationId: dispatchingrow.Id, engineerId: $("#select_engineer").val(), instruction: $("#txtarea_instruction").val() },
+                function (data) {
+                    if (data != "") {
+                        alert("派工成功");
+                        RefreshTable();
+                    }
+                    else {
+                        alert("提交派工数据时可能有点小问题！");
+                    }
+                }
                 );
+        };
+
+        function RefreshTable() {
+            $('#table_dispatch').bootstrapTable('refresh', { url: '/Failure/GetAllApplicationsByUserName' });
         };
     </script>
 
