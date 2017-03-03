@@ -15,7 +15,7 @@ namespace IMS.Web.Controllers.Failure
         // GET: /Failure/
 
         private FailureService failureService = new FailureService();
-        public ActionResult FailureReport()
+        public ActionResult NewApplication()
         {
             return View();
         }
@@ -29,13 +29,13 @@ namespace IMS.Web.Controllers.Failure
         public void AddNewFailure()
         {
             MaintenanceApplicationViewModel MaintenanceApplicationVM = new MaintenanceApplicationViewModel();
-            MaintenanceApplicationVM.DeviceNo = Request.Params["sbbh"];
-            MaintenanceApplicationVM.BeginTime = Convert.ToDateTime(Request.Params["fssj"]);
-            MaintenanceApplicationVM.FailureAppearance = Request.Params["gzxianxiang"];
-            MaintenanceApplicationVM.FailureDescription = Request.Params["gzms"];
-            MaintenanceApplicationVM.FstLevFailureLocation = Request.Params["gzbwa"];
-            MaintenanceApplicationVM.SecLevFailureLocation = Request.Params["gzbwb"];
-            MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["gzbwc"];
+            MaintenanceApplicationVM.DeviceNo = Request.Params["deviceNo"];
+            MaintenanceApplicationVM.BeginTime = Convert.ToDateTime(Request.Params["beginTime"]);
+            MaintenanceApplicationVM.FailureAppearance = Request.Params["failureAppearance"];
+            MaintenanceApplicationVM.FailureDescription = Request.Params["failureDescription"];
+            MaintenanceApplicationVM.FstLevFailureLocation = Request.Params["fstLevFailureLocation"];
+            MaintenanceApplicationVM.SecLevFailureLocation = Request.Params["secLevFailureLocation"];
+            MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["thiLevFailureLocation"];
             MaintenanceApplicationVM.ReporterId = "报告人A";
             MaintenanceApplicationVM.ReportTime = DateTime.Now;
             MaintenanceApplicationVM.State = "审核中";
@@ -47,20 +47,19 @@ namespace IMS.Web.Controllers.Failure
         public void UpDateFailureInfo() 
         {
             MaintenanceApplicationViewModel MaintenanceApplicationVM = new MaintenanceApplicationViewModel();
-            int id = Convert.ToInt32(Request.Params["gzshenqingid"]);
-            MaintenanceApplicationVM.BeginTime = Convert.ToDateTime(Request.Params["fssj"]);
-            MaintenanceApplicationVM.FailureAppearance = Request.Params["gzxianxiang"];
-            MaintenanceApplicationVM.FailureDescription = Request.Params["gzms"];
-            MaintenanceApplicationVM.FstLevFailureLocation = Request.Params["gzbwa"];
-            MaintenanceApplicationVM.SecLevFailureLocation = Request.Params["gzbwb"];
-            MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["gzbwc"];
+            int id = Convert.ToInt32(Request.Params["applicationId"]);
+            MaintenanceApplicationVM.FailureAppearance = Request.Params["failureAppearance"];
+            MaintenanceApplicationVM.FailureDescription = Request.Params["failureDescription"];
+            MaintenanceApplicationVM.FstLevFailureLocation = Request.Params["fstLevFailureLocation"];
+            MaintenanceApplicationVM.SecLevFailureLocation = Request.Params["secLevFailureLocation"];
+            MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["thiLevFailureLocation"];
             MaintenanceApplicationVM.ReportTime = DateTime.Now;
             failureService.UpDateFailureInfo(id,MaintenanceApplicationVM);
         }
 
         public void DeleteFailure() 
         {
-            int id = Convert.ToInt32(Request.Params["gzshenqingid"]);
+            int id = Convert.ToInt32(Request.Params["applicationId"]);
             failureService.DeleteFailureByID(id);
         }
       

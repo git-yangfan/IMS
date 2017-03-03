@@ -5,9 +5,9 @@
 
 <h2>Dispatch</h2>
 @section ContentBody{
-    <input type="hidden" id="forGZShenQingId" />
+    <input type="hidden" id="forapplicationid" />
 
-    @{Html.RenderAction("SelectBar", "Partial");}
+    @{Html.RenderAction("SearchBar", "Partial");}
 
 
 
@@ -31,23 +31,24 @@
 
                     <div class="form-group col-lg-6">
                         <label for="txt_rolename">故障设备</label>
-
-                        <input type="text" name="txt_rolename"  id="gzdevice">
+                        <input type="text" name="txt_rolename"  id="txt_show_device">
                     </div>
                     <div class="form-group col-lg-6">
                         <label for="txt_roledesc">故障发生时间</label>
-                        <input type="text" name="txt_roledesc"  id="gzfssj">
+                        <input type="text" name="txt_roledesc"  id="txt_show_begintime">
                     </div>
                     <div class="form-group col-lg-6">
-                        @{Html.RenderAction("SubSystem", "Partial");}
+                        <label for="txt_roledesc">故障部位</label>
+                        <input type="text" name="txt_roledesc" id="txt_show_location">
                     </div>
+                    
                     <div class="form-group col-lg-6">
                         <label for="txt_defaulturl_Web">故障现象</label>
-                        <input type="text" name="txt_defaulturl_Web"  id="gzxianxiang">
+                        <input type="text" name="txt_defaulturl_Web"  id="txt_show_appear">
                     </div>
                     <div class="form-group col-lg-6">
                         <label for="txt_defaulturl_Web">故障描述</label>
-                        <input type="text" name="txt_defaulturl_Web" id="gzms">
+                        <input type="text" name="txt_defaulturl_Web" id="txt_show_descri">
                     </div>
                     <div class="form-group">
                         <label for="txt_defaulturl_Web">选择人员</label>
@@ -179,12 +180,12 @@
         window.operateEvents = {
             'click .dispatch': function (e, value, row, index) {
                 dispatchingrow=row;
-                $("#gzdevice").val(row.DeviceShortName);
-                $("#gzfssj").val(row.BeginTime);
-                $("#firstFailureLocation").find('option[text="" + cachData[index].FstLevFaultLocation + ""]').attr("selected", true);
-                $("#gzxianxiang").val(row.FailureAppearance);
-                $("#gzms").val(row.FailureDescription);
-                $("#forGZShenQingId").val(row.Id);
+                $("#txt_show_device").val(row.DeviceShortName);
+                $("#txt_show_begintime").val(row.BeginTime);
+                $("#txt_show_location").val(row.StrLocation);
+                $("#txt_show_appear").val(row.FailureAppearance);
+                $("#txt_show_descri").val(row.FailureDescription);
+                $("#forapplicationid").val(row.Id);
                 $('#modalfordispatch').modal();
             },
             'click .remove': function (e, value, row, index) {

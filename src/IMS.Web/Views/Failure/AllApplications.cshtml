@@ -8,9 +8,9 @@
 <h2>AllApplications</h2>
 
 @section ContentBody{
-    <input type="hidden" id="forGZShenQingId" />
+    <input type="hidden" id="txt_forapplicationid" />
 
-    @{Html.RenderAction("SelectBar", "Partial");}
+    @{Html.RenderAction("SearchBar", "Partial");}
 
 
     <div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index:5000">
@@ -25,23 +25,22 @@
 
                         <div class="form-group">
                             <label for="txt_rolename">故障设备</label>
-
-                            <input type="text" name="txt_rolename" class="form-control" id="gzdevice">
+                            <input type="text" name="txt_rolename" class="form-control" id="txt_failuredevice">
                         </div>
                         <div class="form-group">
                             <label for="txt_roledesc">故障发生时间</label>
-                            <input type="text" name="txt_roledesc" class="form-control" id="gzfssj">
+                            <input type="text" name="txt_roledesc" class="form-control" id="txt_begintimem">
                         </div>
                         <div class="form-group">
                             @{Html.RenderAction("SubSystem", "Partial");}
                         </div>
                         <div class="form-group">
                             <label for="txt_defaulturl_Web">故障现象</label>
-                            <input type="text" name="txt_defaulturl_Web" class="form-control" id="gzxianxiang">
+                            <textarea id="txtarea_appearance"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="txt_defaulturl_Web">故障描述</label>
-                            <input type="text" name="txt_defaulturl_Web" class="form-control" id="gzms">
+                            <textarea id="txtarea_description"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -146,14 +145,13 @@
                 if (modifiable == 1) {
                     alert("申请已经受理，无法修改");
                     return;
-
                 }
-                $("#gzdevice").val(row.DeviceShortName);
-                $("#gzfssj").val(row.BeginTime);
+                $("#txt_failuredevice").val(row.DeviceShortName);
+                $("#txt_begintimem").val(row.BeginTime);
                 $("#firstFailureLocation").find('option[text="" + cachData[index].FstLevFaultLocation + ""]').attr("selected", true);
-                $("#gzxianxiang").val(row.FailureAppearance);
-                $("#gzms").val(row.FailureDescription);
-                $("#forGZShenQingId").val(row.Id);
+                $("#txtarea_appearance").val(row.FailureAppearance);
+                $("#txtarea_description").val(row.FailureDescription);
+                $("#txt_forapplicationid").val(row.Id);
                 $('#myModal').modal();
             },
             'click .remove': function (e, value, row, index) {
@@ -163,17 +161,16 @@
         };
 
         function Modify() {
-            alert($("#forGZShenQingId").val());
+            alert($("#txt_forapplicationid").val());
             $.post(
                "/Failure/UpDateFailureInfo",
                {
-                   gzshenqingid: $("#forGZShenQingId").val(),
-                   fssj: "2017/2/19",
-                   gzxianxiang: $("#gzxianxiang").val(),
-                   gzms: $("#gzms").val(),
-                   gzbwa: $("#firstFailureLocation option:selected").text(),
-                   gzbwb: $("#secondFailureLocation option:selected").text(),
-                   gzbwc: $("#thirdFailureLocation option:selected").text(),
+                   applicationId: $("#txt_forapplicationid").val(),
+                   failureAppearance: $("#txtarea_appearance").val(),
+                   failureDescription: $("#txtarea_description").val(),
+                   fstLevFailureLocation: $("#firstFailureLocation option:selected").text(),
+                   secLevFailureLocation: $("#secondFailureLocation option:selected").text(),
+                   thiLevFailureLocation: $("#thirdFailureLocation option:selected").text(),
                },
                function (Data) {
                    RefreshTable();
@@ -184,10 +181,10 @@
             $.post(
               "/Failure/DeleteFailure",
               {
-                  gzshenqingid: id,
+                  applicationId: id,
               },
               function (Data) {
-                  LoadAllApplications();
+                  RefreshTable();
               });
         }
         function RefreshTable() {

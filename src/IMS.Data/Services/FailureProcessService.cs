@@ -34,7 +34,7 @@ namespace IMS.Data.Services
                     client.BeginTran();
                     client.Insert<PGD>(paiGongDan);
                     client.Insert<GZXX>(gzxx);
-                    client.Update<GZShenQing>(new { SFKYXG = 1, DQZT = "已派工" }, it => it.Id == failureProcessVM.MaintenanceApplicationViewModel.Id);
+                    client.Update<GZShenQing>(new { SFKYXG = 1, DQZT = "已派工",HFSJ=DateTime.Now,HFXX="同意" }, it => it.Id == failureProcessVM.MaintenanceApplicationViewModel.Id);
                     client.CommitTran();
                     return true;
                 }

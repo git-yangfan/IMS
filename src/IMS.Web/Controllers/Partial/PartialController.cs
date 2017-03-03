@@ -26,7 +26,7 @@ namespace IMS.Web.Controllers.Partial
             return PartialView();
         }
 
-        public ActionResult SelectBar() 
+        public ActionResult SearchBar() 
         {
             return PartialView();
         }

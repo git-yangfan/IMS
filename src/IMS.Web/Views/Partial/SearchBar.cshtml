@@ -66,13 +66,13 @@
             todayBtn: true,
             pickerPosition: "bottom-left"
         });
-        LoadWorkSectionName();
+        LoadWorkSectionNames();
         $("#select_worksection").change(function () {
-            LoadDeviceName();
+            LoadDeviceNames();
         });
     });
 
-    function LoadWorkSectionName() {
+    function LoadWorkSectionNames() {
         $.post(
             "/Partial/GetWorkSectionNameList",
             function (data) {
@@ -82,7 +82,7 @@
             });
     };
 
-    function LoadDeviceName() {
+    function LoadDeviceNames() {
         $("#select_device").empty();
         $("<option></option>").val("-1").text("请选择").appendTo($("#select_device"));
 

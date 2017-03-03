@@ -56,6 +56,8 @@ namespace IMS.Data.Services
             gZShenQing.Id = viewModel.Id;
             gZShenQing.SFKYXG = viewModel.Modifiable;
             gZShenQing.SBBH = viewModel.DeviceNo;
+            gZShenQing.DQZT = viewModel.State;
+          
             return gZShenQing;
         }
         public bool UpDateFailureInfo(int id, MaintenanceApplicationViewModel GZShenQingViewModel)
@@ -70,7 +72,6 @@ namespace IMS.Data.Services
                         bool result = client.Update<GZShenQing>(
                               new
                               {
-                                  fssj = GZShenQingViewModel.BeginTime,
                                   gzms = GZShenQingViewModel.FailureDescription,
                                   gzxianxiang = GZShenQingViewModel.FailureAppearance,
                                   gzbwa = GZShenQingViewModel.FstLevFailureLocation,

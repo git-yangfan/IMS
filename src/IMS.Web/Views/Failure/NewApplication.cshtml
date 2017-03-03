@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "NewApplication";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>FailureReport</h2>
+
+@section ContentBody{
+
+    <div class="row ">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-lg-offset-3">
+            <label for="select_worksection">所属工段</label>
+            <div>
+                <select id="select_worksection" class="dropdown form-control">
+                    <option value="-1">请选择</option>
+                </select>
+            </div>
+
+            <label for="select_device">故障设备</label>
+            <div>
+                <select id="select_device" class="dropdown form-control">
+                    <option value="-1">请选择</option>
+                </select>
+            </div>
+
+            <label>发生时间</label>
+            <div class='input-group date' id='div_fssj'>
+                <input type='text' id="txt_begintime" data-date-format="yyyy-mm-dd hh:ii" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+
+
+            @{Html.RenderAction("SubSystem", "Partial");}
+            <span><label>故障现象</label></span><textarea id="txtarea_appearance"></textarea>
+            <span><label>故障描述</label></span><textarea id="txtarea_description"></textarea>
+        </div>
+
+    </div>
+
+    <div class="row align-right">
+        <div class="col-lg-6 col-md-6 col-sm-6  col-lg-offset-3">
+            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>重置</button>
+            <button type="button" id="btn_submit" class="btn btn-primary" onclick="SubmitFailure()"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>提交</button>
+
+
+        </div>
+
+    </div>
+
+    <script>
+        $(function () {
+
+            $('#div_fssj').datetimepicker({
+                //日期格式化，只显示日期
+                language: 'zh-CN',     //中文化
+                todayBtn: true,
+                pickerPosition: "bottom-left"
+            });
+            LoadWorkSectionNames();
+            $("#select_worksection").change(function () {
+                LoadDeviceNames();
+            });
+        });
+
+        function LoadWorkSectionNames() {
+            $.post(
+                "/Partial/GetWorkSectionNameList",
+                function (data) {
+                    $.each(data, function (i, item) {
+                        $("<option></option>").text(item["WorkSection"]).appendTo($("#select_worksection"));
+                    })
+                });
+        };
+
+        function LoadDeviceNames() {
+            $("#select_device").empty();
+            $("<option></option>").val("-1").text("请选择").appendTo($("#select_device"));
+            $.post(
+                "/Partial/GetDeviceNamesBySection",
+                { sectionName: $("#select_worksection option:selected").text() },
+                function (data) {
+                    $.each(data, function (i, item) {
+                        $("<option></option>").val(item["DeviceNo"]).text(item["DeviceName"]).appendTo($("#select_device"));
+                    })
+                });
+        };
+
+        function SubmitFailure() {
+            $.post(
+                "/Failure/AddNewFailure",
+                {
+                    deviceNo: $("#select_device option:selected").val(),
+                    beginTime: $("#txt_begintime").val(),
+                    failureAppearance: $("#txtarea_appearance").val(),
+                    failureDescription: $("#txtarea_description").val(),
+                    fstLevFailureLocation: $("#firstFailureLocation option:selected").text(),
+                    secLevFailureLocation: $("#secondFailureLocation option:selected").text(),
+                    thiLevFailureLocation: $("#thirdFailureLocation option:selected").text(),
+                },
+                function (data) {
+                    window.location.href = "/Failure/AllApplications";
+                }
+                );
+        }
+    </script>
+}
+
+
+
+

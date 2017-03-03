@@ -91,10 +91,11 @@ namespace IMS.Data.Services
             {
                 List<GZShenQing> listWithDeviceNo = new List<GZShenQing>();
                 var sql = client.Queryable<GZShenQing>();
-                if (!String.Equals(sectionName, String.Empty) && !String.Equals(sectionName, "请选择"))
-                {
-                    sql.JoinTable<SBXX>((g, s) => g.SBBH == s.SBBH).Where<SBXX>((g, s) => s.SSGD == sectionName);
-                }
+                //按工段查询有问题
+                //if (!String.Equals(sectionName, String.Empty) && !String.Equals(sectionName, "请选择"))
+                //{
+                //    sql.JoinTable<SBXX>((g, s) => g.SBBH == s.SBBH).Where<SBXX>((g, s) => s.SSGD == sectionName);
+                //}
                 if (!String.Equals(deviceNo, String.Empty) && !String.Equals(deviceNo, "-1"))
                 {
                     sql.Where(g => g.SBBH == deviceNo);
@@ -117,11 +118,8 @@ namespace IMS.Data.Services
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
-
-
                 List<MaintenanceApplicationViewModel> gZShenQingViewModelList = new List<MaintenanceApplicationViewModel>();
                 for (int i = 0; i < listWithDeviceNo.Count; i++)
                 {
