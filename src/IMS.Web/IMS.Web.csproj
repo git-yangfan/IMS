@@ -2346,9 +2346,9 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IMS.Data\IMS.Data.csproj">
+    <ProjectReference Include="..\IMS.Data\IMS.Service.csproj">
       <Project>{e500c549-b7aa-4bfd-b6e4-5d311a9490a9}</Project>
-      <Name>IMS.Data</Name>
+      <Name>IMS.Service</Name>
     </ProjectReference>
     <ProjectReference Include="..\IMS.Model\IMS.Model.csproj">
       <Project>{aa89dcf3-5e2c-4f1d-9f08-d8016824d580}</Project>

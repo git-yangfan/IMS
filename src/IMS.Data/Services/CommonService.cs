@@ -92,44 +92,43 @@ namespace IMS.Data.Services
                 List<GZShenQing> listWithDeviceNo = new List<GZShenQing>();
                 var sql = client.Queryable<GZShenQing>();
                 //按工段查询有问题
-                //if (!String.Equals(sectionName, String.Empty) && !String.Equals(sectionName, "请选择"))
-                //{
-                //    sql.JoinTable<SBXX>((g, s) => g.SBBH == s.SBBH).Where<SBXX>((g, s) => s.SSGD == sectionName);
-                //}
-                if (!String.Equals(deviceNo, String.Empty) && !String.Equals(deviceNo, "-1"))
+                if (!String.IsNullOrEmpty(sectionName) && !String.Equals(sectionName, "请选择"))
                 {
-                    sql.Where(g => g.SBBH == deviceNo);
+                    sql.JoinTable<SBXX>((GZShenQing, s) => GZShenQing.SBBH == s.SBBH,JoinType.Inner).Where<SBXX>((GZShenQing, s) => s.SSGD == sectionName);
                 }
-                if (!String.Equals(beginTime, String.Empty))
+                if (!String.IsNullOrEmpty(deviceNo) && !String.Equals(deviceNo, "-1"))
+                {
+                    sql.Where(GZShenQing => GZShenQing.SBBH == deviceNo);
+                }
+                if (!String.IsNullOrEmpty(beginTime))
                 {
                     DateTime _beginTime = Convert.ToDateTime(beginTime);
-                    sql.Where(g => g.FSSJ > _beginTime);
+                    sql.Where(GZShenQing => GZShenQing.FSSJ > _beginTime);
                 }
-                if (!String.Equals(endTime, String.Empty))
+                if (!String.IsNullOrEmpty(endTime))
                 {
                     DateTime _endTime = Convert.ToDateTime(endTime);
-                    sql.Where(g => g.FSSJ < _endTime);
+                    sql.Where(GZShenQing => GZShenQing.FSSJ < _endTime);
 
                 }
-                var a = sql.OrderBy(g => g.FSSJ).Skip(offset).Take(limit).ToSql();
                 try
                 {
-                    listWithDeviceNo = sql.OrderBy(g => g.FSSJ).Skip(offset).Take(limit).ToList();
+                    listWithDeviceNo = sql.OrderBy(GZShenQing => GZShenQing.FSSJ).Skip(offset).Take(limit).ToList();
                 }
                 catch (Exception)
                 {
                     throw;
                 }
-                List<MaintenanceApplicationViewModel> gZShenQingViewModelList = new List<MaintenanceApplicationViewModel>();
+                List<MaintenanceApplicationViewModel> maintenanceApplicationVMList = new List<MaintenanceApplicationViewModel>();
                 for (int i = 0; i < listWithDeviceNo.Count; i++)
                 {
                     var item = listWithDeviceNo[i];
-                    MaintenanceApplicationViewModel gZShenQingViewModel = new MaintenanceApplicationViewModel(item);
-                    gZShenQingViewModel.Order = i + 1;
-                    gZShenQingViewModel.DeviceShortName = CommonService.GetShortName(item.SBBH);
-                    gZShenQingViewModelList.Add(gZShenQingViewModel);
+                    MaintenanceApplicationViewModel maintenanceApplicationVM = new MaintenanceApplicationViewModel(item);
+                    maintenanceApplicationVM.Order = i + 1;
+                    maintenanceApplicationVM.DeviceShortName = CommonService.GetShortName(item.SBBH);
+                    maintenanceApplicationVMList.Add(maintenanceApplicationVM);
                 }
-                return gZShenQingViewModelList;
+                return maintenanceApplicationVMList;
             }
 
         }

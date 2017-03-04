@@ -56,7 +56,7 @@ namespace IMS.Data.Services
             gZShenQing.Id = viewModel.Id;
             gZShenQing.SFKYXG = viewModel.Modifiable;
             gZShenQing.SBBH = viewModel.DeviceNo;
-            gZShenQing.DQZT = viewModel.State;
+            gZShenQing.DQZT = viewModel.Status;
           
             return gZShenQing;
         }

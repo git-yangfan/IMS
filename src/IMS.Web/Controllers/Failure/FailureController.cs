@@ -38,7 +38,7 @@ namespace IMS.Web.Controllers.Failure
             MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["thiLevFailureLocation"];
             MaintenanceApplicationVM.ReporterId = "报告人A";
             MaintenanceApplicationVM.ReportTime = DateTime.Now;
-            MaintenanceApplicationVM.State = "审核中";
+            MaintenanceApplicationVM.Status = "审核中";
             MaintenanceApplicationVM.Modifiable = 0;
             failureService.AddNewFailure(MaintenanceApplicationVM);
 

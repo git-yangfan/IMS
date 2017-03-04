@@ -132,7 +132,7 @@
                         { field: 'StrLocation', title: '故障部位' },
                         { field: 'FailureAppearance', title: '故障现象', sortable: true },
                         { field: 'FailureDescription', title: '故障描述', sortable: true },
-                         { field: 'State', title: '当前状态', sortable: true, formatter: cssFormatter },
+                        { field: 'Status', title: '当前状态', sortable: true, formatter: cssFormatter },
                         { field: 'Modifiable', title: '操作', align: 'center', events: operateEvents, formatter: operateFormatter }
                     ]
                 });
@@ -156,13 +156,13 @@
             return oTableInit;
         };
         function cssFormatter(value, row, index) {
-            var state = row.State;
+            var status = row.Status;
             var cssname = "";
-            if (state == "审核中") {
+            if (status == "审核中") {
                 cssname = 'class="label label-default"';
             }
             return [
-                '<span ' + cssname + '>' + row.State + '</span>'
+                '<span ' + cssname + '>' + row.Status + '</span>'
             ].join('');
         };
 
