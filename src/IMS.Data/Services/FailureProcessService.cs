@@ -34,18 +34,39 @@ namespace IMS.Data.Services
                     client.BeginTran();
                     client.Insert<PGD>(paiGongDan);
                     client.Insert<GZXX>(gzxx);
-                    client.Update<GZShenQing>(new { SFKYXG = 1, DQZT = "已派工",HFSJ=DateTime.Now,HFXX="同意" }, it => it.Id == failureProcessVM.MaintenanceApplicationViewModel.Id);
+                    client.Update<GZShenQing>(new { SFKYXG = 1, DQZT = CommonService.StatusDic["Dispatched"], HFSJ = DateTime.Now, HFXX = "同意" }, it => it.Id == failureProcessVM.MaintenanceApplicationViewModel.Id);
                     client.CommitTran();
                     return true;
                 }
                 catch (Exception)
                 {
-
                     throw;
-                    
                 }
-
             }
         }
+
+
+        public bool Reject(string applicationId,string rejectReason) 
+        {
+            using (var client=DbConfig.GetInstance())
+            {
+                try
+                {
+                    bool result = client.Update<GZShenQing>(
+                        new
+                        {
+                            HFSJ = DateTime.Now,
+                            HFXX = rejectReason,
+                            DQZT=CommonService.StatusDic["Reject"]
+                        }, it => it.Id ==Convert.ToInt32(applicationId)).ObjToBool();
+                    return result;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+    
     }
 }

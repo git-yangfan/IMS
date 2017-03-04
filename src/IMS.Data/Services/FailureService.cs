@@ -81,12 +81,9 @@ namespace IMS.Data.Services
                               it => it.Id == id).ObjToBool();
                         return result;
                     }
-
-
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
             }

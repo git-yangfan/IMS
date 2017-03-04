@@ -37,5 +37,19 @@ namespace IMS.Web.Controllers.Failure
             }
 
         }
+
+        public ActionResult Reject(string applicationId, string rejectReason)
+        {
+            var result = FailureProcessService.Reject(applicationId, rejectReason);
+            if (result)
+            {
+                var data = new { msg = "已经成功驳回", status = "success" };
+                return Content(data.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "驳回失败", status = "failed" }.ToJsonString());
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@
 
     @{Html.RenderAction("SearchBar", "Partial");}
 
-
+    <a><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>派工</a>
 
 
 
@@ -19,57 +19,81 @@
     </div>
 
 
-<div class="modal fade " id="modalfordispatch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index:5000">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
+    <div class="modal fade " id="modalfordispatch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index:5000">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">派工</h4>
-                </div>
-                <div class="row-fluid">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">派工</h4>
+                    </div>
+                    <div class="row-fluid">
 
-                    <div class="form-group col-lg-6">
-                        <label for="txt_rolename">故障设备</label>
-                        <input type="text" name="txt_rolename"  id="txt_show_device">
+                        <div class="form-group col-lg-6">
+                            <label for="txt_rolename">故障设备</label>
+                            <input type="text" name="txt_rolename" id="txt_show_device">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="txt_roledesc">故障发生时间</label>
+                            <input type="text" name="txt_roledesc" id="txt_show_begintime">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="txt_roledesc">故障部位</label>
+                            <input type="text" name="txt_roledesc" id="txt_show_location">
+                        </div>
+
+                        <div class="form-group col-lg-6">
+                            <label for="txt_defaulturl_Web">故障现象</label>
+                            <input type="text" name="txt_defaulturl_Web" id="txt_show_appear">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="txt_defaulturl_Web">故障描述</label>
+                            <input type="text" name="txt_defaulturl_Web" id="txt_show_descri">
+                        </div>
+                        <div class="form-group">
+                            <label for="txt_defaulturl_Web">选择人员</label>
+                            @{Html.RenderAction("EngineerSelect", "Partial");}
+                            <label for="txt_defaulturl_Web">指示事项</label>
+                            <textarea id="txtarea_instruction"></textarea>
+                        </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                        <label for="txt_roledesc">故障发生时间</label>
-                        <input type="text" name="txt_roledesc"  id="txt_show_begintime">
-                    </div>
-                    <div class="form-group col-lg-6">
-                        <label for="txt_roledesc">故障部位</label>
-                        <input type="text" name="txt_roledesc" id="txt_show_location">
-                    </div>
-                    
-                    <div class="form-group col-lg-6">
-                        <label for="txt_defaulturl_Web">故障现象</label>
-                        <input type="text" name="txt_defaulturl_Web"  id="txt_show_appear">
-                    </div>
-                    <div class="form-group col-lg-6">
-                        <label for="txt_defaulturl_Web">故障描述</label>
-                        <input type="text" name="txt_defaulturl_Web" id="txt_show_descri">
-                    </div>
-                    <div class="form-group">
-                        <label for="txt_defaulturl_Web">选择人员</label>
-                       @{Html.RenderAction("EngineerSelect", "Partial");}
-                        <label for="txt_defaulturl_Web">指示事项</label>
-                        <textarea id="txtarea_instruction"></textarea>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                        <button type="button" id="btn_submit" class="btn btn-primary" onclick="Dispatch()" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>派工</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
-                    <button type="button" id="btn_submit" class="btn btn-primary" onclick="Dispatch()" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>派工</button>
-                </div>
+
             </div>
-
         </div>
     </div>
-</div>
+
+
+    <div class="modal fade " id="modalforreject">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">驳回</h4>
+                        <div>
+                            <label>驳回理由</label>
+                            <textarea id="txtarea_rejectreason"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                    <button type="button" id="btn_reject" class="btn btn-primary" onclick="Reject()" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>派工</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
-   
+
 
 
 
@@ -144,8 +168,8 @@
                     name: "报告人A",   //页面大小
                     limit: params.limit,   //页面大小
                     offset: params.offset,  //页码
-                    //order: params.order,
-                    //ordername: params.sort,
+                    order: params.order,
+                    ordername: params.sort,
                     sectionName: $("#select_worksection option:selected").text(),
                     deviceNo: $("#select_device option:selected").val(),
                     beginTime: $("#txt_begintime").val(),
@@ -161,6 +185,12 @@
             if (status == "审核中") {
                 cssname = 'class="label label-default"';
             }
+            if (status == "已派工") {
+                cssname = 'class="label label-success"';
+            }
+            if (status == "已驳回") {
+                cssname = 'class="label label-danger"';
+            }
             return [
                 '<span ' + cssname + '>' + row.Status + '</span>'
             ].join('');
@@ -172,14 +202,19 @@
                 '<button id="btn_dispatch" type="button" class="dispatch btn btn-default">',
                 '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>派工',
                 '</button>',
-                '<button id="btn_reject" type="button" class="remove btn btn-default">',
+                '<button id="btn_reject" type="button" class="reject btn btn-default">',
                 '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>驳回',
                 ' </button>'
             ].join('');
         };
         window.operateEvents = {
             'click .dispatch': function (e, value, row, index) {
-                dispatchingrow=row;
+                dispatchingrow = row;
+                var status = row.Status;
+                if (status == "已派工") {
+                    alert("您已经完成处理！请勿重复操作");
+                    return;
+                }
                 $("#txt_show_device").val(row.DeviceShortName);
                 $("#txt_show_begintime").val(row.BeginTime);
                 $("#txt_show_location").val(row.StrLocation);
@@ -188,9 +223,14 @@
                 $("#forapplicationid").val(row.Id);
                 $('#modalfordispatch').modal();
             },
-            'click .remove': function (e, value, row, index) {
-                Delete(row.Id);
-                RefreshTable();
+            'click .reject': function (e, value, row, index) {
+                dispatchingrow = row;
+                var status = row.Status;
+                if (status == "已驳回" || status == "已派工") {
+                    alert("您已经完成处理！请勿重复操作");
+                    return;
+                }
+                $("#modalforreject").modal();
             }
         };
 
@@ -206,20 +246,33 @@
                     else {
                         alert("提交派工数据时可能有点小问题！");
                     }
-                }
-                );
+                });
         };
+
+        function Reject() {
+            var reason = $("#txtarea_rejectreason").val();
+            if (reason == "") {
+                alert("拒绝人总该有个理由的！！");
+            }
+            else {
+                $.post(
+                    "/FailureProcess/Reject",
+                    { applicationId: dispatchingrow.Id ,rejectReason:reason},
+                    function (Data) {
+                        var data = $.parseJSON(Data);
+                        if (data.status=="success") {
+                            alert(data.msg);
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    });
+            }
+        }
 
         function RefreshTable() {
             $('#table_dispatch').bootstrapTable('refresh', { url: '/Failure/GetAllApplicationsByUserName' });
         };
     </script>
-
-
-
-
-
-
-
 }
 

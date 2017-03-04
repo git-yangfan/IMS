@@ -62,11 +62,11 @@ namespace IMS.Web.Controllers.Failure
             int id = Convert.ToInt32(Request.Params["applicationId"]);
             failureService.DeleteFailureByID(id);
         }
-      
-       
-        public ActionResult GetAllApplicationsByUserName(string name, int limit, int offset,string sectionName,string deviceNo,string beginTime,string endTime)
+
+
+        public ActionResult GetAllApplicationsByUserName(string name, int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername)
         {
-            var AllApplicationsList = CommonService.GetAllApplicationsByName(name,limit,offset,sectionName,deviceNo,beginTime,endTime);
+            var AllApplicationsList = CommonService.GetAllApplicationsByName(name, sectionName, deviceNo, beginTime, endTime);
             if (AllApplicationsList != null)
             {
                 var total = AllApplicationsList.Count;
@@ -102,7 +102,7 @@ namespace IMS.Web.Controllers.Failure
             {
                 var oModel = new DeviceViewModel();
                 oModel.DeviceNo = i.ToString();
-                oModel.DeviceName = "销售部" + i;
+                oModel.DeviceName = Guid.NewGuid().ToString();
                 lstRes.Add(oModel);
             }
 

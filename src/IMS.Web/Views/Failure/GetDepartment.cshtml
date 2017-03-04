@@ -70,6 +70,8 @@
             </button>
         </div>
         <table id="tb_departments"></table>
+
+      
     </div>
 
     <script>
@@ -120,15 +122,15 @@
                 cardView: false,                    //是否显示详细视图
                 detailView: false,                   //是否显示父子表
                 columns: [{
-                    field: 'SBBH',
+                    field: 'DeviceNo',
                     title: '部门名称',
                     sortable:true
                 },
                 {
-                    field: 'SBJC',
+                    field: 'DeviceName',
                     title: '操作',
                     align: 'center',
-                   
+                    //sorter:"priceSorter",
                     sortable:true
                 }]
             });
@@ -181,6 +183,36 @@
             });
         }
     };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </script> 
 </body>
 

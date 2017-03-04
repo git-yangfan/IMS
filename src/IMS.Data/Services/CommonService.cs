@@ -11,6 +11,17 @@ namespace IMS.Data.Services
 {
     public static class CommonService
     {
+
+   public     static Dictionary<string, string> StatusDic = new Dictionary<string, string>()
+        {
+            {"Checking", "审核中"},
+            {"Dispatched" , "已派工"},
+            {"SelfRepair", "自修中"},
+            {"OutRepair" , "外修中"},
+            {"Diagnosis" , "诊断中"},
+            {"PauseRepair" , "缓修"},
+            {"Reject" , "已驳回"}
+        };
         public static string GetShortName(string sbbh)
         {
             using (var client = DbConfig.GetInstance())
@@ -84,7 +95,7 @@ namespace IMS.Data.Services
         }
 
 
-        public static List<MaintenanceApplicationViewModel> GetAllApplicationsByName(string name, int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime)
+        public static List<MaintenanceApplicationViewModel> GetAllApplicationsByName(string name, string sectionName, string deviceNo, string beginTime, string endTime)
         {
 
             using (var client = DbConfig.GetInstance())
@@ -94,7 +105,7 @@ namespace IMS.Data.Services
                 //按工段查询有问题
                 if (!String.IsNullOrEmpty(sectionName) && !String.Equals(sectionName, "请选择"))
                 {
-                    sql.JoinTable<SBXX>((GZShenQing, s) => GZShenQing.SBBH == s.SBBH,JoinType.Inner).Where<SBXX>((GZShenQing, s) => s.SSGD == sectionName);
+                    sql.JoinTable<SBXX>((GZShenQing, s) => GZShenQing.SBBH == s.SBBH, JoinType.Inner).Where<SBXX>((GZShenQing, s) => s.SSGD == sectionName);
                 }
                 if (!String.IsNullOrEmpty(deviceNo) && !String.Equals(deviceNo, "-1"))
                 {
@@ -109,11 +120,10 @@ namespace IMS.Data.Services
                 {
                     DateTime _endTime = Convert.ToDateTime(endTime);
                     sql.Where(GZShenQing => GZShenQing.FSSJ < _endTime);
-
                 }
                 try
                 {
-                    listWithDeviceNo = sql.OrderBy(GZShenQing => GZShenQing.FSSJ).Skip(offset).Take(limit).ToList();
+                    listWithDeviceNo = sql.OrderBy(GZShenQing => GZShenQing.FSSJ).ToList();
                 }
                 catch (Exception)
                 {
