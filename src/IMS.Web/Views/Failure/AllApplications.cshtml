@@ -163,7 +163,7 @@
         function Modify() {
             alert($("#txt_forapplicationid").val());
             $.post(
-               "/Failure/UpDateFailureInfo",
+               "/Failure/UpDateApplication",
                {
                    applicationId: $("#txt_forapplicationid").val(),
                    failureAppearance: $("#txtarea_appearance").val(),
@@ -179,7 +179,7 @@
 
         function Delete(id) {
             $.post(
-              "/Failure/DeleteFailure",
+              "/Failure/DeleteApplication",
               {
                   applicationId: id,
               },

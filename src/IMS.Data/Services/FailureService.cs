@@ -19,15 +19,15 @@ namespace IMS.Data.Services
 
 
         }
-        public bool AddNewFailure(MaintenanceApplicationViewModel gZShenQingViewModel)
+        public bool AddNewFailure(MaintenanceApplicationViewModel maintenanceApplicationVM)
         {
-            if (gZShenQingViewModel != null)
+            if (maintenanceApplicationVM != null)
             {
                 try
                 {
                     using (var client = DbConfig.GetInstance())
                     {
-                        GZShenQing gZShenQing = GZShenQingViewModelToModel(gZShenQingViewModel);
+                        GZShenQing gZShenQing = MaintenanceApplicationViewModelToModel(maintenanceApplicationVM);
                         int id = client.Queryable<GZShenQing>().Max(it => it.Id).ObjToInt() + 1;
                         gZShenQing.Id = id;
                         return client.Insert<GZShenQing>(gZShenQing).ObjToBool();
@@ -42,7 +42,7 @@ namespace IMS.Data.Services
                 return false;
 
         }
-        private GZShenQing GZShenQingViewModelToModel(MaintenanceApplicationViewModel viewModel)
+        private GZShenQing MaintenanceApplicationViewModelToModel(MaintenanceApplicationViewModel viewModel)
         {
             GZShenQing gZShenQing = new GZShenQing();
             gZShenQing.BGRId = viewModel.ReporterId;
@@ -60,9 +60,9 @@ namespace IMS.Data.Services
           
             return gZShenQing;
         }
-        public bool UpDateFailureInfo(int id, MaintenanceApplicationViewModel GZShenQingViewModel)
+        public bool UpDateApplication(int id, MaintenanceApplicationViewModel maintenanceApplicationVM)
         {
-            if (GZShenQingViewModel != null)
+            if (maintenanceApplicationVM != null)
             {
                 try
                 {
@@ -72,11 +72,11 @@ namespace IMS.Data.Services
                         bool result = client.Update<GZShenQing>(
                               new
                               {
-                                  gzms = GZShenQingViewModel.FailureDescription,
-                                  gzxianxiang = GZShenQingViewModel.FailureAppearance,
-                                  gzbwa = GZShenQingViewModel.FstLevFailureLocation,
-                                  gzbwb = GZShenQingViewModel.SecLevFailureLocation,
-                                  gzbwc = GZShenQingViewModel.ThiLevFailureLocation
+                                  gzms = maintenanceApplicationVM.FailureDescription,
+                                  gzxianxiang = maintenanceApplicationVM.FailureAppearance,
+                                  gzbwa = maintenanceApplicationVM.FstLevFailureLocation,
+                                  gzbwb = maintenanceApplicationVM.SecLevFailureLocation,
+                                  gzbwc = maintenanceApplicationVM.ThiLevFailureLocation
                               },
                               it => it.Id == id).ObjToBool();
                         return result;
@@ -90,7 +90,7 @@ namespace IMS.Data.Services
             else
                 return false;
         }
-        public bool DeleteFailureByID(int id)
+        public bool DeleteApplicationById(int id)
         {
             using (var client = DbConfig.GetInstance())
             {

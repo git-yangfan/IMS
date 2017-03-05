@@ -26,7 +26,7 @@ namespace IMS.Web.Controllers.Failure
         }
      
 
-        public void AddNewFailure()
+        public void AddNewApplication()
         {
             MaintenanceApplicationViewModel MaintenanceApplicationVM = new MaintenanceApplicationViewModel();
             MaintenanceApplicationVM.DeviceNo = Request.Params["deviceNo"];
@@ -44,7 +44,7 @@ namespace IMS.Web.Controllers.Failure
 
         }
 
-        public void UpDateFailureInfo() 
+        public void UpDateApplication() 
         {
             MaintenanceApplicationViewModel MaintenanceApplicationVM = new MaintenanceApplicationViewModel();
             int id = Convert.ToInt32(Request.Params["applicationId"]);
@@ -54,13 +54,13 @@ namespace IMS.Web.Controllers.Failure
             MaintenanceApplicationVM.SecLevFailureLocation = Request.Params["secLevFailureLocation"];
             MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["thiLevFailureLocation"];
             MaintenanceApplicationVM.ReportTime = DateTime.Now;
-            failureService.UpDateFailureInfo(id,MaintenanceApplicationVM);
+            failureService.UpDateApplication(id,MaintenanceApplicationVM);
         }
 
-        public void DeleteFailure() 
+        public void DeleteApplication() 
         {
             int id = Convert.ToInt32(Request.Params["applicationId"]);
-            failureService.DeleteFailureByID(id);
+            failureService.DeleteApplicationById(id);
         }
 
 
