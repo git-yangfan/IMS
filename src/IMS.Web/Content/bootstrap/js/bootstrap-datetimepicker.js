@@ -25,6 +25,26 @@
  * limitations under the License.
  * ========================================================= */
 
+
+if (!Array.prototype.indexOf)
+
+    Array.prototype.indexOf = function (elt /*, from*/) {
+        var len = this.length >>> 0;
+
+        var from = Number(arguments[1]) || 0;
+        from = (from < 0)
+             ? Math.ceil(from)
+             : Math.floor(from);
+        if (from < 0)
+            from += len;
+
+        for (; from < len; from++) {
+            if (from in this &&
+                this[from] === elt)
+                return from;
+        }
+        return -1;
+    };
 (function(factory){
     if (typeof define === 'function' && define.amd)
       define(['jquery'], factory);
@@ -54,7 +74,7 @@
   function timeZoneAbbreviation() {
     var abbreviation, date, formattedStr, i, len, matchedStrings, ref, str;
     date = (new Date()).toString();
-    formattedStr = ((ref = date.split('(')[1]) !== null ? ref.slice(0, -1) : 0) || date.split(' ');
+   formattedStr = ((ref = date.split('(')[1]) ? ref.slice(0, -1) : 0) || date.split(' ');
     if (formattedStr instanceof Array) {
       matchedStrings = [];
       for (var i = 0, len = formattedStr.length; i < len; i++) {

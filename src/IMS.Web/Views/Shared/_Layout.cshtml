@@ -1,138 +1,39 @@
-﻿<!DOCTYPE html>
-<html>
+﻿<!doctype html>
+<html lang="zh-CN">
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>IMS</title>
-    <link href="~/Content/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
     <link href="~/Content/bootstrap/table/bootstrap-table.css" rel="stylesheet" />
-    <link href="~/Content/bootstrap/css/bootstrap-datetimepicker.css" rel="stylesheet" />
-    <link href="~/Content/css/fontello.css" rel="stylesheet" type="text/css">
-    <link href="~/Content/css/flexslider.css" rel="stylesheet" />
-    <link href="~/Content/js/revolution-slider/css/settings.css" rel="stylesheet" />
-    <link href="~/Content/css/owl.carousel.css" rel="stylesheet" />
-    <link href="~/Content/css/responsive-calendar.css" rel="stylesheet" />
-    <link href="~/Content/css/chosen.css" rel="stylesheet" />
-    <link href="~/Content/css/cloud-zoom.css" rel="stylesheet" />
-    <link href="~/Content/jackbox/css/jackbox.min.css" rel="stylesheet" />
-    <link href="~/Content/css/site.css" rel="stylesheet" />
-
-    <!--[if IE 9]>
-            <link rel="stylesheet" href="css/ie9.css">
-        <![endif]-->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <link href="css/jackbox-ie8.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="css/ie.css">
-    <![endif]-->
-    <!--[if gt IE 8]>
-        <link href="css/jackbox-ie9.css" rel="stylesheet" type="text/css" />
-    <![endif]-->
-    <!--[if IE 7]>
-        <link rel="stylesheet" href="css/fontello-ie7.css">
-    <![endif]-->
-
-
-    <style type="text/css">
-        .no-fouc {
-            display: none;
-        }
-    </style>
-
-    <!-- jQuery -->
-    <script src="~/Content/js/jquery-1.11.0.min.js"></script>
-    <script src="~/Content/js/jquery-ui-1.10.4.min.js"></script>
-
-    <!-- Preloader -->
-    <script src="~/Content/js/jquery.queryloader2.min.js"></script>
-
-    <script type="text/javascript">
-        $('html').addClass('no-fouc');
-
-        $(document).ready(function () {
-
-            $('html').show();
-
-            var window_w = $(window).width();
-            var window_h = $(window).height();
-            var window_s = $(window).scrollTop();
-
-            $("body").queryLoader2({
-                backgroundColor: '#f2f4f9',
-                barColor: '#63b2f5',
-                barHeight: 4,
-                percentage: false,
-                deepSearch: true,
-                minimumTime: 1000,
-                onComplete: function () {
-
-                    $('.animate-onscroll').filter(function (index) {
-
-                        return this.offsetTop < (window_s + window_h);
-
-                    }).each(function (index, value) {
-
-                        var el = $(this);
-                        var el_y = $(this).offset().top;
-
-                        if ((window_s) > el_y) {
-                            $(el).addClass('animated fadeInDown').removeClass('animate-onscroll');
-                            setTimeout(function () {
-                                $(el).css('opacity', '1').removeClass('animated fadeInDown');
-                            }, 2000);
-                        }
-
-                    });
-
-                }
-            });
-
-        });
-    </script>
-
+    <link href="~/Content/bootstrap/css/style2.css" rel="stylesheet" />
+    <!--[if lte IE 9]>
+        <script src="~/Content/bootstrap/js/respond.js"></script>
+        <script src="~/Content/bootstrap/js/html5shiv.js"></script>
+   <![endif]-->
+    <script src="~/Content/bootstrap/js/jquery.js"></script>
+    <script src="~/Content/bootstrap/js/bootstrap.js"></script>
+    <script src="~/Content/bootstrap/table/bootstrap-table.js"></script>
+    <script src="~/Content/bootstrap/table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="~/Content/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script src="~/Content/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
 </head>
-
-
-
-
-
-
-
-
-
 <body class="sticky-header-on tablet-sticky-header">
     <div id="fb-root"></div>
     <div class="container">
-
-
         <!-- Header -->
         <header id="header" class="animate-onscroll">
-
             <!-- Main Header -->
             <div id="main-header">
-
                 <div class="container">
-
                     <div class="row">
-
                         <!-- Logo -->
                         <div id="logo" class="col-lg-3 col-md-3 col-sm-3">
-
-                            <a href="main-v1.html"><img src="~/Content/img/logo.png" alt="Logo"></a>
-
+                            <a href="main-v1.html"></a>
                         </div>
                         <!-- /Logo -->
-                        <!-- Main Quote -->
-                        <div class="col-lg-5 col-md-4 col-sm-4">
-
-                            <blockquote>Nam elit agna,enderit sit amet, tinciunt ac,<br>viverra sed, nulla..</blockquote>
-
-                        </div>
-                        <!-- /Main Quote -->
-                        <!-- Newsletter -->
-                        <div class="col-lg-4 col-md-5 col-sm-5 ">
-                        </div>
-                        <!-- /Newsletter -->
                     </div>
 
                     <div class="row">
@@ -213,9 +114,7 @@
 
                         <!-- Home -->
                         <li class="home-button current-menu-item">
-
-                            <a href="main-v1.html"><i class="icons icon-home"></i></a>
-
+                            <a href="main-v1.html"><i class="glyphicon glyphicon-home"></i> </a>
                             <ul>
                                 <li><a href="/Failure/NewApplication">维修申请</a></li>
                                 <li><a href="/Failure/AllApplications">所有申请</a></li>
@@ -249,9 +148,7 @@
                         <!-- /信息查询 -->
                         <!-- 状态评价 -->
                         <li>
-
                             <span>状态评价</span>
-
                             <ul>
                                 <li><a href="media-sortable-1column-sidebar.html">厂区状态</a></li>
                                 <li><a href="media-sortable-2columns.html">生产线状态</a></li>
@@ -358,60 +255,11 @@
 
             </div>
             <!-- /Lower Footer -->
-
-
         </footer>
         <!-- /Footer -->
         <!-- Back To Top -->
-        <a href="#" id="button-to-top"><i class="icons icon-up-dir"></i></a>
+        <a href="#" id="button-to-top"><i class="glyphicon glyphicon-upload"></i></a>
 
     </div>
-
-
-    <!-- /Container -->
-    <!-- JavaScript -->
-    <!-- Bootstrap -->
-    <script src="~/Content/bootstrap/js/bootstrap.js"></script>
-    <script src="~/Content/bootstrap/table/bootstrap-table.js"></script>
-    <script src="~/Content/bootstrap/table/locale/bootstrap-table-zh-CN.js"></script>
-    <script src="~/Content/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
-    <script src="~/Content/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
-    <!-- Modernizr -->
-    <script type="text/javascript" src="~/Content/js/modernizr.js"></script>
-    <!-- Sliders/Carousels -->
-    <script type="text/javascript" src="~/Content/js/jquery.flexslider-min.js"></script>
-    <script type="text/javascript" src="~/Content/js/owl.carousel.min.js"></script>
-    <!-- Revolution Slider  -->
-    <script type="text/javascript" src="~/Content/js/revolution-slider/js/jquery.themepunch.plugins.min.js"></script>
-    <script type="text/javascript" src="~/Content/js/revolution-slider/js/jquery.themepunch.revolution.min.js"></script>
-    <!-- Calendar -->
-    <script type="text/javascript" src="~/Content/js/responsive-calendar.min.js"></script>
-    <!-- Raty -->
-    <script type="text/javascript" src="~/Content/js/jquery.raty.min.js"></script>
-    <!-- Chosen -->
-    <script type="text/javascript" src="~/Content/js/chosen.jquery.min.js"></script>
-    <!-- jFlickrFeed -->
-    <script type="text/javascript" src="~/Content/js/jflickrfeed.min.js"></script>
-    <!-- InstaFeed -->
-    <script type="text/javascript" src="~/Content/js/instafeed.min.js"></script>
-    <!-- Twitter -->
-    <script type="text/javascript" src="~/Content/php/twitter/jquery.tweet.js"></script>
-    <!-- MixItUp -->
-    <script type="text/javascript" src="~/Content/js/jquery.mixitup.js"></script>
-    <!-- JackBox -->
-    <script type="text/javascript" src="~/Content/jackbox/js/jackbox-packed.min.js"></script>
-    <!-- CloudZoom -->
-    <script type="text/javascript" src="~/Content/js/zoomsl-3.0.min.js"></script>
-    <!-- Main Script -->
-    <script type="text/javascript" src="~/Content/js/script.js"></script>
-
-
-    <!--[if lt IE 9]>
-        <script type="text/javascript" src="js/jquery.placeholder.js"></script>
-        <script type="text/javascript" src="js/script_ie.js"></script>
-    <![endif]-->
-
-
 </body>
 </html>

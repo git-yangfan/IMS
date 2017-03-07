@@ -4,42 +4,53 @@
             <div class="panel-heading">查询条件</div>
             <div class="panel-body">
                 <form id="formSearch" class="form-horizontal">
-                    <div class="form-group" style="margin-top:15px">
-                        <div class="row">
-                            <label class="control-label col-sm-1" for="select_worksection">所属工段</label>
-                            <div class="col-sm-3">
-                                <select id="select_worksection" class="dropdown form-control">
-                                    <option value="-1">请选择</option>
-                                </select>
-                            </div>
-
-                            <label class="control-label col-sm-1" for="select_device">故障设备</label>
-                            <div class="col-sm-3">
-                                <select id="select_device" class="dropdown form-control">
-                                    <option value="-1">请选择</option>
-                                </select>
+                    <div class="row" style="margin-top:15px">
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <label class="control-label col-sm-4" for="txt_search_begintime">开始时间</label>
+                                <div class='col-sm-8 input-group date ' id='div_search_begintime'>
+                                    <input type='text' class="form-control" id="txt_begintime" />
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <label class="control-label col-sm-1" for="txt_search_begintime">开始时间</label>
-                            <div class='col-sm-3 input-group date' id='div_search_begintime'>
-                                <input type='text' class="form-control" id="txt_begintime" />
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <label class="control-label col-sm-4" for="txt_search_endtime">结束时间</label>
+                                <div class='col-sm-8 input-group date ' id='div_search_endtime'>
+                                    <input type='text' class="form-control" id="txt_endtime" />
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </span>
+                                </div>
                             </div>
-
-                            <label class="control-label col-sm-1" for="txt_search_endtime">结束时间</label>
-                            <div class='col-sm-3 input-group date' id='div_search_endtime'>
-                                <input type='text' class="form-control" id="txt_endtime" />
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:15px">
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <label class="control-label col-sm-4" for="select_worksection">所属工段</label>
+                                <div class="col-sm-8" style="padding-left: 0	;padding-right: 0">
+                                    <select id="select_worksection" class="dropdown form-control">
+                                        <option value="-1">请选择</option>
+                                    </select>
+                                </div>
                             </div>
-
-                            <div class="col-sm-3" style="text-align:right;">
-                                <button type="button" id="btn_query" class="btn btn-primary" onclick="RefreshTable()">查询</button>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <label class="control-label col-sm-4" for="select_device">故障设备</label>
+                                <div class="col-sm-8" style="padding-left: 0	;padding-right: 0">
+                                    <select id="select_device" class="dropdown form-control">
+                                        <option value="-1">请选择</option>
+                                    </select>
+                                </div>
                             </div>
+                        </div>
+                        <div class="col-sm-4" style="text-align:right;">
+                            <button type="button" id="btn_query" class="btn btn-primary" onclick="RefreshTable()">查询</button>
                         </div>
                     </div>
                 </form>
@@ -88,12 +99,12 @@
 
         $.post(
             "/Partial/GetDeviceNamesBySection",
-            { sectionName: $("#select_worksection option:selected").text()},
+            { sectionName: $("#select_worksection option:selected").text() },
             function (data) {
                 $.each(data, function (i, item) {
                     $("<option></option>").val(item["DeviceNo"]).text(item["DeviceName"]).appendTo($("#select_device"));
                 })
             });
     }
-       
+
 </script>

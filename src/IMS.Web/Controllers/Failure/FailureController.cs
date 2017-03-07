@@ -57,10 +57,18 @@ namespace IMS.Web.Controllers.Failure
             failureService.UpDateApplication(id,MaintenanceApplicationVM);
         }
 
-        public void DeleteApplication() 
+        public ActionResult DeleteApplication() 
         {
             int id = Convert.ToInt32(Request.Params["applicationId"]);
-            failureService.DeleteApplicationById(id);
+           var result= failureService.DeleteApplicationById(id);
+           if (result)
+           {
+               return Content(new {msg="删除成功",status="success"}.ToJsonString());
+           }
+           else
+           {
+               return Content(new { msg = "删除失败", status = "failed" }.ToJsonString()); 
+           }
         }
 
 
