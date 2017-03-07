@@ -6,8 +6,10 @@
 
 @section ContentBody{
     <input type="hidden" id="txt_forapplicationid" />
+<div class="row">
     @{Html.RenderAction("SearchBar", "Partial");}
-
+    <table id="tb_departments"></table>
+</div>
 
     <div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index:5000">
         <div class="modal-dialog" role="document">
