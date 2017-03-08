@@ -65,7 +65,7 @@ namespace IMS.Data.Services
             List<DeviceViewModel> deviceVMList = new List<DeviceViewModel>();
             using (var client = DbConfig.GetInstance())
             {
-                IEnumerable<SBXX> ListWithAllInfo = client.Queryable<SBXX>().OrderBy(d => d.SSGD, OrderByType.Asc).ToList();
+                IEnumerable<SBXX> ListWithAllInfo = client.Queryable<SBXX>().Select("SSGD").OrderBy("SSGD desc").GroupBy("SSGD").ToList();
                 foreach (var item in ListWithAllInfo)
                 {
                     DeviceViewModel viewModel = new DeviceViewModel();
@@ -100,12 +100,14 @@ namespace IMS.Data.Services
 
             using (var client = DbConfig.GetInstance())
             {
+
                 List<GZShenQing> listWithDeviceNo = new List<GZShenQing>();
                 var sql = client.Queryable<GZShenQing>();
                 //按工段查询有问题
                 if (!String.IsNullOrEmpty(sectionName) && !String.Equals(sectionName, "请选择"))
                 {
                     sql.JoinTable<SBXX>((GZShenQing, s) => GZShenQing.SBBH == s.SBBH, JoinType.Inner).Where<SBXX>((GZShenQing, s) => s.SSGD == sectionName);
+                    //sql.Where("sbbh in (select sbbh from sbxx where ssgd=" + sectionName + ")");
                 }
                 if (!String.IsNullOrEmpty(deviceNo) && !String.Equals(deviceNo, "-1"))
                 {
@@ -121,6 +123,7 @@ namespace IMS.Data.Services
                     DateTime _endTime = Convert.ToDateTime(endTime);
                     sql.Where(GZShenQing => GZShenQing.FSSJ < _endTime);
                 }
+                var b = sql.ToSql();
                 try
                 {
                     listWithDeviceNo = sql.OrderBy(GZShenQing => GZShenQing.FSSJ).ToList();

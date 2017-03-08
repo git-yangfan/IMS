@@ -8,7 +8,7 @@
     <input type="hidden" id="txt_forapplicationid" />
 <div class="row">
     @{Html.RenderAction("SearchBar", "Partial");}
-    <table id="tb_departments"></table>
+    <table id="tb_allapplications"></table>
 </div>
 
     <div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index:5000">
@@ -50,11 +50,11 @@
         </div>
     </div>
 
-
+    
 
 
     <script>
-        var $table = $('#tb_departments');
+        var $table = $('#tb_allapplications');
         $(function () {
             initTable();
         })
@@ -84,15 +84,13 @@
                 cardView: false,                    //是否显示详细视图
                 detailView: false,                   //是否显示父子表
                 queryParams: queryParams,
-                detailView: true,
-                detailFormatter: detailFormatter,
                 columns: [
-                    { field: 'Order', title: '序号', sortable: true },
                     { field: 'DeviceShortName', title: '故障设备', sortable: true },
                     { field: 'BeginTime', title: '发生时间', sortable: true },
                     { field: 'StrLocation', title: '故障部位' },
                     { field: 'FailureAppearance', title: '故障现象', sortable: true },
                     { field: 'FailureDescription', title: '故障描述', sortable: true },
+                    { field: 'Status', title: '当前状态', sortable: true, align:'center',formatter: cssFormatter },
                     { field: 'Modifiable', title: '操作', align: 'center', events: operateEvents, formatter: operateFormatter }
                 ]
             });
@@ -112,14 +110,23 @@
             return temp;
         };
 
-        function detailFormatter(index, row) {
-            var html = [];
-            //$.each(row, function (key, value) {
-            html.push('<p><b>故障现象:</b> ' + row['FailureAppearance'] + '</p>');
-            html.push('<p><b>故障描述:</b> ' + row['FailureDescription'] + '</p>');
-            //});
-            return html.join('');
-        }
+        function cssFormatter(value, row, index) {
+            var status = row.Status;
+            var cssname = "";
+            if (status == "审核中") {
+                cssname = 'class="btn btn-default btn-sm"';
+            }
+            if (status == "已派工") {
+                cssname = 'class="btn btn-success btn-sm "';
+            }
+            if (status == "已驳回") {
+                cssname = 'class="btn btn-danger btn-sm"';
+            }
+            
+            return [
+                '<span ' + cssname + '>' + row.Status + '</span>'
+            ].join('');
+        };
 
         function operateFormatter(value, row, index) {
             return [
@@ -163,7 +170,7 @@
                              if (data.status == "success") {
                                  alert(data.msg);
                                  //删除表格行
-                                 $('#tb_departments').bootstrapTable('remove', {
+                                 $('#tb_allapplications').bootstrapTable('remove', {
                                      field: 'Id',
                                      values: [row.Id]
                                  });
@@ -192,7 +199,7 @@
 
 
         function RefreshTable() {
-            $('#tb_departments').bootstrapTable('refresh', { url: '/Failure/GetAllApplicationsByUserName' });
+            $('#tb_allapplications').bootstrapTable('refresh', { url: '/Failure/GetAllApplicationsByUserName' });
         }
     </script>
 }
