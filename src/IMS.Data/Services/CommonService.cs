@@ -97,7 +97,6 @@ namespace IMS.Data.Services
 
         public static List<MaintenanceApplicationViewModel> GetAllApplicationsByName(string name, string sectionName, string deviceNo, string beginTime, string endTime)
         {
-
             using (var client = DbConfig.GetInstance())
             {
 
@@ -106,27 +105,32 @@ namespace IMS.Data.Services
                 //按工段查询有问题
                 if (!String.IsNullOrEmpty(sectionName) && !String.Equals(sectionName, "请选择"))
                 {
-                    sql.JoinTable<SBXX>((GZShenQing, s) => GZShenQing.SBBH == s.SBBH, JoinType.Inner).Where<SBXX>((GZShenQing, s) => s.SSGD == sectionName);
-                    //sql.Where("sbbh in (select sbbh from sbxx where ssgd=" + sectionName + ")");
+                    var deviceofSelectSection = client.Queryable<SBXX>().Where(c => c.SSGD == sectionName).ToList();
+                    List<string> deviceNosofSelectSection = new List<string>();
+                    foreach (var item in deviceofSelectSection)
+                    {
+                        deviceNosofSelectSection.Add(item.SBBH);
+                    }
+                    sql.In("sbbh",deviceNosofSelectSection);
                 }
                 if (!String.IsNullOrEmpty(deviceNo) && !String.Equals(deviceNo, "-1"))
                 {
-                    sql.Where(GZShenQing => GZShenQing.SBBH == deviceNo);
+                    sql.Where(g => g.SBBH == deviceNo);
                 }
                 if (!String.IsNullOrEmpty(beginTime))
                 {
                     DateTime _beginTime = Convert.ToDateTime(beginTime);
-                    sql.Where(GZShenQing => GZShenQing.FSSJ > _beginTime);
+                    sql.Where(g => g.FSSJ > _beginTime);
                 }
                 if (!String.IsNullOrEmpty(endTime))
                 {
                     DateTime _endTime = Convert.ToDateTime(endTime);
-                    sql.Where(GZShenQing => GZShenQing.FSSJ < _endTime);
+                    sql.Where(g => g.FSSJ < _endTime);
                 }
                 var b = sql.ToSql();
                 try
                 {
-                    listWithDeviceNo = sql.OrderBy(GZShenQing => GZShenQing.FSSJ).ToList();
+                    listWithDeviceNo = sql.OrderBy(g => g.FSSJ).ToList();
                 }
                 catch (Exception)
                 {

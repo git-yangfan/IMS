@@ -25,7 +25,7 @@
                     { lev: 0, parentId: 0 },
                     function (data) {
                         $.each(data, function (i, item) {
-                            $("<option></option>").val(item["Id"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
+                            $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
                         })
                     });
           
@@ -40,7 +40,7 @@
                 { lev: 1, parentId: $("#firstFailureLocation").val()},
                 function (data) {
                     $.each(data, function (i, item) {
-                        $("<option></option>").val(item["Id"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
+                        $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
                     })
                 });
                 $("#secondFailureLocation").change(function () {
@@ -49,13 +49,13 @@
             }
         function GetThirdLevelSubSysList() {
             $("#thirdFailureLocation").empty();
-            $("<option></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
+            $("<option ></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
                 $.post(
                 "/Partial/GetSubSystemList",
                 { lev: 2, parentId: $("#secondFailureLocation").val() },
                 function (data) {
                     $.each(data, function (i, item) {
-                        $("<option></option>").val(item["Id"]).text(item["Name"]).appendTo($("#thirdFailureLocation"));
+                        $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#thirdFailureLocation"));
                     })
                 });
             }
