@@ -24,7 +24,7 @@ namespace IMS.Web.Controllers.Failure
         {
             return View();
         }
-     
+
 
         public void AddNewApplication()
         {
@@ -44,7 +44,7 @@ namespace IMS.Web.Controllers.Failure
 
         }
 
-        public void UpDateApplication() 
+        public ActionResult UpDateApplication()
         {
             MaintenanceApplicationViewModel MaintenanceApplicationVM = new MaintenanceApplicationViewModel();
             int id = Convert.ToInt32(Request.Params["applicationId"]);
@@ -54,21 +54,30 @@ namespace IMS.Web.Controllers.Failure
             MaintenanceApplicationVM.SecLevFailureLocation = Request.Params["secLevFailureLocation"];
             MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["thiLevFailureLocation"];
             MaintenanceApplicationVM.ReportTime = DateTime.Now;
-            failureService.UpDateApplication(id,MaintenanceApplicationVM);
+            bool result = failureService.UpDateApplication(id, MaintenanceApplicationVM);
+            if (result)
+            {
+                return Content(new { msg = "成功", status = "success" }.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "失败", status = "failed" }.ToJsonString());
+            }
+
         }
 
-        public ActionResult DeleteApplication() 
+        public ActionResult DeleteApplication()
         {
             int id = Convert.ToInt32(Request.Params["applicationId"]);
-           var result= failureService.DeleteApplicationById(id);
-           if (result)
-           {
-               return Content(new {msg="删除成功",status="success"}.ToJsonString());
-           }
-           else
-           {
-               return Content(new { msg = "删除失败", status = "failed" }.ToJsonString()); 
-           }
+            var result = failureService.DeleteApplicationById(id);
+            if (result)
+            {
+                return Content(new { msg = "删除成功", status = "success" }.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "删除失败", status = "failed" }.ToJsonString());
+            }
         }
 
 

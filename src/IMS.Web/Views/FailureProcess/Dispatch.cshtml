@@ -215,7 +215,7 @@
             'click .dispatch': function (e, value, row, index) {
                 dispatchingrow = row;
                 var status = row.Status;
-                if (status == "已派工") {
+                if (status == "已驳回"||status == "已派工") {
                     alert("您已经完成处理！请勿重复操作");
                     return;
                 }

@@ -67,6 +67,7 @@
     <script>
         var $table = $('#tb_allapplications');
         var rowtomodify = {};
+        var indexofrowtomodify;
         $(function () {
             initTable();
         })
@@ -158,6 +159,7 @@
                     return;
                 } else {
                     rowtomodify = row;
+                    indexofrowtomodify = index;
                     $("#txt_failuredevice").val(row.DeviceShortName);
                     $("#txt_begintimem").val(row.BeginTime);
                     GetFirstLevelSubSysList();
@@ -195,18 +197,37 @@
         };
 
         function Modify() {
+
+            var Appearance= $("#txtarea_appearance").val();
+            var Description=$("#txtarea_description").val();
+            var fstLocation= $("#firstFailureLocation option:selected").text();
+            var secLocation= $("#secondFailureLocation option:selected").text();
+            var thiLocation = $("#thirdFailureLocation option:selected").text();
+            var strlocation = fstLocation + (secLocation == "请选择" ? "" : "/" + secLocation) + (thiLocation == "请选择" ? "" : "/" + thiLocation);
+
             $.post(
                "/Failure/UpDateApplication",
                {
                    applicationId: $("#txt_forapplicationid").val(),
-                   failureAppearance: $("#txtarea_appearance").val(),
-                   failureDescription: $("#txtarea_description").val(),
-                   fstLevFailureLocation: $("#firstFailureLocation option:selected").text(),
-                   secLevFailureLocation: $("#secondFailureLocation option:selected").text(),
-                   thiLevFailureLocation: $("#thirdFailureLocation option:selected").text(),
+                   failureAppearance: Appearance,
+                   failureDescription: Description,
+                   fstLevFailureLocation: fstLocation,
+                   secLevFailureLocation: secLocation,
+                   thiLevFailureLocation: thiLocation,
                },
                function (Data) {
-                   RefreshTable();
+                   var data = $.parseJSON(Data);
+                   if (data.status == "success") {
+                       alert(data.msg);
+                       $('#tb_allapplications').bootstrapTable('updateRow', {
+                           index: indexofrowtomodify,
+                           row: { "FailureAppearance": Appearance, "FailureDescription": Description, "StrLocation": strlocation }
+                       });
+                   }
+                   else {
+                       alert(data.msg);
+                   }
+                  
                });
         }
 
@@ -228,8 +249,11 @@
                     $("#firstFailureLocation option[location='" + rowtomodify.FstLevFailureLocation + "']").attr("Selected", true);
                     GetSecondLevelSubSysList();
                 });
+            $("#firstFailureLocation").change(function () {
+                GetSecondLevelSubSysList();
+            });
         }
-        function GetSecondLevelSubSysList() {
+        function GetSecondLevelSubSysList(callback) {
             $("#secondFailureLocation").empty();
             $("<option></option>").val("-1").text("请选择").appendTo($("#secondFailureLocation"));
             $("#thirdFailureLocation").empty();
@@ -241,7 +265,12 @@
                 $.each(data, function (i, item) {
                     $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
                 });
-                $("#secondFailureLocation option[location='" + rowtomodify.SecLevFailureLocation + "']").attr("Selected", true);
+                if ($("#firstFailureLocation option:selected").text() == rowtomodify.FstLevFailureLocation) {
+                    $("#secondFailureLocation option[location='" + rowtomodify.SecLevFailureLocation + "']").attr("Selected", true);
+                }
+                GetThirdLevelSubSysList();
+            });
+            $("#secondFailureLocation").change(function () {
                 GetThirdLevelSubSysList();
             });
         }
@@ -255,11 +284,23 @@
                 $.each(data, function (i, item) {
                     $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#thirdFailureLocation"));
                 });
-                $("#thirdFailureLocation option[location='" + rowtomodify.ThiLevFailureLocation + "']").attr("Selected", true);
+                if ($("#secondFailureLocation option:selected").text() == rowtomodify.SecLevFailureLocation) {
+                    $("#thirdFailureLocation option[location='" + rowtomodify.ThiLevFailureLocation + "']").attr("Selected", true);
+                }
             });
         }
 
-
+        function SetSelectDefualtText(lev) {
+            if (lev="first") {
+                $("#firstFailureLocation option[location='" + rowtomodify.FstLevFailureLocation + "']").attr("Selected", true);
+            }
+            if (lev="second") {
+                $("#secondFailureLocation option[location='" + rowtomodify.SecLevFailureLocation + "']").attr("Selected", true);
+            }
+            if (lev="third") {
+                $("#thirdFailureLocation option[location='" + rowtomodify.ThiLevFailureLocation + "']").attr("Selected", true);
+            }
+        }
 
     </script>
 }

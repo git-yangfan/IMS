@@ -57,19 +57,19 @@ namespace IMS.Data.Services
             gZShenQing.SFKYXG = viewModel.Modifiable;
             gZShenQing.SBBH = viewModel.DeviceNo;
             gZShenQing.DQZT = viewModel.Status;
-          
+
             return gZShenQing;
         }
         public bool UpDateApplication(int id, MaintenanceApplicationViewModel maintenanceApplicationVM)
         {
+            bool isUpdateSuccess=false;
             if (maintenanceApplicationVM != null)
             {
                 try
                 {
                     using (var client = DbConfig.GetInstance())
                     {
-
-                        bool result = client.Update<GZShenQing>(
+                       isUpdateSuccess = client.Update<GZShenQing>(
                               new
                               {
                                   gzms = maintenanceApplicationVM.FailureDescription,
@@ -79,7 +79,6 @@ namespace IMS.Data.Services
                                   gzbwc = maintenanceApplicationVM.ThiLevFailureLocation
                               },
                               it => it.Id == id).ObjToBool();
-                        return result;
                     }
                 }
                 catch (Exception)
@@ -87,8 +86,7 @@ namespace IMS.Data.Services
                     throw;
                 }
             }
-            else
-                return false;
+            return isUpdateSuccess;
         }
         public bool DeleteApplicationById(int id)
         {

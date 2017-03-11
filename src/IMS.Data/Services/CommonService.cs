@@ -12,7 +12,7 @@ namespace IMS.Data.Services
     public static class CommonService
     {
 
-   public     static Dictionary<string, string> StatusDic = new Dictionary<string, string>()
+        public static Dictionary<string, string> StatusDic = new Dictionary<string, string>()
         {
             {"Checking", "审核中"},
             {"Dispatched" , "已派工"},
@@ -111,7 +111,7 @@ namespace IMS.Data.Services
                     {
                         deviceNosofSelectSection.Add(item.SBBH);
                     }
-                    sql.In("sbbh",deviceNosofSelectSection);
+                    sql.In("sbbh", deviceNosofSelectSection);
                 }
                 if (!String.IsNullOrEmpty(deviceNo) && !String.Equals(deviceNo, "-1"))
                 {
