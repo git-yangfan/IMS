@@ -19,14 +19,13 @@ namespace IMS.Web.Controllers.Failure
             return View();
         }
         [HttpPost]
-        public JsonResult Dispatch(string applicationId, string engineerId, string instruction)
+        public JsonResult Dispatch(string applicationId,string workType, string engineerId, string instruction)
         {
-            var a = engineerId;
             FailureProcessViewModel failureProcessVM = new FailureProcessViewModel();
             failureProcessVM.Instruction = instruction;
             failureProcessVM.MaintenanceApplicationViewModel.Id = Convert.ToInt32(applicationId);
             failureProcessVM.EngineerViewModel.EngineerId = Convert.ToInt32(engineerId);
-            bool result = FailureProcessService.Dispatch(failureProcessVM);
+            bool result = FailureProcessService.Dispatch(failureProcessVM,workType);
             if (result)
             {
                 return Json("ok");

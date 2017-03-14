@@ -15,6 +15,7 @@ namespace IMS.Model.Model
         public int ZXID { get; set; }
         public int ZDID { get; set; }
         public int ZHWXID { get; set; }
+        public int ZDPGDID { get; set; }
 
     }
 }

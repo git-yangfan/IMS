@@ -48,6 +48,12 @@
                         <div class="form-group">
                             <label for="txt_defaulturl_Web">选择人员</label>
                             @{Html.RenderAction("EngineerSelect", "Partial");}
+                            <label >作业类别</label>
+                            <select id="select_worktype">
+                                <option value="-1">请选择</option>
+                                <option value="0">维修</option>
+                                <option value="1">故障诊断</option>
+                            </select>
                             <label for="txt_defaulturl_Web">指示事项</label>
                             <textarea id="txtarea_instruction"></textarea>
                         </div>
@@ -64,13 +70,13 @@
 
 
     <div class="modal fade " id="modalforreject" style="z-index:5000">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">驳回</h4>
-                </div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">驳回</h4>
+                    </div>
                     <div class="modal-body">
                         <div class="form-group ">
                             <label>驳回理由</label>
@@ -85,17 +91,18 @@
             </div>
         </div>
     </div>
-    
+
 
     <script>
         var $table = $('#table_dispatch');
         var dispatchingrow;
+        var indexofdispatchingrow;
         $(function () {
             initTable();
         })
-        
+
         function initTable() {
-            $('#table_dispatch').bootstrapTable({
+            $table.bootstrapTable({
                 url: '/Failure/GetAllApplicationsByUserName',         //请求后台的URL（*）
                 method: 'post',                      //请求方式（*）
                 toolbar: '#toolbar',                //工具按钮用哪个容器
@@ -128,14 +135,14 @@
                     { field: 'StrLocation', title: '故障部位' },
                     { field: 'FailureAppearance', title: '故障现象', sortable: true },
                     { field: 'FailureDescription', title: '故障描述', sortable: true },
-                    { field: 'Status', title: '当前状态', sortable: true,align: 'center', formatter: cssFormatter },
+                    { field: 'Status', title: '当前状态', sortable: true, align: 'center', formatter: cssFormatter },
                     { field: 'Modifiable', title: '操作', align: 'center', events: operateEvents, formatter: operateFormatter }
                 ]
             });
         }
 
         //得到查询的参数
-        function queryParams (params) {
+        function queryParams(params) {
             var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
                 name: "报告人A",   //页面大小
                 limit: params.limit,   //页面大小
@@ -214,8 +221,9 @@
         window.operateEvents = {
             'click .dispatch': function (e, value, row, index) {
                 dispatchingrow = row;
+                indexofdispatchingrow = index;
                 var status = row.Status;
-                if (status == "已驳回"||status == "已派工") {
+                if (status == "已驳回" || status == "已派工") {
                     alert("您已经完成处理！请勿重复操作");
                     return;
                 }
@@ -225,15 +233,21 @@
                 $("#txt_show_appear").val(row.FailureAppearance);
                 $("#txt_show_descri").val(row.FailureDescription);
                 $("#forapplicationid").val(row.Id);
+
+                $("#select_team").val(-1);
+                $("#select_engineer").val(-1);
+                $("#txtarea_instruction").val('');
                 $('#modalfordispatch').modal();
             },
             'click .reject': function (e, value, row, index) {
                 dispatchingrow = row;
+                indexofdispatchingrow = index;
                 var status = row.Status;
                 if (status == "已驳回" || status == "已派工") {
                     alert("您已经完成处理！请勿重复操作");
                     return;
                 }
+                $("#txtarea_rejectreason").val('');
                 $("#modalforreject").modal();
             }
         };
@@ -241,11 +255,15 @@
         function Dispatch() {
             $.post(
                 "/FailureProcess/Dispatch",
-                { applicationId: dispatchingrow.Id, engineerId: $("#select_engineer").val(), instruction: $("#txtarea_instruction").val() },
+                { applicationId: dispatchingrow.Id, workType: $("#select_worktype option:selected").text(), engineerId: $("#select_engineer").val(), instruction: $("#txtarea_instruction").val() },
                 function (data) {
                     if (data != "") {
                         alert("派工成功");
-                        RefreshTable();
+                        $table.bootstrapTable('updateRow', {
+                            index: indexofdispatchingrow,
+                            row: { "Status": "已派工" }
+                        });
+                        //RefreshTable();
                     }
                     else {
                         alert("提交派工数据时可能有点小问题！");
@@ -261,12 +279,16 @@
             else {
                 $.post(
                     "/FailureProcess/Reject",
-                    { applicationId: dispatchingrow.Id ,rejectReason:reason},
+                    { applicationId: dispatchingrow.Id, rejectReason: reason },
                     function (Data) {
                         var data = $.parseJSON(Data);
-                        if (data.status=="success") {
+                        if (data.status == "success") {
                             alert(data.msg);
-                            RefreshTable();
+                            $table.bootstrapTable('updateRow', {
+                                index: indexofdispatchingrow,
+                                row: { "Status": "已驳回" }
+                            });
+                            //RefreshTable();
                         }
                         else {
                             alert(data.msg);

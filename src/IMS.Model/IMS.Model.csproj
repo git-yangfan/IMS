@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\GZXX.cs" />
+    <Compile Include="Model\ZDPGD.cs" />
     <Compile Include="Model\PGD.cs" />
     <Compile Include="Model\SBXX.cs" />
     <Compile Include="Model\GZShenQing.cs" />
