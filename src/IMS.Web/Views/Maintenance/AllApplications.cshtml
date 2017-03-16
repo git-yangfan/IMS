@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "AllApplications";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -200,10 +199,10 @@
 
         function Modify() {
 
-            var Appearance= $("#txtarea_appearance").val();
-            var Description=$("#txtarea_description").val();
-            var fstLocation= $("#firstFailureLocation option:selected").text();
-            var secLocation= $("#secondFailureLocation option:selected").text();
+            var Appearance = $("#txtarea_appearance").val();
+            var Description = $("#txtarea_description").val();
+            var fstLocation = $("#firstFailureLocation option:selected").text();
+            var secLocation = $("#secondFailureLocation option:selected").text();
             var thiLocation = $("#thirdFailureLocation option:selected").text();
             var strlocation = fstLocation + (secLocation == "请选择" ? "" : "/" + secLocation) + (thiLocation == "请选择" ? "" : "/" + thiLocation);
 
@@ -293,13 +292,13 @@
         }
 
         function SetSelectDefualtText(lev) {
-            if (lev="first") {
+            if (lev = "first") {
                 $("#firstFailureLocation option[location='" + rowtomodify.FstLevFailureLocation + "']").attr("Selected", true);
             }
-            if (lev="second") {
+            if (lev = "second") {
                 $("#secondFailureLocation option[location='" + rowtomodify.SecLevFailureLocation + "']").attr("Selected", true);
             }
-            if (lev="third") {
+            if (lev = "third") {
                 $("#thirdFailureLocation option[location='" + rowtomodify.ThiLevFailureLocation + "']").attr("Selected", true);
             }
         }

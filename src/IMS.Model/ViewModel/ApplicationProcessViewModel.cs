@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace IMS.Model.ViewModel
 {
-  public  class FailureProcessViewModel
+  public  class ApplicationProcessViewModel
     {
-      public FailureProcessViewModel() 
+      public ApplicationProcessViewModel() 
       {
           this.MaintenanceApplicationViewModel = new MaintenanceApplicationViewModel();
           this.EngineerViewModel = new EngineerViewModel();

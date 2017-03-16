@@ -53,7 +53,6 @@ namespace IMS.Web.Controllers.Maintenance
             MaintenanceApplicationVM.Status = "审核中";
             MaintenanceApplicationVM.Modifiable = 0;
             maintenanceService.AddNewFailure(MaintenanceApplicationVM);
-
         }
         [HttpPost]
         public ActionResult UpDateApplication()
@@ -103,11 +102,11 @@ namespace IMS.Web.Controllers.Maintenance
         [HttpPost]
         public JsonResult Dispatch(string applicationId, string workType, string engineerId, string instruction)
         {
-            FailureProcessViewModel failureProcessVM = new FailureProcessViewModel();
-            failureProcessVM.Instruction = instruction;
-            failureProcessVM.MaintenanceApplicationViewModel.Id = Convert.ToInt32(applicationId);
-            failureProcessVM.EngineerViewModel.EngineerId = Convert.ToInt32(engineerId);
-            bool result = maintenanceService.Dispatch(failureProcessVM, workType);
+            ApplicationProcessViewModel applicationProcessVM = new ApplicationProcessViewModel();
+            applicationProcessVM.Instruction = instruction;
+            applicationProcessVM.MaintenanceApplicationViewModel.Id = Convert.ToInt32(applicationId);
+            applicationProcessVM.EngineerViewModel.EngineerId = Convert.ToInt32(engineerId);
+            bool result = maintenanceService.Dispatch(applicationProcessVM, workType);
             if (result)
             {
                 return Json("ok");

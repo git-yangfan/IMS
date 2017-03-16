@@ -74,7 +74,7 @@ namespace IMS.Data.Services
 
 
         #region 维修申请处理---管理员
-        public bool Dispatch(FailureProcessViewModel failureProcessVM, string workType)
+        public bool Dispatch(ApplicationProcessViewModel applicationProcessVM, string workType)
         {
 
             using (var client = DbConfig.GetInstance())
@@ -89,10 +89,10 @@ namespace IMS.Data.Services
                     dispatchSheet = new PGD();
                     dispatchSheet.ID = client.Queryable<PGD>().Max(it => it.ID).ObjToInt() + 1;
                     dispatchSheet.PGRID = 0;
-                    dispatchSheet.GZSHENQINGID = failureProcessVM.MaintenanceApplicationViewModel.Id;
+                    dispatchSheet.GZSHENQINGID = applicationProcessVM.MaintenanceApplicationViewModel.Id;
                     dispatchSheet.PGSJ = DateTime.Now;
-                    dispatchSheet.WXRID = failureProcessVM.EngineerViewModel.EngineerId;
-                    dispatchSheet.ZSSX = failureProcessVM.Instruction;
+                    dispatchSheet.WXRID = applicationProcessVM.EngineerViewModel.EngineerId;
+                    dispatchSheet.ZSSX = applicationProcessVM.Instruction;
                     failureInfo.PGDID = dispatchSheet.ID;
                     client.Insert<PGD>(dispatchSheet);
                 }
@@ -101,19 +101,19 @@ namespace IMS.Data.Services
                     diagnosticSheet = new ZDPGD();
                     diagnosticSheet.ID = client.Queryable<ZDPGD>().Max(it => it.ID).ObjToInt() + 1;
                     diagnosticSheet.PGRID = 0;
-                    diagnosticSheet.GZSHENQINGID = failureProcessVM.MaintenanceApplicationViewModel.Id;
+                    diagnosticSheet.GZSHENQINGID = applicationProcessVM.MaintenanceApplicationViewModel.Id;
                     diagnosticSheet.PGSJ = DateTime.Now;
-                    diagnosticSheet.ZDRID = failureProcessVM.EngineerViewModel.EngineerId;
-                    diagnosticSheet.ZSSX = failureProcessVM.Instruction;
+                    diagnosticSheet.ZDRID = applicationProcessVM.EngineerViewModel.EngineerId;
+                    diagnosticSheet.ZSSX = applicationProcessVM.Instruction;
                     failureInfo.ZDPGDID = diagnosticSheet.ID;
                     client.Insert<ZDPGD>(diagnosticSheet);
                 }
                 failureInfo.ID = client.Queryable<GZXX>().Max(it => it.ID).ObjToInt() + 1;
-                failureInfo.GZSHENQINGID = failureProcessVM.MaintenanceApplicationViewModel.Id;
+                failureInfo.GZSHENQINGID = applicationProcessVM.MaintenanceApplicationViewModel.Id;
                 try
                 {
                     client.Insert<GZXX>(failureInfo);
-                    client.Update<GZShenQing>(new { SFKYXG = 1, DQZT = CommonService.StatusDic["Dispatched"], HFSJ = DateTime.Now, HFXX = "同意" }, it => it.Id == failureProcessVM.MaintenanceApplicationViewModel.Id);
+                    client.Update<GZShenQing>(new { SFKYXG = 1, DQZT = CommonService.StatusDic["Dispatched"], HFSJ = DateTime.Now, HFXX = "同意" }, it => it.Id == applicationProcessVM.MaintenanceApplicationViewModel.Id);
                     client.CommitTran();
                     return true;
                 }

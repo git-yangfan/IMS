@@ -46,7 +46,6 @@ namespace IMS.Model.ViewModel
         public string ThiLevFailureLocation { get; set; }
         public int Modifiable { get; set; }
         public string StrLocation { get; set; }
-
         public DateTime ReplyTime { set; get; }
         public string ReplyMsg { get; set; }
 

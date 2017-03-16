@@ -42,7 +42,7 @@
     <div class="row align-right">
         <div class="col-lg-6 col-md-6 col-sm-6  col-lg-offset-3">
             <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>重置</button>
-            <button type="button" id="btn_submit" class="btn btn-primary" onclick="SubmitFailure()"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>提交</button>
+            <button type="button" id="btn_submit" class="btn btn-primary" onclick="SubmitApplication()"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>提交</button>
 
 
         </div>
@@ -87,7 +87,7 @@
                 });
         };
 
-        function SubmitFailure() {
+        function SubmitApplication() {
             $.post(
                 "/Maintenance/AddNewApplication",
                 {
