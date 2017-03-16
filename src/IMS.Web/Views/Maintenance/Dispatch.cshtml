@@ -1,13 +1,15 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "Dispatch";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Dispatch</h2>
+
 @section ContentBody{
     <input type="hidden" id="forapplicationid" />
 
-    @{Html.RenderAction("SearchBar", "Partial");}
+    @{Html.RenderAction("SearchBar", "Common");}
 
     <div>
         <table id="table_dispatch"></table>
@@ -47,8 +49,8 @@
                         </div>
                         <div class="form-group">
                             <label for="txt_defaulturl_Web">选择人员</label>
-                            @{Html.RenderAction("EngineerSelect", "Partial");}
-                            <label >作业类别</label>
+                            @{Html.RenderAction("EngineerSelect", "Common");}
+                            <label>作业类别</label>
                             <select id="select_worktype">
                                 <option value="-1">请选择</option>
                                 <option value="0">维修</option>
@@ -103,7 +105,7 @@
 
         function initTable() {
             $table.bootstrapTable({
-                url: '/Failure/GetAllApplicationsByUserName',         //请求后台的URL（*）
+                url: '/Maintenance/GetAllApplicationsByUserName',         //请求后台的URL（*）
                 method: 'post',                      //请求方式（*）
                 toolbar: '#toolbar',                //工具按钮用哪个容器
                 striped: true,                      //是否显示行间隔色
@@ -254,7 +256,7 @@
 
         function Dispatch() {
             $.post(
-                "/FailureProcess/Dispatch",
+                "/Maintenance/Dispatch",
                 { applicationId: dispatchingrow.Id, workType: $("#select_worktype option:selected").text(), engineerId: $("#select_engineer").val(), instruction: $("#txtarea_instruction").val() },
                 function (data) {
                     if (data != "") {
@@ -278,7 +280,7 @@
             }
             else {
                 $.post(
-                    "/FailureProcess/Reject",
+                    "/Maintenance/Reject",
                     { applicationId: dispatchingrow.Id, rejectReason: reason },
                     function (Data) {
                         var data = $.parseJSON(Data);
@@ -298,8 +300,7 @@
         }
 
         function RefreshTable() {
-            $('#table_dispatch').bootstrapTable('refresh', { url: '/Failure/GetAllApplicationsByUserName' });
+            $('#table_dispatch').bootstrapTable('refresh', { url: '/Maintenance/GetAllApplicationsByUserName' });
         };
     </script>
 }
-

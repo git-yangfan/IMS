@@ -18,7 +18,7 @@
 
     function LoadTeamName() {
         $.post(
-            "/Partial/GetName",
+            "/Common/GetTeamOrEngrName",
             {type:"team",teamName:null},
             function (data) {
                 if (data != "") {
@@ -37,7 +37,7 @@
         $("#select_engineer").empty();
         $("<option></option>").val("-1").text("请选择").appendTo($("#select_engineer"));
         $.post(
-            "/Partial/GetName",
+            "/Common/GetTeamOrEngrName",
             { type: "Engineer", teamName: $("#select_team option:selected").text() },
             function (data) {
                 if (data != "") {

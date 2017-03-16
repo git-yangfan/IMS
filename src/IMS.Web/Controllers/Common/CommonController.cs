@@ -6,17 +6,11 @@ using System.Web.Mvc;
 
 namespace IMS.Web.Controllers.Partial
 {
-    public class PartialController : Controller
+    public class CommonController : Controller
     {
         //
         // GET: /Partial/
-
-        FailureService failureService = new FailureService();
-        public ActionResult Index()
-        {
-            return View();
-        }
-
+      
         public ActionResult SubSystem()
         {
             return PartialView();
@@ -34,7 +28,7 @@ namespace IMS.Web.Controllers.Partial
         {
             if (lev != -1)
             {
-                IEnumerable<SubSystem> subSystemList = failureService.GetSubSystemList(lev, parentId);
+                IEnumerable<SubSystem> subSystemList = CommonService.GetSubSystemList(lev, parentId);
                 if (subSystemList != null)
                 {
                     return Json(subSystemList);
@@ -42,9 +36,9 @@ namespace IMS.Web.Controllers.Partial
             }
             return Json("");
         }
-        public ActionResult GetName(string type, string teamName)
+        public ActionResult GetTeamOrEngrName(string type, string teamName)
         {
-            List<EngineerViewModel> engineerVMList = CommonService.GetName(type, teamName);
+            List<EngineerViewModel> engineerVMList = CommonService.GetTeamOrEngrName(type, teamName);
             if (engineerVMList != null)
             {
                 return Json(engineerVMList);

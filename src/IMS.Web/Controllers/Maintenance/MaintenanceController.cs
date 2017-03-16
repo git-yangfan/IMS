@@ -1,31 +1,43 @@
-﻿
-using IMS.Data.Services;
-using IMS.Json;
+﻿using IMS.Data.Services;
 using IMS.Model.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
 using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using IMS.Json;
 
-namespace IMS.Web.Controllers.Failure
+namespace IMS.Web.Controllers.Maintenance
 {
-    public class FailureController : Controller
+    public class MaintenanceController : Controller
     {
-        //
-        // GET: /Failure/
+        // GET: Maintenance
 
-        private FailureService failureService = new FailureService();
+        MaintenanceService maintenanceService = new MaintenanceService();
+        [HttpPost]
+        public ActionResult GetAllApplicationsByUserName(string name, int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername)
+        {
+            var AllApplicationsList = maintenanceService.GetAllApplicationsByName(name, sectionName, deviceNo, beginTime, endTime);
+            if (AllApplicationsList != null)
+            {
+                var total = AllApplicationsList.Count;
+                var rows = AllApplicationsList.Skip(offset).Take(limit).ToList();
+                var d = new { total = total, rows = rows };
+                return Content(d.ToJsonString());
+            }
+            else
+                return Json("");
+        }
+        #region 维修申请---操作工人
         public ActionResult NewApplication()
         {
             return View();
         }
-
         public ActionResult AllApplications()
         {
             return View();
         }
-
-
+        [HttpPost]
         public void AddNewApplication()
         {
             MaintenanceApplicationViewModel MaintenanceApplicationVM = new MaintenanceApplicationViewModel();
@@ -40,10 +52,10 @@ namespace IMS.Web.Controllers.Failure
             MaintenanceApplicationVM.ReportTime = DateTime.Now;
             MaintenanceApplicationVM.Status = "审核中";
             MaintenanceApplicationVM.Modifiable = 0;
-            failureService.AddNewFailure(MaintenanceApplicationVM);
+            maintenanceService.AddNewFailure(MaintenanceApplicationVM);
 
         }
-
+        [HttpPost]
         public ActionResult UpDateApplication()
         {
             MaintenanceApplicationViewModel MaintenanceApplicationVM = new MaintenanceApplicationViewModel();
@@ -54,7 +66,7 @@ namespace IMS.Web.Controllers.Failure
             MaintenanceApplicationVM.SecLevFailureLocation = Request.Params["secLevFailureLocation"];
             MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["thiLevFailureLocation"];
             MaintenanceApplicationVM.ReportTime = DateTime.Now;
-            bool result = failureService.UpDateApplication(id, MaintenanceApplicationVM);
+            bool result = maintenanceService.UpDateApplication(id, MaintenanceApplicationVM);
             if (result)
             {
                 return Content(new { msg = "成功", status = "success" }.ToJsonString());
@@ -65,11 +77,11 @@ namespace IMS.Web.Controllers.Failure
             }
 
         }
-
+        [HttpPost]
         public ActionResult DeleteApplication()
         {
             int id = Convert.ToInt32(Request.Params["applicationId"]);
-            var result = failureService.DeleteApplicationById(id);
+            var result = maintenanceService.DeleteApplicationById(id);
             if (result)
             {
                 return Content(new { msg = "删除成功", status = "success" }.ToJsonString());
@@ -79,21 +91,71 @@ namespace IMS.Web.Controllers.Failure
                 return Content(new { msg = "删除失败", status = "failed" }.ToJsonString());
             }
         }
+        #endregion
 
 
-        public ActionResult GetAllApplicationsByUserName(string name, int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername)
+
+        #region 维修申请处理---管理员
+        public ActionResult Dispatch()
         {
-            var AllApplicationsList = CommonService.GetAllApplicationsByName(name, sectionName, deviceNo, beginTime, endTime);
-            if (AllApplicationsList != null)
+            return View();
+        }
+        [HttpPost]
+        public JsonResult Dispatch(string applicationId, string workType, string engineerId, string instruction)
+        {
+            FailureProcessViewModel failureProcessVM = new FailureProcessViewModel();
+            failureProcessVM.Instruction = instruction;
+            failureProcessVM.MaintenanceApplicationViewModel.Id = Convert.ToInt32(applicationId);
+            failureProcessVM.EngineerViewModel.EngineerId = Convert.ToInt32(engineerId);
+            bool result = maintenanceService.Dispatch(failureProcessVM, workType);
+            if (result)
             {
-                var total = AllApplicationsList.Count;
-                var rows = AllApplicationsList.Skip(offset).Take(limit).ToList();
-                var d = new { total = total, rows = rows };
-                return Content(d.ToJsonString());
+                return Json("ok");
             }
             else
+            {
                 return Json("");
+            }
+
         }
+        [HttpPost]
+        public ActionResult Reject(string applicationId, string rejectReason)
+        {
+            var result = maintenanceService.Reject(applicationId, rejectReason);
+            if (result)
+            {
+                var data = new { msg = "已经成功驳回", status = "success" };
+                return Content(data.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "驳回失败", status = "failed" }.ToJsonString());
+            }
+        }
+        #endregion
+
+
+
+        #region 维修申请处理---维修工程师
+        public ActionResult Disposing()
+        {
+            return View();
+        }
+
+        public ActionResult NewRepairPlan()
+        {
+            return View();
+        } 
+        #endregion
+
+
+
+
+
+
+
+
+
 
 
 
@@ -127,7 +189,6 @@ namespace IMS.Web.Controllers.Failure
             var rows = lstRes;
             return Json(new { total = total, rows = rows }, JsonRequestBehavior.AllowGet);
         }
-
 
     }
 }

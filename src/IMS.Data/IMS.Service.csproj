@@ -55,8 +55,7 @@
     <Compile Include="Dao\DbConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CommonService.cs" />
-    <Compile Include="Services\FailureProcessService.cs" />
-    <Compile Include="Services\FailureService.cs" />
+    <Compile Include="Services\MaintenanceService.cs" />
     <Compile Include="Utils\DataUtils.cs" />
   </ItemGroup>
   <ItemGroup>

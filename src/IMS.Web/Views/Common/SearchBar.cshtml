@@ -1,4 +1,5 @@
-﻿<div class="panel-body" style="padding-bottom:0px;">
+﻿
+<div class="panel-body" style="padding-bottom:0px;">
     <div class="panel panel-default">
         <div class="panel-heading">查询条件</div>
         <div class="panel-body">
@@ -32,7 +33,7 @@
                         <div class="row">
                             <label class="control-label col-sm-4" for="select_worksection">所属工段</label>
                             <div class="col-sm-8" style="padding-left: 0	;padding-right: 0">
-                                <select id="select_worksection" >
+                                <select id="select_worksection">
                                     <option value="-1">请选择</option>
                                 </select>
                             </div>
@@ -42,7 +43,7 @@
                         <div class="row">
                             <label class="control-label col-sm-4" for="select_device">故障设备</label>
                             <div class="col-sm-8" style="padding-left: 0	;padding-right: 0">
-                                <select id="select_device" >
+                                <select id="select_device">
                                     <option value="-1">请选择</option>
                                 </select>
                             </div>
@@ -82,7 +83,7 @@
 
     function LoadWorkSectionNames() {
         $.post(
-            "/Partial/GetWorkSectionNameList",
+            "/Common/GetWorkSectionNameList",
             function (data) {
                 $.each(data, function (i, item) {
                     $("<option></option>").text(item["WorkSection"]).appendTo($("#select_worksection"));
@@ -95,7 +96,7 @@
         $("<option></option>").val("-1").text("请选择").appendTo($("#select_device"));
 
         $.post(
-            "/Partial/GetDeviceNamesBySection",
+            "/Common/GetDeviceNamesBySection",
             { sectionName: $("#select_worksection option:selected").text() },
             function (data) {
                 $.each(data, function (i, item) {

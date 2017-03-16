@@ -1,0 +1,157 @@
+﻿
+@{
+    ViewBag.Title = "Disposing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Disposing</h2>
+
+@section ContentBody{
+    @{Html.RenderAction("SearchBar", "Common");}
+    <div>
+        <table id="table_disposing"></table>
+    </div>
+
+    <a onclick="window.open('./NewRepairPlan')">自修</a>
+
+
+    <script>
+        var $table = $('#table_disposing');
+        var dispatchingrow;
+        var indexofdispatchingrow;
+        $(function () {
+            initTable();
+        })
+
+        function initTable() {
+            $table.bootstrapTable({
+                url: '/Maintenance/GetAllApplicationsByUserName',         //请求后台的URL（*）
+                method: 'post',                      //请求方式（*）
+                toolbar: '#toolbar',                //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1,                       //初始化加载第一页，默认第一页
+                pageSize: 10,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 1,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "DeviceNo",                     //每一行的唯一标识，一般为主键列
+                showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                   //是否显示父子表
+                queryParams: queryParams,
+                detailView: true,
+                detailFormatter: detailFormatter,
+                columns: [
+                    { field: 'DeviceShortName', title: '故障设备', sortable: true },
+                    { field: 'BeginTime', title: '发生时间', sortable: true },
+                    { field: 'StrLocation', title: '故障部位' },
+                    { field: 'FailureAppearance', title: '故障现象', sortable: true },
+                    { field: 'FailureDescription', title: '故障描述', sortable: true },
+                    { field: 'Status', title: '当前状态', sortable: true, align: 'center', formatter: cssFormatter },
+                    { field: 'Modifiable', title: '操作', align: 'center', events: operateEvents, formatter: operateFormatter, width: '120px' }
+                ]
+            });
+        }
+
+        //得到查询的参数
+        function queryParams(params) {
+            var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                name: "报告人A",   //页面大小
+                limit: params.limit,   //页面大小
+                offset: params.offset,  //页码
+                order: params.order,
+                ordername: params.sort,
+                sectionName: $("#select_worksection option:selected").text(),
+                deviceNo: $("#select_device option:selected").val(),
+                beginTime: $("#txt_begintime").val(),
+                endTime: $("#txt_endtime").val()
+            };
+            return temp;
+        };
+
+        function detailFormatter(index, row) {
+            var html = [];
+            html.push('<div class="form-horizontal">');
+            html.push('<div class="row" >');
+            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >故障设备</label>');
+            html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['DeviceShortName'] + '>');
+            html.push('</div></div></div>');
+            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >发生时间</label>');
+            html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['BeginTime'] + '>');
+            html.push('</div></div></div>');
+            html.push('</div>');
+            html.push('<div class="row" >');
+            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >报告人</label>');
+            html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['ReporterId'] + '>');
+            html.push('</div></div></div>');
+            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >报告时间</label>');
+            html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['ReportTime'] + '>');
+            html.push('</div></div></div>');
+            html.push('</div>');
+            html.push('<div class="row" >');
+            html.push('<div class="col-sm-8"><div class="row"><label class="control-label col-sm-2" >故障现象</label>');
+            html.push('<div class="col-sm-10"><textarea rows="3" class="form-control" >' + row['FailureAppearance'] + '</textarea>');
+            html.push('</div></div></div>');
+            html.push('</div>');
+            html.push('<div class="row" >');
+            html.push('<div class="col-sm-8"><div class="row"><label class="control-label col-sm-2" >故障描述</label>');
+            html.push('<div class="col-sm-10"><textarea rows="3" class="form-control" >' + row['FailureDescription'] + '</textarea>');
+            html.push('</div></div></div>');
+            html.push('</div>');
+            html.push('</div>');
+            return html.join('');
+        }
+
+        function cssFormatter(value, row, index) {
+            var status = row.Status;
+            var cssname = "";
+            if (status == "审核中") {
+                cssname = 'class="btn btn-default btn-sm "';
+            }
+            if (status == "已派工") {
+                cssname = 'class="btn btn-success btn-sm"';
+            }
+            if (status == "已驳回") {
+                cssname = 'class="btn btn-danger btn-sm "';
+            }
+            return [
+                '<span ' + cssname + '>' + row.Status + '</span>'
+            ].join('');
+        };
+
+
+        function operateFormatter(value, row, index) {
+            return ['<div class="btn-group">',
+                    '<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+                    '处理 <span class="caret"></span>',
+                    '</button>',
+                    '<ul class="dropdown-menu">',
+                      '<li><a  onclick="showselfmodal()" >自修</a></li>',
+                      '<li><a href="#">外修</a></li>',
+                      '<li><a href="#">缓修</a></li>',
+                      '<li><a href="#">故障诊断</a></li>',
+                      '</ul>',
+                    '</div>'].join('');
+        };
+
+        window.operateEvents = {
+            'onclick #self': function (e, value, row, index) {
+
+            },
+            'click .reject': function (e, value, row, index) {
+               }
+        };
+        function showselfmodal() { alert(1);}
+    </script>
+
+}

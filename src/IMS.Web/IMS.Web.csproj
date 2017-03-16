@@ -157,10 +157,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\Failure\FailureController.cs" />
-    <Compile Include="Controllers\Failure\FailureProcessController.cs" />
-    <Compile Include="Controllers\Home\HomeController.cs" />
-    <Compile Include="Controllers\Partial\PartialController.cs" />
+    <Compile Include="Controllers\Maintenance\MaintenanceController.cs" />
+    <Compile Include="Controllers\Common\CommonController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -168,14 +166,6 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\bootstrap2.3\css\bootstrap-responsive.css" />
-    <Content Include="Content\bootstrap2.3\css\bootstrap-responsive.min.css" />
-    <Content Include="Content\bootstrap2.3\css\bootstrap.css" />
-    <Content Include="Content\bootstrap2.3\css\bootstrap.min.css" />
-    <Content Include="Content\bootstrap2.3\img\glyphicons-halflings-white.png" />
-    <Content Include="Content\bootstrap2.3\img\glyphicons-halflings.png" />
-    <Content Include="Content\bootstrap2.3\js\bootstrap.js" />
-    <Content Include="Content\bootstrap2.3\js\bootstrap.min.js" />
     <Content Include="Content\bootstrap\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.css" />
@@ -270,7 +260,6 @@
     <Content Include="Content\bootstrap\table\locale\bootstrap-table-zh-CN.js" />
     <Content Include="Content\bootstrap\table\locale\bootstrap-table-zh-CN.min.js" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -318,24 +307,20 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Home\HomePage.cshtml" />
-    <Content Include="Views\Partial\SubSystem.cshtml" />
-    <Content Include="Views\Failure\NewApplication.cshtml" />
-    <Content Include="Views\Failure\AllApplications.cshtml" />
-    <Content Include="Views\Failure\GetDepartment.cshtml" />
+    <Content Include="Views\Maintenance\GetDepartment.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Partial\EngineerSelect.cshtml" />
-    <Content Include="Views\FailureProcess\Dispatch.cshtml" />
-    <Content Include="Views\Partial\SearchBar.cshtml" />
+    <Content Include="Views\Maintenance\AllApplications.cshtml" />
+    <Content Include="Views\Maintenance\NewApplication.cshtml" />
+    <Content Include="Views\Maintenance\Dispatch.cshtml" />
+    <Content Include="Views\Maintenance\Disposing.cshtml" />
+    <Content Include="Views\Common\SearchBar.cshtml" />
+    <Content Include="Views\Common\EngineerSelect.cshtml" />
+    <Content Include="Views\Common\SubSystem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />

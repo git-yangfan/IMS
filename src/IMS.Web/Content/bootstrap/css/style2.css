@@ -6,11 +6,11 @@ body {
     overflow: hidden;
     font: 15px/23px 'Open Sans', Segoe UI, Arial, sans-serif;
     color: #3e474c;
-    background: url(../img/body-background.jpg) repeat;
+  
 }
 
     body.boxed-layout {
-        background: #3d5e93 url(../img/background/1.jpg) no-repeat;
+        
         background-size: cover;
         background-attachment: fixed;
     }

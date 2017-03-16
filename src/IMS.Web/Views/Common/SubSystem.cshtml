@@ -21,7 +21,7 @@
         });
         function GetFirstLevelSubSysList() {
                 $.post(
-                    "/Partial/GetSubSystemList",
+                    "/Common/GetSubSystemList",
                     { lev: 0, parentId: 0 },
                     function (data) {
                         $.each(data, function (i, item) {
@@ -36,7 +36,7 @@
             $("#thirdFailureLocation").empty();
             $("<option></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
                 $.post(
-                "/Partial/GetSubSystemList",
+                "/Common/GetSubSystemList",
                 { lev: 1, parentId: $("#firstFailureLocation").val()},
                 function (data) {
                     $.each(data, function (i, item) {
@@ -51,7 +51,7 @@
             $("#thirdFailureLocation").empty();
             $("<option ></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
                 $.post(
-                "/Partial/GetSubSystemList",
+                "/Common/GetSubSystemList",
                 { lev: 2, parentId: $("#secondFailureLocation").val() },
                 function (data) {
                     $.each(data, function (i, item) {

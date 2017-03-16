@@ -1,10 +1,10 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "NewApplication";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>FailureReport</h2>
-
+<h2>NewApplication</h2>
 @section ContentBody{
 
     <div class="row ">
@@ -32,7 +32,7 @@
             </div>
 
 
-            @{Html.RenderAction("SubSystem", "Partial");}
+            @{Html.RenderAction("SubSystem", "Common");}
             <span><label>故障现象</label></span><textarea id="txtarea_appearance"></textarea>
             <span><label>故障描述</label></span><textarea id="txtarea_description"></textarea>
         </div>
@@ -66,7 +66,7 @@
 
         function LoadWorkSectionNames() {
             $.post(
-                "/Partial/GetWorkSectionNameList",
+                "/Common/GetWorkSectionNameList",
                 function (data) {
                     $.each(data, function (i, item) {
                         $("<option></option>").text(item["WorkSection"]).appendTo($("#select_worksection"));
@@ -78,7 +78,7 @@
             $("#select_device").empty();
             $("<option></option>").val("-1").text("请选择").appendTo($("#select_device"));
             $.post(
-                "/Partial/GetDeviceNamesBySection",
+                "/Common/GetDeviceNamesBySection",
                 { sectionName: $("#select_worksection option:selected").text() },
                 function (data) {
                     $.each(data, function (i, item) {
@@ -89,7 +89,7 @@
 
         function SubmitFailure() {
             $.post(
-                "/Failure/AddNewApplication",
+                "/Maintenance/AddNewApplication",
                 {
                     deviceNo: $("#select_device option:selected").val(),
                     beginTime: $("#txt_begintime").val(),
@@ -100,13 +100,11 @@
                     thiLevFailureLocation: $("#thirdFailureLocation option:selected").text(),
                 },
                 function (data) {
-                    window.location.href = "/Failure/AllApplications";
+                    window.location.href = "/Maintenance/AllApplications";
                 }
                 );
         }
     </script>
 }
-
-
 
 
