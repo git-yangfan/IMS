@@ -13,20 +13,6 @@ namespace IMS.Data.Services
     {
 
 
-        public static Dictionary<string, string> StatusDic = new Dictionary<string, string>()
-        {
-            {"Checking", "审核中"},
-            {"Dispatched" , "已派工"},
-            {"SelfRepair", "自修中"},
-            {"OutRepair" , "外修中"},
-            {"Diagnosis" , "诊断中"},
-            {"PauseRepair" , "缓修"},
-            {"Reject" , "已驳回"}
-        };
-
-
-
-
         public static  IEnumerable<SubSystem> GetSubSystemList(int lev, int pid)
         {
             IEnumerable<SubSystem> subSystemList = null;
@@ -38,17 +24,6 @@ namespace IMS.Data.Services
 
 
         }
-
-        public static string GetShortName(string sbbh)
-        {
-            using (var client = DbConfig.GetInstance())
-            {
-                var single = client.Queryable<SBXX>().Single(c => c.SBBH == sbbh);
-                return single.SBJC;
-            }
-        }
-
-
         public static List<EngineerViewModel> GetTeamOrEngrName(string type, string teamName)
         {
             List<EngineerViewModel> engineerVMList = new List<EngineerViewModel>();

@@ -128,10 +128,10 @@
         function cssFormatter(value, row, index) {
             var status = row.Status;
             var cssname = "";
-            if (status == "审核中") {
+            if (status == "待审核") {
                 cssname = 'class="btn btn-default btn-sm"';
             }
-            if (status == "已派工") {
+            if (status == "待维修") {
                 cssname = 'class="btn btn-success btn-sm "';
             }
             if (status == "已驳回") {

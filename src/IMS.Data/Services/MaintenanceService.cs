@@ -11,6 +11,43 @@ namespace IMS.Data.Services
 {
     public class MaintenanceService
     {
+        public MaintenanceService()
+        {
+            using (var client = DbConfig.GetInstance())
+            {
+                var deviceShortNameAndNoList = client.Queryable<SBXX>().ToList();
+                if (deviceShortNameAndNoList != null)
+                {
+                    foreach (var item in deviceShortNameAndNoList)
+                    {
+                        DeviceShortNameAndNoDic.Add(item.SBBH, item.SBJC);
+                    }
+                }
+            }
+        }
+
+        public static Dictionary<string, string> StatusDic = new Dictionary<string, string>()
+        {
+            {"Checking", "待审核"},
+            {"Repairing" , "待维修"},
+            {"SelfRepairChecking", "自修方案待审"},
+            {"OutRepairChecking" , "外修申请待审"},
+            {"Diagnosing" , "待诊断"},
+            {"PauseRepairChecking" , "缓修申请待审"},
+            {"SelfRepairPass","自修方案通过"},
+            {"SelfRepairReject","自修方案失败"},
+            {"OutRepairPass" , "外修申请通过"},
+            {"OutRepairReject" , "外修申请失败"},
+            {"PauseRepairPass" , "缓修申请通过"},
+            {"PauseRepairReject" , "缓修申请失败"},
+            {"Reject" , "已驳回"}
+        };
+
+        private Dictionary<string, string> DeviceShortNameAndNoDic = new Dictionary<string, string>();
+
+
+
+
         #region 维修申请---操作工人
         public bool AddNewFailure(MaintenanceApplicationViewModel maintenanceApplicationVM)
         {
@@ -20,10 +57,10 @@ namespace IMS.Data.Services
                 {
                     using (var client = DbConfig.GetInstance())
                     {
-                        GZShenQing gZShenQing = MaintenanceApplicationViewModelToModel(maintenanceApplicationVM);
+                        GZShenQing repariApplication = MaintenanceApplicationViewModelToModel(maintenanceApplicationVM);
                         int id = client.Queryable<GZShenQing>().Max(it => it.Id).ObjToInt() + 1;
-                        gZShenQing.Id = id;
-                        return client.Insert<GZShenQing>(gZShenQing).ObjToBool();
+                        repariApplication.Id = id;
+                        return client.Insert<GZShenQing>(repariApplication).ObjToBool();
                     }
                 }
                 catch (Exception)
@@ -69,7 +106,7 @@ namespace IMS.Data.Services
             {
                 return client.Delete<GZShenQing>(it => it.Id == id).ObjToBool();
             }
-        } 
+        }
         #endregion
 
 
@@ -113,7 +150,7 @@ namespace IMS.Data.Services
                 try
                 {
                     client.Insert<GZXX>(failureInfo);
-                    client.Update<GZShenQing>(new { SFKYXG = 1, DQZT = CommonService.StatusDic["Dispatched"], HFSJ = DateTime.Now, HFXX = "同意" }, it => it.Id == applicationProcessVM.MaintenanceApplicationViewModel.Id);
+                    client.Update<GZShenQing>(new { SFKYXG = 1, DQZT = StatusDic["Repairing"], HFSJ = DateTime.Now, HFXX = "同意" }, it => it.Id == applicationProcessVM.MaintenanceApplicationViewModel.Id);
                     client.CommitTran();
                     return true;
                 }
@@ -134,7 +171,7 @@ namespace IMS.Data.Services
                         {
                             HFSJ = DateTime.Now,
                             HFXX = rejectReason,
-                            DQZT = CommonService.StatusDic["Reject"]
+                            DQZT = StatusDic["Reject"]
                         }, it => it.Id == Convert.ToInt32(applicationId)).ObjToBool();
                     return result;
                 }
@@ -143,16 +180,109 @@ namespace IMS.Data.Services
                     throw;
                 }
             }
-        } 
+        }
+        public bool UpdateSelfRepairPlanByAdmin(int planId, int appId, string type, string msg)
+        {
+            bool result = false;
+            using (var client = DbConfig.GetInstance())
+            {
+                client.BeginTran();
+                client.CommandTimeOut = 30000;
+                if (string.Equals(type, "approve"))
+                {
+                    client.Update<GZShenQing>(new { DQZT = StatusDic["SelfRepairPass"] }, it => it.Id == appId);
+                    client.Update<ZXFA>(new { HFSJ = DateTime.Now, HFXX = msg, HFRID = 9999, SFTG = "是" }, it => it.ID == planId);
+                }
+                if (string.Equals(type, "reject"))
+                {
+                    client.Update<GZShenQing>(new { DQZT = StatusDic["SelfRepairReject"] }, it => it.Id == appId);
+                    client.Update<ZXFA>(new { HFSJ = DateTime.Now, HFXX = msg, HFRID = 9999, SFTG = "否" }, it => it.ID == planId);
+                }
+                try
+                {
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return result;
+            }
+        }
+
         #endregion
 
 
 
         #region 维修申请处理---维修工程师
+        public bool InsertNewSelfRepairPlan(SelfRepairPlanViewModel selfRepairPlanVM)
+        {
+            bool result = false;
+            //插入新的自修方案
+
+            //更改故障申请记录的状态
+            using (var client = DbConfig.GetInstance())
+            {
+                try
+                {
+                    client.BeginTran();
+                    client.CommandTimeOut = 30000;
+                    ZXFA selfRepairPlan = new ZXFA(selfRepairPlanVM);
+                    selfRepairPlan.ID = client.Queryable<ZXFA>().Max(it => it.ID).ObjToInt() + 1;
+                    client.Insert<ZXFA>(selfRepairPlan);
+                    client.Update<GZShenQing>(new { DQZT = StatusDic["SelfRepairChecking"] }, it => it.Id == selfRepairPlanVM.RepairAppId);
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+
+            }
+            return result;
+        }
         #endregion
 
 
+        public SelfRepairPlanViewModel SelfRepairPlanByAppId(int appId)
+        {
+            using (var client = DbConfig.GetInstance())
+            {
+                ZXFA selfRepairPlanM = client.Queryable<ZXFA>().Single(it => it.GZSHENQINGID == appId);
+                SelfRepairPlanViewModel resultVM = new SelfRepairPlanViewModel(selfRepairPlanM);
+                return resultVM;
+            }
+        }
 
+        public bool UpdateSelfRepairPlanByEngr(SelfRepairPlanViewModel selfRepairPlanVM, int appId) 
+        {
+            bool result = false;
+            //更新gzsq中的当前状态
+            //更新zxfa
+            using (var client=DbConfig.GetInstance())
+            {
+                client.BeginTran();
+                client.CommandTimeOut = 30000;
+                client.Update<GZShenQing>(new { DQZT = StatusDic["SelfRepairChecking"] }, it => it.Id == appId);
+                ZXFA selfRepairPlanModel = new ZXFA(selfRepairPlanVM);
+                client.DisableUpdateColumns = new string[] {"ID"};
+                client.Update<ZXFA>(selfRepairPlanModel, it => it.GZSHENQINGID==appId);
+                try
+                {
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                
+            }
+            return result;
+        }
+      
         public List<MaintenanceApplicationViewModel> GetAllApplicationsByName(string name, string sectionName, string deviceNo, string beginTime, string endTime)
         {
             using (var client = DbConfig.GetInstance())
@@ -200,7 +330,7 @@ namespace IMS.Data.Services
                     var item = listWithDeviceNo[i];
                     MaintenanceApplicationViewModel maintenanceApplicationVM = new MaintenanceApplicationViewModel(item);
                     maintenanceApplicationVM.Order = i + 1;
-                    maintenanceApplicationVM.DeviceShortName = CommonService.GetShortName(item.SBBH);
+                    maintenanceApplicationVM.DeviceShortName = DeviceShortNameAndNoDic[item.SBBH];
                     maintenanceApplicationVMList.Add(maintenanceApplicationVM);
                 }
                 return maintenanceApplicationVMList;

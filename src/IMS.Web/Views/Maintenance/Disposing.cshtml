@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Disposing";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -12,13 +11,87 @@
         <table id="table_disposing"></table>
     </div>
 
-    <a onclick="window.open('./NewRepairPlan')">自修</a>
+    <div class="modal " id="modalforselfrepair" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index:5000;">
+        <div class="modal-dialog modal-lg" role="document">
+            <input type="hidden" id="forrepairplanid" />
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">新建自修方案</h4>
+                    </div>
+                    <div class="modal-body row">
+                        <div class="col-lg-6">
+                            相似案例
+                            <div class="row">
+                                <table id="table_historyrecord"></table>
+                            </div>
+                            <div class="row"></div>
+                        </div>
+                        <div class="col-lg-6 form-horizontal" id="newplan" style="border-left:solid #808080 1px">
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" style="margin:0px;padding:0px">维修步骤</label>
+                                <div class="col-sm-10">
+                                    <textarea id="txtarea_repairsteps" rows="8" class="required"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">维修工具</label>
+                                <div class="col-sm-10">
+                                    <textarea id="txtarea_repairtools" rows="4" class="required"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">预估用时</label>
+                                <div class="col-sm-10 input-group">
+                                    <input type="text" id="input_timecost" class="form-control">
+                                    <div class="input-group-addon">H</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">是否使用备件</label>
+                                <div class="col-sm-10">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="isspareparts" id="inlineRadio1" value="是"> 是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="isspareparts" id="inlineRadio2" value="否"> 否
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">备件信息</label>
+                                <div class="col-sm-10">
+                                    <textarea id="txtarea_spareparts" rows="8"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>放弃</button>
+                        <button type="button" id="btn_submit" class="btn btn-primary" onclick="CreatOrModifyRepairPlan()" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>新建</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
 
 
     <script>
         var $table = $('#table_disposing');
-        var dispatchingrow;
-        var indexofdispatchingrow;
+        var disposingRow;
+        var indexOfDisposingRow;
         $(function () {
             initTable();
         })
@@ -47,7 +120,6 @@
                 uniqueId: "DeviceNo",                     //每一行的唯一标识，一般为主键列
                 showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
                 cardView: false,                    //是否显示详细视图
-                detailView: false,                   //是否显示父子表
                 queryParams: queryParams,
                 detailView: true,
                 detailFormatter: detailFormatter,
@@ -113,12 +185,13 @@
         }
 
         function cssFormatter(value, row, index) {
+        //这个地方的颜色还不知道怎么定，状态太多，颜色太多不好看
             var status = row.Status;
             var cssname = "";
-            if (status == "审核中") {
+            if (status == "待审核") {
                 cssname = 'class="btn btn-default btn-sm "';
             }
-            if (status == "已派工") {
+            if (status == "待维修") {
                 cssname = 'class="btn btn-success btn-sm"';
             }
             if (status == "已驳回") {
@@ -131,27 +204,80 @@
 
 
         function operateFormatter(value, row, index) {
+            var liToCreate = '<li><a id="a_selfrepair" >自修</a></li><li><a href="#">外修</a></li><li><a href="#">缓修申请</a></li><li><a href="#">故障诊断</a></li>';
+            if (row.Status == "自修方案失败") {
+                liToCreate = '<li><a id="a_modifyrepairplan" >修改</a></li><li><a href="#">缓修申请</a></li><li><a href="#">故障诊断</a></li>';
+            };
+            if (row.Status == "自修方案通过") {
+                liToCreate = '<li><a id="a_summarize" >总结</a></li>';
+            };
             return ['<div class="btn-group">',
-                    '<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+                    '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
                     '处理 <span class="caret"></span>',
                     '</button>',
-                    '<ul class="dropdown-menu">',
-                      '<li><a  onclick="showselfmodal()" >自修</a></li>',
-                      '<li><a href="#">外修</a></li>',
-                      '<li><a href="#">缓修</a></li>',
-                      '<li><a href="#">故障诊断</a></li>',
-                      '</ul>',
+                    '<ul class="dropdown-menu">' + liToCreate,
+                    '</ul>',
                     '</div>'].join('');
         };
 
         window.operateEvents = {
-            'onclick #self': function (e, value, row, index) {
-
-            },
-            'click .reject': function (e, value, row, index) {
-               }
+            'click #a_selfrepair': function (e, value, row, index) { disposingRow = row; indexOfDisposingRow = index; ShowSelfRepairModal("new"); },
+            'click #a_modifyrepairplan': function (e, value, row, index) { disposingRow = row; indexOfDisposingRow = index; ShowSelfRepairModal("modify"); }
         };
-        function showselfmodal() { alert(1);}
+        function ShowSelfRepairModal(actiontype) {
+            $('#txtarea_repairsteps').val('');
+            $('#txtarea_repairtools').val('');
+            $('#input_timecost').val('');
+            $('#txtarea_repairsteps').val('');
+            $('#txtarea_spareparts').val('');
+            //加载相似案例
+            if (actiontype == "modify") {
+                $.post("/Maintenance/GetSelfRepairPlanByAppId", { appId: disposingRow.Id }, function (Data) {
+                    data = $.parseJSON(Data);
+                    if (data.status == "success") {
+                        $('#txtarea_repairsteps').val(data.data["Steps"]);
+                        $('#txtarea_repairtools').val(data.data["Tools"]);
+                        $('#input_timecost').val(data.data["TimeCost"]);
+                        $('#txtarea_repairsteps').val(data.data["Steps"]);
+                        $("input[name='isspareparts'][value='" + data.data["IsUseSpareParts"] + "']").attr("checked", true);  //根据Value值有问题
+                        $('#txtarea_spareparts').val(data.data["SparePartsInfo"]);
+                        $('#forrepairplanid').val(data.data["ID"]);
+                    }
+                });
+            }
+            $("#modalforselfrepair").modal();
+        }
+
+        function CreatOrModifyRepairPlan() {
+            var type = "Create";
+            var steps = $('#txtarea_repairsteps').val();
+            var tools = $('#txtarea_repairtools').val();
+            var timecost = $('#input_timecost').val();
+            var isspare = $("input[name='isspareparts']:checked").val();
+            var spareparts = $('#txtarea_spareparts').val();
+            if (isspare == "是") {
+                if (spareparts == "") {
+                    alert("请填写备件信息");
+                    return;
+                }
+            }
+            if (disposingRow.Status == "自修方案失败") {
+                type = "modify";
+            }
+            $.post("/Maintenance/CreatOrModifyRepairPlan",
+                { appId: disposingRow.Id, steps: steps, tools: tools, timecost: timecost, isspare: isspare, spareparts: spareparts ,type:type},
+                function (Data) {
+                    data = $.parseJSON(Data);
+                    if (data.status == "success") {
+                        alert(data.msg);
+                        $table.bootstrapTable('updateRow', {
+                            index: indexOfDisposingRow,
+                            row: { "Status": data.phase }
+                        });
+                    }
+                });
+        }
+
     </script>
 
 }

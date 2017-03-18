@@ -259,6 +259,9 @@
     <Content Include="Content\bootstrap\table\extensions\tree-column\bootstrap-table-tree-column.min.js" />
     <Content Include="Content\bootstrap\table\locale\bootstrap-table-zh-CN.js" />
     <Content Include="Content\bootstrap\table\locale\bootstrap-table-zh-CN.min.js" />
+    <Content Include="Content\validation\jquery-validation-1.9.0\jquery.validate.js" />
+    <Content Include="Content\validation\jquery-validation-1.9.0\jquery.validate.min.js" />
+    <Content Include="Content\validation\jquery[1].validate.cn.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />

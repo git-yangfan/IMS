@@ -13,6 +13,9 @@ namespace IMS.Web.Controllers.Maintenance
     {
         // GET: Maintenance
 
+
+
+
         MaintenanceService maintenanceService = new MaintenanceService();
         [HttpPost]
         public ActionResult GetAllApplicationsByUserName(string name, int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername)
@@ -50,7 +53,7 @@ namespace IMS.Web.Controllers.Maintenance
             MaintenanceApplicationVM.ThiLevFailureLocation = Request.Params["thiLevFailureLocation"];
             MaintenanceApplicationVM.ReporterId = "报告人A";
             MaintenanceApplicationVM.ReportTime = DateTime.Now;
-            MaintenanceApplicationVM.Status = "审核中";
+            MaintenanceApplicationVM.Status = "待审核";
             MaintenanceApplicationVM.Modifiable = 0;
             maintenanceService.AddNewFailure(MaintenanceApplicationVM);
         }
@@ -100,7 +103,7 @@ namespace IMS.Web.Controllers.Maintenance
             return View();
         }
         [HttpPost]
-        public JsonResult Dispatch(string applicationId, string workType, string engineerId, string instruction)
+        public ActionResult Dispatch(string applicationId, string workType, string engineerId, string instruction)
         {
             ApplicationProcessViewModel applicationProcessVM = new ApplicationProcessViewModel();
             applicationProcessVM.Instruction = instruction;
@@ -109,11 +112,11 @@ namespace IMS.Web.Controllers.Maintenance
             bool result = maintenanceService.Dispatch(applicationProcessVM, workType);
             if (result)
             {
-                return Json("ok");
+                return Content(new { msg = "成功", status = "success", phase = MaintenanceService.StatusDic["Repairing"] }.ToJsonString());
             }
             else
             {
-                return Json("");
+                return Content(new { msg = "失败", status = "failed" }.ToJsonString());
             }
 
         }
@@ -123,7 +126,7 @@ namespace IMS.Web.Controllers.Maintenance
             var result = maintenanceService.Reject(applicationId, rejectReason);
             if (result)
             {
-                var data = new { msg = "已经成功驳回", status = "success" };
+                var data = new { msg = "已经成功驳回", status = "success", phase = MaintenanceService.StatusDic["Reject"] };
                 return Content(data.ToJsonString());
             }
             else
@@ -131,6 +134,25 @@ namespace IMS.Web.Controllers.Maintenance
                 return Content(new { msg = "驳回失败", status = "failed" }.ToJsonString());
             }
         }
+
+        [HttpPost]
+        public ActionResult UpdateSelfRepairPlanById(int planId, int appId, string type, string msg)
+        {
+            bool result = maintenanceService.UpdateSelfRepairPlanByAdmin(planId, appId, type, msg);
+            if (result)
+            {
+                return Content(new { msg = "处理成功", status = "success", phase = MaintenanceService.StatusDic["SelfRepairPass"] }.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "处理失败", status = "failed", phase = MaintenanceService.StatusDic["SelfRepairReject"] }.ToJsonString());
+            }
+        }
+
+
+
+
+
         #endregion
 
 
@@ -144,7 +166,31 @@ namespace IMS.Web.Controllers.Maintenance
         public ActionResult NewRepairPlan()
         {
             return View();
-        } 
+        }
+        [HttpPost]
+        public ActionResult CreatOrModifyRepairPlan(int appId, string steps, string tools, int timecost, string isspare, string spareparts, string type)
+        {
+            bool result = false;
+            SelfRepairPlanViewModel selfRepairPlanVM = new SelfRepairPlanViewModel();
+            selfRepairPlanVM.RepairAppId = appId;
+            selfRepairPlanVM.Steps = steps;
+            selfRepairPlanVM.Tools = tools;
+            selfRepairPlanVM.TimeCost = timecost;
+            selfRepairPlanVM.IsUseSpareParts = isspare;
+            selfRepairPlanVM.SparePartsInfo = spareparts;
+            if (string.Equals(type, "Create"))
+            {
+                result = maintenanceService.InsertNewSelfRepairPlan(selfRepairPlanVM);
+            }
+            if (string.Equals(type, "modify"))
+            {
+                result = maintenanceService.UpdateSelfRepairPlanByEngr(selfRepairPlanVM, appId);
+            }
+            if (result)
+                return Content(new { msg = "成功", status = "success", phase = MaintenanceService.StatusDic["SelfRepairChecking"] }.ToJsonString());
+            else
+                return Content(new { msg = "失败", status = "failed" }.ToJsonString());
+        }
         #endregion
 
 
@@ -160,8 +206,19 @@ namespace IMS.Web.Controllers.Maintenance
 
 
 
-
-
+        [HttpPost]
+        public ActionResult GetSelfRepairPlanByAppId(int appId)
+        {
+            SelfRepairPlanViewModel ResultVM = maintenanceService.SelfRepairPlanByAppId(appId);
+            if (ResultVM != null)
+            {
+                return Content(new { msg = "找到方案", status = "success", data = ResultVM }.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "未找到方案", status = "failed" }.ToJsonString());
+            }
+        }
 
         /// <summary>
         /// 测试功能的

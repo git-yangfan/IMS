@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Dispatch";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -90,6 +89,69 @@
                         <button type="button" id="btn_reject" class="btn btn-primary" onclick="Reject()" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>驳回</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal " id="selfrepairtocheck" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index:5000;">
+        <div class="modal-dialog " role="document">
+            <input type="hidden" id="forrepairplanid" />
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">审核自修方案</h4>
+                    </div>
+                    <div class="modal-body form-horizontal row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">维修步骤</label>
+                            <div class="col-sm-10">
+                                <textarea id="txtarea_repairsteps" rows="7" readonly></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">维修工具</label>
+                            <div class="col-sm-10">
+                                <textarea id="txtarea_repairtools" rows="2" readonly></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">预估用时</label>
+                            <div class="col-sm-3 ">
+                                <input type="text" id="input_timecost" readonly>
+                            </div>
+                            <label class="col-sm-3 control-label">是否使用备件</label>
+                            <div class="col-sm-3">
+                                <label class="radio-inline">
+                                    <input type="radio" name="isspareparts" id="inlineRadio1" value="是"> 是
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="isspareparts" id="inlineRadio2" value="否"> 否
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备件信息</label>
+                            <div class="col-sm-10">
+                                <textarea id="txtarea_spareparts" rows="3" readonly></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">作业指示</label>
+                            <div class="col-sm-10">
+                                <textarea id="txtarea_insruction" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" onclick="CheckNewPlan('reject')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>驳回</button>
+                        <button type="button" id="btn_submit" class="btn btn-primary" onclick="CheckNewPlan('approve')" data-dismiss="modal"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>通过</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -195,10 +257,10 @@
         function cssFormatter(value, row, index) {
             var status = row.Status;
             var cssname = "";
-            if (status == "审核中") {
+            if (status == "待审核") {
                 cssname = 'class="btn btn-default btn-sm "';
             }
-            if (status == "已派工") {
+            if (status == "自修方案待审") {
                 cssname = 'class="btn btn-success btn-sm"';
             }
             if (status == "已驳回") {
@@ -211,21 +273,33 @@
 
 
         function operateFormatter(value, row, index) {
-            return [
-                '<button id="btn_dispatch" type="button" class="dispatch btn btn-default btn-sm">',
-                '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>派工',
-                '</button>',
-                '<button id="btn_reject" type="button" class="reject btn btn-default btn-sm">',
-                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>驳回',
-                ' </button>'
-            ].join('');
+            var status = row.Status;
+            if (status == "待审核" || status == "待维修" || status == "待诊断") {
+                return ['<div class="btn-group" >',
+                    '<button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+                    '处理 <span class="caret"></span>',
+                    '</button>',
+                    '<ul class="dropdown-menu" >',
+                      '<li><a id="a_dispatch">派工</a></li>',
+                      '<li><a id="a_reject">驳回</a></li>',
+                    '</ul></div>'
+                ].join('');
+            }
+            else {
+                return [
+               '<button id="btn_check" type="button" class="dispatch btn btn-default btn-sm">',
+               '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>审核',
+               '</button>'
+                ].join('');
+            }
+
         };
         window.operateEvents = {
-            'click .dispatch': function (e, value, row, index) {
+            'click #a_dispatch': function (e, value, row, index) {
                 dispatchingrow = row;
                 indexofdispatchingrow = index;
                 var status = row.Status;
-                if (status == "已驳回" || status == "已派工") {
+                if (status != "待审核") {
                     alert("您已经完成处理！请勿重复操作");
                     return;
                 }
@@ -241,35 +315,84 @@
                 $("#txtarea_instruction").val('');
                 $('#modalfordispatch').modal();
             },
-            'click .reject': function (e, value, row, index) {
+            'click #a_reject': function (e, value, row, index) {
                 dispatchingrow = row;
                 indexofdispatchingrow = index;
                 var status = row.Status;
-                if (status == "已驳回" || status == "已派工") {
+                if (status != "待审核") {
                     alert("您已经完成处理！请勿重复操作");
                     return;
                 }
                 $("#txtarea_rejectreason").val('');
                 $("#modalforreject").modal();
+            },
+            'click #btn_check': function (e, value, row, index) {
+                dispatchingrow = row;
+                indexofdispatchingrow = index;
+                var status = row.Status;
+                if (status == "自修方案待审") {
+                    $.post("/Maintenance/GetSelfRepairPlanByAppId", { appId: row.Id }, function (Data) {
+                        data = $.parseJSON(Data);
+                        if (data.status == "success") {
+                            $('#txtarea_repairsteps').val(data.data["Steps"]);
+                            $('#txtarea_repairtools').val(data.data["Tools"]);
+                            $('#input_timecost').val(data.data["TimeCost"]);
+                            $('#txtarea_repairsteps').val(data.data["Steps"]);
+                            $('#txtarea_spareparts').val(data.data["SparePartsInfo"]);
+                            $('#forrepairplanid').val(data.data["ID"]);
+                        }
+                    });
+                    $('#selfrepairtocheck').modal();
+                }
+                if (status == "外修申请待审") {
+                    OutRepairAppCheck(row);
+                }
+                if (status == "缓修申请待审") {
+                    PauseRepairAppCheck(row);
+                }
             }
         };
+
+        function CheckNewPlan(type) {
+            var id = $('#forrepairplanid').val();
+            var msg = $('#txtarea_insruction').val();
+            if (type == "reject") {
+                if (msg == "") {
+                    alert("请填写拒绝的理由");
+                    return;
+                }
+            }
+            if (type == "approve") {
+                if (msg == "") {
+                    msg = "同意";
+                }
+            }
+            $.post("/Maintenance/UpdateSelfRepairPlanById", { planId: id, appId: dispatchingrow.Id, type: type, msg: msg }, function (Data) {
+                data = $.parseJSON(Data);
+                if (data.status == "success") {
+                    alert(data.msg);
+                    $table.bootstrapTable('updateRow', {
+                        index: indexofdispatchingrow,
+                        row: { "Status": data.phase }
+                    });
+                }
+            });
+        }
+
 
         function Dispatch() {
             $.post(
                 "/Maintenance/Dispatch",
                 { applicationId: dispatchingrow.Id, workType: $("#select_worktype option:selected").text(), engineerId: $("#select_engineer").val(), instruction: $("#txtarea_instruction").val() },
-                function (data) {
-                    if (data != "") {
-                        alert("派工成功");
+                function (Data) {
+                    data = $.parseJSON(Data);
+                    if (data.status == "success") {
                         $table.bootstrapTable('updateRow', {
                             index: indexofdispatchingrow,
-                            row: { "Status": "已派工" }
+                            row: { "Status": data.phase }
                         });
-                        //RefreshTable();
                     }
-                    else {
-                        alert("提交派工数据时可能有点小问题！");
-                    }
+                    alert(data.msg);
                 });
         };
 
@@ -285,16 +408,12 @@
                     function (Data) {
                         var data = $.parseJSON(Data);
                         if (data.status == "success") {
-                            alert(data.msg);
                             $table.bootstrapTable('updateRow', {
                                 index: indexofdispatchingrow,
-                                row: { "Status": "已驳回" }
+                                row: { "Status": data.phase }
                             });
-                            //RefreshTable();
                         }
-                        else {
-                            alert(data.msg);
-                        }
+                        alert(data.msg);
                     });
             }
         }
