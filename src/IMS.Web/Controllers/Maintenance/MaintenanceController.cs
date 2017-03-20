@@ -18,9 +18,10 @@ namespace IMS.Web.Controllers.Maintenance
 
         MaintenanceService maintenanceService = new MaintenanceService();
         [HttpPost]
-        public ActionResult GetAllApplicationsByUserName(string name, int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername)
+        public ActionResult GetAllApplications(int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername)
         {
-            var AllApplicationsList = maintenanceService.GetAllApplicationsByName(name, sectionName, deviceNo, beginTime, endTime);
+            //角色 role 从当前登录的用户信息里获取
+            var AllApplicationsList = maintenanceService.GetAllApplicationsByRole(MaintenanceService.Role.Manager, sectionName, deviceNo, beginTime, endTime);
             if (AllApplicationsList != null)
             {
                 var total = AllApplicationsList.Count;
@@ -136,9 +137,9 @@ namespace IMS.Web.Controllers.Maintenance
         }
 
         [HttpPost]
-        public ActionResult UpdateSelfRepairPlanById(int planId, int appId, string type, string msg)
+        public ActionResult UpdateSelfRepairPlanByMngr(int appId, string type, string msg)
         {
-            bool result = maintenanceService.UpdateSelfRepairPlanByAdmin(planId, appId, type, msg);
+            bool result = maintenanceService.UpdateSelfRepairPlan(appId, type, msg);
             if (result)
             {
                 return Content(new { msg = "处理成功", status = "success", phase = MaintenanceService.StatusDic["SelfRepairPass"] }.ToJsonString());
@@ -168,7 +169,7 @@ namespace IMS.Web.Controllers.Maintenance
             return View();
         }
         [HttpPost]
-        public ActionResult CreatOrModifyRepairPlan(int appId, string steps, string tools, int timecost, string isspare, string spareparts, string type)
+        public ActionResult CreatOrUpdateSelfRepairPlanByEngr(int appId, string steps, string tools, int timecost, string isspare, string spareparts, string type)
         {
             bool result = false;
             SelfRepairPlanViewModel selfRepairPlanVM = new SelfRepairPlanViewModel();
@@ -180,11 +181,11 @@ namespace IMS.Web.Controllers.Maintenance
             selfRepairPlanVM.SparePartsInfo = spareparts;
             if (string.Equals(type, "Create"))
             {
-                result = maintenanceService.InsertNewSelfRepairPlan(selfRepairPlanVM);
+                result = maintenanceService.CreatNewSelfRepairPlan(selfRepairPlanVM);
             }
             if (string.Equals(type, "modify"))
             {
-                result = maintenanceService.UpdateSelfRepairPlanByEngr(selfRepairPlanVM, appId);
+                result = maintenanceService.UpdateSelfRepairPlan(selfRepairPlanVM, appId);
             }
             if (result)
                 return Content(new { msg = "成功", status = "success", phase = MaintenanceService.StatusDic["SelfRepairChecking"] }.ToJsonString());

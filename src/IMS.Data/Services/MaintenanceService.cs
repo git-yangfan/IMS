@@ -13,6 +13,7 @@ namespace IMS.Data.Services
     {
         public MaintenanceService()
         {
+            DeviceShortNameAndNoDic = new Dictionary<string, string>();
             using (var client = DbConfig.GetInstance())
             {
                 var deviceShortNameAndNoList = client.Queryable<SBXX>().ToList();
@@ -42,8 +43,14 @@ namespace IMS.Data.Services
             {"PauseRepairReject" , "缓修申请失败"},
             {"Reject" , "已驳回"}
         };
+        public enum Role 
+        { 
+            Worker,
+            Engineer,
+            Manager,
+        }
 
-        private Dictionary<string, string> DeviceShortNameAndNoDic = new Dictionary<string, string>();
+        private static Dictionary<string, string> DeviceShortNameAndNoDic ;
 
 
 
@@ -51,16 +58,16 @@ namespace IMS.Data.Services
         #region 维修申请---操作工人
         public bool AddNewFailure(MaintenanceApplicationViewModel maintenanceApplicationVM)
         {
+            bool result = false;
             if (maintenanceApplicationVM != null)
             {
                 try
                 {
                     using (var client = DbConfig.GetInstance())
                     {
-                        GZShenQing repariApplication = MaintenanceApplicationViewModelToModel(maintenanceApplicationVM);
-                        int id = client.Queryable<GZShenQing>().Max(it => it.Id).ObjToInt() + 1;
-                        repariApplication.Id = id;
-                        return client.Insert<GZShenQing>(repariApplication).ObjToBool();
+                        GZShenQing repariApplicationM = MaintenanceApplicationViewModelToModel(maintenanceApplicationVM);
+                        repariApplicationM.Id  = client.Queryable<GZShenQing>().Max(it => it.Id).ObjToInt() + 1;
+                        result= client.Insert<GZShenQing>(repariApplicationM).ObjToBool();
                     }
                 }
                 catch (Exception)
@@ -68,8 +75,7 @@ namespace IMS.Data.Services
                     throw;
                 }
             }
-            else
-                return false;
+            return result;
 
         }
         public bool UpDateApplication(int id, MaintenanceApplicationViewModel maintenanceApplicationVM)
@@ -181,7 +187,7 @@ namespace IMS.Data.Services
                 }
             }
         }
-        public bool UpdateSelfRepairPlanByAdmin(int planId, int appId, string type, string msg)
+        public bool UpdateSelfRepairPlan(int appId, string type, string msg)
         {
             bool result = false;
             using (var client = DbConfig.GetInstance())
@@ -191,12 +197,12 @@ namespace IMS.Data.Services
                 if (string.Equals(type, "approve"))
                 {
                     client.Update<GZShenQing>(new { DQZT = StatusDic["SelfRepairPass"] }, it => it.Id == appId);
-                    client.Update<ZXFA>(new { HFSJ = DateTime.Now, HFXX = msg, HFRID = 9999, SFTG = "是" }, it => it.ID == planId);
+                    client.Update<ZXFA>(new { HFSJ = DateTime.Now, HFXX = msg, HFRID = 9999, SFTG = "是" }, it => it.GZSHENQINGID == appId);
                 }
                 if (string.Equals(type, "reject"))
                 {
                     client.Update<GZShenQing>(new { DQZT = StatusDic["SelfRepairReject"] }, it => it.Id == appId);
-                    client.Update<ZXFA>(new { HFSJ = DateTime.Now, HFXX = msg, HFRID = 9999, SFTG = "否" }, it => it.ID == planId);
+                    client.Update<ZXFA>(new { HFSJ = DateTime.Now, HFXX = msg, HFRID = 9999, SFTG = "否" }, it => it.GZSHENQINGID == appId);
                 }
                 try
                 {
@@ -216,22 +222,27 @@ namespace IMS.Data.Services
 
 
         #region 维修申请处理---维修工程师
-        public bool InsertNewSelfRepairPlan(SelfRepairPlanViewModel selfRepairPlanVM)
+        public bool CreatNewSelfRepairPlan(SelfRepairPlanViewModel selfRepairPlanVM)
         {
             bool result = false;
-            //插入新的自修方案
-
-            //更改故障申请记录的状态
             using (var client = DbConfig.GetInstance())
             {
                 try
                 {
                     client.BeginTran();
                     client.CommandTimeOut = 30000;
-                    ZXFA selfRepairPlan = new ZXFA(selfRepairPlanVM);
-                    selfRepairPlan.ID = client.Queryable<ZXFA>().Max(it => it.ID).ObjToInt() + 1;
-                    client.Insert<ZXFA>(selfRepairPlan);
+                    //插入新的自修方案 ZXFA
+                    ZXFA selfRepairPlanM = new ZXFA(selfRepairPlanVM);
+                    selfRepairPlanM.ID = client.Queryable<ZXFA>().Max(it => it.ID).ObjToInt() + 1;
+                    client.Insert<ZXFA>(selfRepairPlanM);
+                    //更改故障申请记录的状态 GZShenQing
                     client.Update<GZShenQing>(new { DQZT = StatusDic["SelfRepairChecking"] }, it => it.Id == selfRepairPlanVM.RepairAppId);
+                    //插入新的故障信息   GZXX
+                    GZXX applicationInfo = new GZXX();
+                    applicationInfo.ID = client.Queryable<GZXX>().Max(it => it.ID).ObjToInt() + 1;
+                    applicationInfo.GZSHENQINGID = selfRepairPlanVM.RepairAppId;
+                    applicationInfo.ZXID = selfRepairPlanM.ID;
+                    client.Insert<GZXX>(applicationInfo);
                     client.CommitTran();
                     result = true;
                 }
@@ -239,10 +250,35 @@ namespace IMS.Data.Services
                 {
                     throw;
                 }
-
             }
             return result;
         }
+        public bool UpdateSelfRepairPlan(SelfRepairPlanViewModel selfRepairPlanVM, int appId)
+        {
+            bool result = false;
+            using (var client = DbConfig.GetInstance())
+            {
+                client.BeginTran();
+                client.CommandTimeOut = 30000;
+                //更新gzsq中的当前状态
+                client.Update<GZShenQing>(new { DQZT = StatusDic["SelfRepairChecking"] }, it => it.Id == appId);
+                 //更新zxfa
+                ZXFA selfRepairPlanM = new ZXFA(selfRepairPlanVM);
+                client.DisableUpdateColumns = new string[] { "ID" };//id不更新
+                client.Update<ZXFA>(selfRepairPlanM, it => it.GZSHENQINGID == appId);
+                try
+                {
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return result;
+        }
+
         #endregion
 
 
@@ -256,41 +292,13 @@ namespace IMS.Data.Services
             }
         }
 
-        public bool UpdateSelfRepairPlanByEngr(SelfRepairPlanViewModel selfRepairPlanVM, int appId) 
-        {
-            bool result = false;
-            //更新gzsq中的当前状态
-            //更新zxfa
-            using (var client=DbConfig.GetInstance())
-            {
-                client.BeginTran();
-                client.CommandTimeOut = 30000;
-                client.Update<GZShenQing>(new { DQZT = StatusDic["SelfRepairChecking"] }, it => it.Id == appId);
-                ZXFA selfRepairPlanModel = new ZXFA(selfRepairPlanVM);
-                client.DisableUpdateColumns = new string[] {"ID"};
-                client.Update<ZXFA>(selfRepairPlanModel, it => it.GZSHENQINGID==appId);
-                try
-                {
-                    client.CommitTran();
-                    result = true;
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-                
-            }
-            return result;
-        }
       
-        public List<MaintenanceApplicationViewModel> GetAllApplicationsByName(string name, string sectionName, string deviceNo, string beginTime, string endTime)
+        public List<MaintenanceApplicationViewModel> GetAllApplicationsByRole(Role role, string sectionName, string deviceNo, string beginTime, string endTime)
         {
             using (var client = DbConfig.GetInstance())
             {
-
                 List<GZShenQing> listWithDeviceNo = new List<GZShenQing>();
                 var sql = client.Queryable<GZShenQing>();
-                //按工段查询有问题
                 if (!String.IsNullOrEmpty(sectionName) && !String.Equals(sectionName, "请选择"))
                 {
                     var deviceofSelectSection = client.Queryable<SBXX>().Where(c => c.SSGD == sectionName).ToList();
@@ -315,7 +323,15 @@ namespace IMS.Data.Services
                     DateTime _endTime = Convert.ToDateTime(endTime);
                     sql.Where(g => g.FSSJ < _endTime);
                 }
-                var b = sql.ToSql();
+                if ( Enum.Equals(role,Role.Worker))
+                {
+                    sql.Where("DQZT=@Checking or DQZT=@Reject", StatusDic);
+                  var b = sql.ToSql();
+                }
+                if (Enum.Equals(role, Role.Engineer))
+                {
+                    sql.Where("DQZT!=@Checking or DQZT!=@Reject", StatusDic);
+                }
                 try
                 {
                     listWithDeviceNo = sql.OrderBy(g => g.FSSJ).ToList();
@@ -353,7 +369,6 @@ namespace IMS.Data.Services
             gZShenQing.SFKYXG = viewModel.Modifiable;
             gZShenQing.SBBH = viewModel.DeviceNo;
             gZShenQing.DQZT = viewModel.Status;
-
             return gZShenQing;
         }
     }

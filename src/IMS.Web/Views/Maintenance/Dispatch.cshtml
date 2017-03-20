@@ -167,7 +167,7 @@
 
         function initTable() {
             $table.bootstrapTable({
-                url: '/Maintenance/GetAllApplicationsByUserName',         //请求后台的URL（*）
+                url: '/Maintenance/GetAllApplications',         //请求后台的URL（*）
                 method: 'post',                      //请求方式（*）
                 toolbar: '#toolbar',                //工具按钮用哪个容器
                 striped: true,                      //是否显示行间隔色
@@ -179,7 +179,6 @@
                 pageNumber: 1,                       //初始化加载第一页，默认第一页
                 pageSize: 10,                       //每页的记录行数（*）
                 pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
-                search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
                 strictSearch: true,
                 showColumns: true,                  //是否显示所有的列
                 showRefresh: true,                  //是否显示刷新按钮
@@ -189,7 +188,6 @@
                 uniqueId: "DeviceNo",                     //每一行的唯一标识，一般为主键列
                 showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
                 cardView: false,                    //是否显示详细视图
-                detailView: false,                   //是否显示父子表
                 queryParams: queryParams,
                 detailView: true,
                 detailFormatter: detailFormatter,
@@ -199,7 +197,7 @@
                     { field: 'StrLocation', title: '故障部位' },
                     { field: 'FailureAppearance', title: '故障现象', sortable: true },
                     { field: 'FailureDescription', title: '故障描述', sortable: true },
-                    { field: 'Status', title: '当前状态', sortable: true, align: 'center', formatter: cssFormatter },
+                    { field: 'Status', title: '当前状态', sortable: true, align: 'left', formatter: cssFormatter },
                     { field: 'Modifiable', title: '操作', align: 'center', events: operateEvents, formatter: operateFormatter }
                 ]
             });
@@ -208,7 +206,6 @@
         //得到查询的参数
         function queryParams(params) {
             var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
-                name: "报告人A",   //页面大小
                 limit: params.limit,   //页面大小
                 offset: params.offset,  //页码
                 order: params.order,
@@ -255,16 +252,18 @@
         }
 
         function cssFormatter(value, row, index) {
+            //这个地方的颜色还不知道怎么定，状态太多，颜色太多不好看
             var status = row.Status;
             var cssname = "";
-            if (status == "待审核") {
-                cssname = 'class="btn btn-default btn-sm "';
+
+            if (status == "待审核" || status == "自修方案待审" || status == "外修申请待审" || status == "缓修申请待审") {
+                cssname = 'class="label label-primary"';
             }
-            if (status == "自修方案待审") {
-                cssname = 'class="btn btn-success btn-sm"';
+            if (status == "待维修" || status == "自修方案通过" || status == "外修申请通过" || status == "缓修申请通过") {
+                cssname = 'class="label label-success"';
             }
-            if (status == "已驳回") {
-                cssname = 'class="btn btn-danger btn-sm "';
+            if (status == "已驳回" || status == "自修方案失败" || status == "外修申请失败" || status == "缓修申请失败") {
+                cssname = 'class="label label-warning"';
             }
             return [
                 '<span ' + cssname + '>' + row.Status + '</span>'
@@ -367,7 +366,7 @@
                     msg = "同意";
                 }
             }
-            $.post("/Maintenance/UpdateSelfRepairPlanById", { planId: id, appId: dispatchingrow.Id, type: type, msg: msg }, function (Data) {
+            $.post("/Maintenance/UpdateSelfRepairPlanByMngr", {appId: dispatchingrow.Id, type: type, msg: msg }, function (Data) {
                 data = $.parseJSON(Data);
                 if (data.status == "success") {
                     alert(data.msg);
@@ -419,7 +418,7 @@
         }
 
         function RefreshTable() {
-            $('#table_dispatch').bootstrapTable('refresh', { url: '/Maintenance/GetAllApplicationsByUserName' });
+            $('#table_dispatch').bootstrapTable('refresh', { url: '/Maintenance/GetAllApplications' });
         };
     </script>
 }
