@@ -74,7 +74,7 @@
         })
         function initTable() {
             $table.bootstrapTable({
-                url: '/Maintenance/GetAllApplications',         //请求后台的URL（*）
+                url: '/Repair/GetAllApplications',         //请求后台的URL（*）
                 method: 'post',                      //请求方式（*）
                 toolbar: '#toolbar',                //工具按钮用哪个容器
                 striped: true,                      //是否显示行间隔色
@@ -101,7 +101,7 @@
                 columns: [
                     { field: 'DeviceShortName', title: '故障设备', sortable: true },
                     { field: 'BeginTime', title: '发生时间', sortable: true },
-                    { field: 'StrLocation', title: '故障部位' },
+                    { field: 'FullLocation', title: '故障部位' },
                     { field: 'FailureAppearance', title: '故障现象', sortable: true },
                     { field: 'FailureDescription', title: '故障描述', sortable: true },
                     { field: 'Status', title: '当前状态', sortable: true, align: 'center', formatter: cssFormatter },
@@ -153,8 +153,8 @@
         }
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
-                var modifiable = row.Modifiable;
-                if (modifiable == 1) {
+                var status = row.Status;
+                if (status !="待审核" || status != "已驳回") {
                     alert("申请已经受理，无法修改");
                     return;
                 } else {
@@ -170,8 +170,8 @@
                 }
             },
             'click .remove': function (e, value, row, index) {
-                var modifiable = row.Modifiable;
-                if (modifiable == 1) {
+                var status = row.Status;
+                if (status != "待审核" || status != "已驳回") {
                     alert("申请已经受理，无法删除");
                     return;
                 }
@@ -183,14 +183,13 @@
                          function (Data) {
                              var data = $.parseJSON(Data);
                              if (data.status == "success") {
-                                 alert(data.msg);
                                  //删除表格行
-                                 $('#tb_allapplications').bootstrapTable('remove', {
+                                 $table.bootstrapTable('remove', {
                                      field: 'Id',
                                      values: [row.Id]
                                  });
                              }
-                             else { alert(data.msg); }
+                             alert(data.msg);
                          })
                 }
             }
@@ -203,10 +202,10 @@
             var fstLocation = $("#firstFailureLocation option:selected").text();
             var secLocation = $("#secondFailureLocation option:selected").text();
             var thiLocation = $("#thirdFailureLocation option:selected").text();
-            var strlocation = fstLocation + (secLocation == "请选择" ? "" : "/" + secLocation) + (thiLocation == "请选择" ? "" : "/" + thiLocation);
+            var FullLocation = fstLocation + (secLocation == "请选择" ? "" : "/" + secLocation) + (thiLocation == "请选择" ? "" : "/" + thiLocation);
 
             $.post(
-               "/Maintenance/UpDateApplication",
+               "/Repair/UpDateApplication",
                {
                    applicationId: $("#txt_forapplicationid").val(),
                    failureAppearance: Appearance,
@@ -219,9 +218,9 @@
                    var data = $.parseJSON(Data);
                    if (data.status == "success") {
                        alert(data.msg);
-                       $('#tb_allapplications').bootstrapTable('updateRow', {
+                       $table.bootstrapTable('updateRow', {
                            index: indexofrowtomodify,
-                           row: { "FailureAppearance": Appearance, "FailureDescription": Description, "StrLocation": strlocation }
+                           row: { "FailureAppearance": Appearance, "FailureDescription": Description, "FullLocation": FullLocation }
                        });
                    }
                    else {
@@ -233,7 +232,7 @@
 
 
         function RefreshTable() {
-            $('#tb_allapplications').bootstrapTable('refresh', { url: '/Maintenance/GetAllApplications' });
+            $('#tb_allapplications').bootstrapTable('refresh', { url: '/Repair/GetAllApplications' });
         }
 
 

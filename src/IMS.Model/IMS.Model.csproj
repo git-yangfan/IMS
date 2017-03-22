@@ -41,18 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\GZXX.cs" />
     <Compile Include="Model\ZDPGD.cs" />
     <Compile Include="Model\PGD.cs" />
     <Compile Include="Model\SBXX.cs" />
-    <Compile Include="Model\GZShenQing.cs" />
+    <Compile Include="Model\WXShenQing.cs" />
     <Compile Include="Model\Users.cs" />
     <Compile Include="Model\ZXFA.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\SubSystem.cs" />
     <Compile Include="ViewModel\EngineerViewModel.cs" />
-    <Compile Include="ViewModel\ApplicationProcessViewModel.cs" />
-    <Compile Include="ViewModel\MaintenanceApplicationViewModel.cs" />
+    <Compile Include="ViewModel\DispatchSheetViewModel.cs" />
+    <Compile Include="ViewModel\ApplicationsViewModel.cs" />
     <Compile Include="ViewModel\DeviceViewModel.cs" />
     <Compile Include="ViewModel\SelfRepairPlanViewModel.cs" />
   </ItemGroup>

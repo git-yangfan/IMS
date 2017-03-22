@@ -10,8 +10,7 @@ namespace IMS.Model.Model
     public class ZXFA
     {
         public int ID { get; set; }
-        public int GZSHENQINGID { get; set; }
-        public string BUZOU { get; set; }
+        public string BUZHOU { get; set; }
         public string GONGJU { get; set; }
         public string SFSYBJ { get; set; }
         public string BJXX { get; set; }
@@ -24,8 +23,7 @@ namespace IMS.Model.Model
 
         public ZXFA(SelfRepairPlanViewModel VM)
         {
-            this.GZSHENQINGID = VM.RepairAppId;
-            this.BUZOU = VM.Steps;
+            this.BUZHOU = VM.Steps;
             this.GONGJU = VM.Tools;
             this.SFSYBJ = VM.IsUseSpareParts;
             this.BJXX = VM.SparePartsInfo;

@@ -159,15 +159,15 @@
 
     <script>
         var $table = $('#table_dispatch');
-        var dispatchingrow;
-        var indexofdispatchingrow;
+        var dispatchingRow;
+        var indexOfDispatchingRow;
         $(function () {
             initTable();
         })
 
         function initTable() {
             $table.bootstrapTable({
-                url: '/Maintenance/GetAllApplications',         //请求后台的URL（*）
+                url: '/Repair/GetAllApplications',         //请求后台的URL（*）
                 method: 'post',                      //请求方式（*）
                 toolbar: '#toolbar',                //工具按钮用哪个容器
                 striped: true,                      //是否显示行间隔色
@@ -194,7 +194,7 @@
                 columns: [
                     { field: 'DeviceShortName', title: '故障设备', sortable: true },
                     { field: 'BeginTime', title: '发生时间', sortable: true },
-                    { field: 'StrLocation', title: '故障部位' },
+                    { field: 'FullLocation', title: '故障部位' },
                     { field: 'FailureAppearance', title: '故障现象', sortable: true },
                     { field: 'FailureDescription', title: '故障描述', sortable: true },
                     { field: 'Status', title: '当前状态', sortable: true, align: 'left', formatter: cssFormatter },
@@ -273,7 +273,7 @@
 
         function operateFormatter(value, row, index) {
             var status = row.Status;
-            if (status == "待审核" || status == "待维修" || status == "待诊断") {
+            if (status == "待审核" || status == "已驳回") {
                 return ['<div class="btn-group" >',
                     '<button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
                     '处理 <span class="caret"></span>',
@@ -295,8 +295,8 @@
         };
         window.operateEvents = {
             'click #a_dispatch': function (e, value, row, index) {
-                dispatchingrow = row;
-                indexofdispatchingrow = index;
+                dispatchingRow = row;
+                indexOfDispatchingRow = index;
                 var status = row.Status;
                 if (status != "待审核") {
                     alert("您已经完成处理！请勿重复操作");
@@ -304,7 +304,7 @@
                 }
                 $("#txt_show_device").val(row.DeviceShortName);
                 $("#txt_show_begintime").val(row.BeginTime);
-                $("#txt_show_location").val(row.StrLocation);
+                $("#txt_show_location").val(row.FullLocation);
                 $("#txt_show_appear").val(row.FailureAppearance);
                 $("#txt_show_descri").val(row.FailureDescription);
                 $("#forapplicationid").val(row.Id);
@@ -315,8 +315,8 @@
                 $('#modalfordispatch').modal();
             },
             'click #a_reject': function (e, value, row, index) {
-                dispatchingrow = row;
-                indexofdispatchingrow = index;
+                dispatchingRow = row;
+                indexOfDispatchingRow = index;
                 var status = row.Status;
                 if (status != "待审核") {
                     alert("您已经完成处理！请勿重复操作");
@@ -326,11 +326,11 @@
                 $("#modalforreject").modal();
             },
             'click #btn_check': function (e, value, row, index) {
-                dispatchingrow = row;
-                indexofdispatchingrow = index;
+                dispatchingRow = row;
+                indexOfDispatchingRow = index;
                 var status = row.Status;
                 if (status == "自修方案待审") {
-                    $.post("/Maintenance/GetSelfRepairPlanByAppId", { appId: row.Id }, function (Data) {
+                    $.post("/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanID: row.SelfRepairPlanID }, function (Data) {
                         data = $.parseJSON(Data);
                         if (data.status == "success") {
                             $('#txtarea_repairsteps').val(data.data["Steps"]);
@@ -349,6 +349,32 @@
                 if (status == "缓修申请待审") {
                     PauseRepairAppCheck(row);
                 }
+                if (status == "维修撤销中") {
+                    var procedure = row.Procedure;
+                    var msg = "即将撤销" + procedure + "流程，并删除已有" + procedure + "方案！\n\n请您确定？";
+                    if (confirm(msg) == true) {
+                        var id;
+                        var procedure = row.Procedure;
+                        if (procedure == "自修") {
+                            id = row.SelfRepairPlanID;
+                        }
+                        if (procedure == "缓修") {
+                            id = row.PauseSheetID;
+                        }
+                        if (procedure == "外修") {
+                            id = row.OutRepairSheetID;
+                        }
+                        $.post("/Repair/CancelProcedure", {procedure:procedure, id:id }, function (Data) {
+                            data = $.parseJSON(Data);
+                            if (data.status == "success") {
+                                $table.bootstrapTable('updateRow', {
+                                    index: indexOfDisposingRow,
+                                    row: { "Status": data.phase }
+                                });
+                            }
+                        });
+                    }
+                }
             }
         };
 
@@ -366,12 +392,12 @@
                     msg = "同意";
                 }
             }
-            $.post("/Maintenance/UpdateSelfRepairPlanByMngr", {appId: dispatchingrow.Id, type: type, msg: msg }, function (Data) {
+            $.post("/Repair/UpdateSelfRepairPlanByMngr", { selfRepairPlanID: dispatchingRow.SelfRepairPlanID, type: type, msg: msg }, function (Data) {
                 data = $.parseJSON(Data);
                 if (data.status == "success") {
                     alert(data.msg);
                     $table.bootstrapTable('updateRow', {
-                        index: indexofdispatchingrow,
+                        index: indexOfDispatchingRow,
                         row: { "Status": data.phase }
                     });
                 }
@@ -381,13 +407,13 @@
 
         function Dispatch() {
             $.post(
-                "/Maintenance/Dispatch",
-                { applicationId: dispatchingrow.Id, workType: $("#select_worktype option:selected").text(), engineerId: $("#select_engineer").val(), instruction: $("#txtarea_instruction").val() },
+                "/Repair/Dispatch",
+                { applicationId: dispatchingRow.Id, workType: $("#select_worktype option:selected").text(), engineerId: $("#select_engineer").val(), instruction: $("#txtarea_instruction").val() },
                 function (Data) {
                     data = $.parseJSON(Data);
                     if (data.status == "success") {
                         $table.bootstrapTable('updateRow', {
-                            index: indexofdispatchingrow,
+                            index: indexOfDispatchingRow,
                             row: { "Status": data.phase }
                         });
                     }
@@ -402,13 +428,13 @@
             }
             else {
                 $.post(
-                    "/Maintenance/Reject",
-                    { applicationId: dispatchingrow.Id, rejectReason: reason },
+                    "/Repair/Reject",
+                    { applicationId: dispatchingRow.Id, rejectReason: reason },
                     function (Data) {
                         var data = $.parseJSON(Data);
                         if (data.status == "success") {
                             $table.bootstrapTable('updateRow', {
-                                index: indexofdispatchingrow,
+                                index: indexOfDispatchingRow,
                                 row: { "Status": data.phase }
                             });
                         }
@@ -418,7 +444,7 @@
         }
 
         function RefreshTable() {
-            $('#table_dispatch').bootstrapTable('refresh', { url: '/Maintenance/GetAllApplications' });
+            $('#table_dispatch').bootstrapTable('refresh', { url: '/Repair/GetAllApplications' });
         };
     </script>
 }

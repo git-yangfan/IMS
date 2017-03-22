@@ -98,7 +98,7 @@
 
         function initTable() {
             $table.bootstrapTable({
-                url: '/Maintenance/GetAllApplications',         //请求后台的URL（*）
+                url: '/Repair/GetAllApplications',         //请求后台的URL（*）
                 method: 'post',                      //请求方式（*）
                 toolbar: '#toolbar',                //工具按钮用哪个容器
                 striped: true,                      //是否显示行间隔色
@@ -126,7 +126,7 @@
                 columns: [
                     { field: 'DeviceShortName', title: '故障设备', sortable: true },
                     { field: 'BeginTime', title: '发生时间', sortable: true },
-                    { field: 'StrLocation', title: '故障部位' },
+                    { field: 'FullLocation', title: '故障部位' },
                     { field: 'FailureAppearance', title: '故障现象', sortable: true },
                     { field: 'FailureDescription', title: '故障描述', sortable: true },
                     { field: 'Status', title: '当前状态', sortable: true, align: 'center', formatter: cssFormatter },
@@ -138,7 +138,7 @@
         //得到查询的参数
         function queryParams(params) {
             var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
-                role: "engr",   
+                role: "engr",
                 limit: params.limit,   //页面大小
                 offset: params.offset,  //页码
                 order: params.order,
@@ -185,7 +185,7 @@
         }
 
         function cssFormatter(value, row, index) {
-        //这个地方的颜色还不知道怎么定，状态太多，颜色太多不好看
+            //这个地方的颜色还不知道怎么定，状态太多，颜色太多不好看
             var status = row.Status;
             var cssname = "";
             if (status == "待审核" || status == "自修方案待审" || status == "外修申请待审" || status == "缓修申请待审") {
@@ -205,17 +205,17 @@
 
         function operateFormatter(value, row, index) {
             var liToCreate = '<li><a id="a_selfrepair" >自修</a></li><li><a href="a_outrepair">外修</a></li><li><a href="#">缓修申请</a></li><li><a href="#">故障诊断</a></li>';
-            if (row.Status == "自修方案失败" || row.Status == "自修方案待审") {
-                liToCreate = '<li><a id="a_modifyrepairplan" >修改方案</a></li><li><a href="#">缓修申请</a></li><li><a href="#">故障诊断</a></li>';
+            if (row.Status == "自修方案失败" || row.Status == "自修方案待审" || row.Status == "自修方案通过") {
+                liToCreate = '<li><a id="a_modifyrepairplan" >修改方案</a></li><li><a id="a_cancel">撤销方案</a></li>';
             };
             if (row.Status == "自修方案通过") {
-                liToCreate = '<li><a id="a_summarize" >总结</a></li>';
+                liToCreate = '<li><a id="a_summarize" >维修总结</a></li><li><a id="a_modifyrepairplan" >修改方案</a></li><li><a id="a_cancel">撤销方案</a></li>';
             };
-            if (row.Status == "自修方案失败" || row.Status == "自修方案待审") {
-                liToCreate = '<li><a id="a_modifyrepairplan" >修改方案</a></li><li><a href="#">缓修申请</a></li><li><a href="#">故障诊断</a></li>';
+            if (row.Status == "外修申请待审" || row.Status == "外修申请失败" || row.Status == "外修申请通过") {
+                liToCreate = '<li><a id="a_modifyrepairplan" >修改申请</a></li><li><a id="#">撤销申请</a></li>';
             };
-            if (row.Status == "自修方案通过") {
-                liToCreate = '<li><a id="a_summarize" >总结</a></li>';
+            if (row.Status == "缓修申请待审" || row.Status == "缓修申请通过" || row.Status == "缓修申请失败") {
+                liToCreate = '<li><a id="a_modifyrepairplan" >修改申请</a></li><li><a id="#">撤销申请</a></li>';
             };
             return ['<div class="btn-group">',
                     '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
@@ -229,26 +229,34 @@
         window.operateEvents = {
             'click #a_selfrepair': function (e, value, row, index) {
                 disposingRow = row; indexOfDisposingRow = index;
-                if (disposingRow.Status == "自修方案待审") {
-                    var msg = "您已经提交方案，即将修改已提交方案？\n\n请您确定！";
-                    if (confirm(msg) == true) 
-                        ShowSelfRepairModal("modify");
-                }
-                else{
-                    ShowSelfRepairModal("new");
-                }
+                ShowSelfRepairModal("new");
             },
-            'click #a_modifyrepairplan': function (e, value, row, index) { disposingRow = row; indexOfDisposingRow = index; ShowSelfRepairModal("modify"); },
+            'click #a_modifyrepairplan': function (e, value, row, index) {
+                disposingRow = row; indexOfDisposingRow = index;
+                var msg = "您已经提交方案，即将修改已提交方案？\n\n请您确定！";
+                if (confirm(msg) == true)
+                    ShowSelfRepairModal("modify");
+            },
             'click #a_outrepair': function (e, value, row, index) {
                 disposingRow = row; indexOfDisposingRow = index;
-                if (disposingRow.Status == "自修方案待审") {
-                    var msg = "您已经提交自修方案，继续操作将删除自修方案并进入外修流程！！\n\n请您确定！";
-                    if (confirm(msg) == true)
-                        alert("进入外修流程");
-
+            },
+            'click #a_cancel': function (e, value, row, index) {
+                var procedure = row.Procedure;
+                disposingRow = row; indexOfDisposingRow = index;
+                var msg = "即将撤销" + procedure + "流程，\n\n请您确定？";
+                if (confirm(msg) == true) {
+                    $.post("/Repair/MarkProcedure", { appId: row.Id }, function (Data) {
+                        data = $.parseJSON(Data);
+                        if (data.status == "success") {
+                            $table.bootstrapTable('updateRow', {
+                                index: indexOfDisposingRow,
+                                row: { "Status": data.phase }
+                            });
+                        }
+                    });
                 }
-
             }
+
         };
         function ShowSelfRepairModal(actiontype) {
             $('#txtarea_repairsteps').val('');
@@ -258,7 +266,7 @@
             $('#txtarea_spareparts').val('');
             //加载相似案例
             if (actiontype == "modify") {
-                $.post("/Maintenance/GetSelfRepairPlanByAppId", { appId: disposingRow.Id }, function (Data) {
+                $.post("/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanID: disposingRow.SelfRepairPlanID }, function (Data) {
                     data = $.parseJSON(Data);
                     if (data.status == "success") {
                         $('#txtarea_repairsteps').val(data.data["Steps"]);
@@ -290,8 +298,8 @@
             if (disposingRow.Status == "自修方案失败") {
                 type = "modify";
             }
-            $.post("/Maintenance/CreatOrUpdateSelfRepairPlanByEngr",
-                { appId: disposingRow.Id, steps: steps, tools: tools, timecost: timecost, isspare: isspare, spareparts: spareparts ,type:type},
+            $.post("/Repair/CreatOrUpdateSelfRepairPlanByEngr",
+                { appId: disposingRow.Id, selfRepairPlanID: disposingRow.SelfRepairPlanID, steps: steps, tools: tools, timecost: timecost, isspare: isspare, spareparts: spareparts, type: type },
                 function (Data) {
                     data = $.parseJSON(Data);
                     if (data.status == "success") {

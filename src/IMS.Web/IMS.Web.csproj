@@ -157,7 +157,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\Maintenance\MaintenanceController.cs" />
+    <Compile Include="Controllers\Repair\RepairController.cs" />
     <Compile Include="Controllers\Common\CommonController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -310,15 +310,15 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Maintenance\GetDepartment.cshtml" />
+    <Content Include="Views\Repair\GetDepartment.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Maintenance\AllApplications.cshtml" />
-    <Content Include="Views\Maintenance\NewApplication.cshtml" />
-    <Content Include="Views\Maintenance\Dispatch.cshtml" />
-    <Content Include="Views\Maintenance\Disposing.cshtml" />
+    <Content Include="Views\Repair\NewApplication.cshtml" />
+    <Content Include="Views\Repair\Dispatch.cshtml" />
+    <Content Include="Views\Repair\Disposing.cshtml" />
     <Content Include="Views\Common\SearchBar.cshtml" />
     <Content Include="Views\Common\EngineerSelect.cshtml" />
     <Content Include="Views\Common\SubSystem.cshtml" />
+    <Content Include="Views\Repair\AllApplications.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

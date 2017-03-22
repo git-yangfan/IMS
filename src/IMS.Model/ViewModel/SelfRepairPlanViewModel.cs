@@ -10,7 +10,6 @@ namespace IMS.Model.ViewModel
    public class SelfRepairPlanViewModel
     {
         public int ID { get; set; }
-        public int RepairAppId { get; set; }
         public string Steps { get; set; }
         public string Tools { get; set; }
         public string IsUseSpareParts { get; set; }
@@ -25,8 +24,7 @@ namespace IMS.Model.ViewModel
         public SelfRepairPlanViewModel(ZXFA model) 
         {
             this.ID = model.ID;
-            this.RepairAppId = model.GZSHENQINGID;
-            this.Steps = model.BUZOU;
+            this.Steps = model.BUZHOU;
             this.Tools = model.GONGJU;
             this.IsUseSpareParts = model.SFSYBJ;
             this.SparePartsInfo = model.BJXX;

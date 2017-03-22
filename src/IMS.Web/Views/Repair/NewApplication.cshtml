@@ -89,7 +89,7 @@
 
         function SubmitApplication() {
             $.post(
-                "/Maintenance/AddNewApplication",
+                "/Repair/AddNewApplication",
                 {
                     deviceNo: $("#select_device option:selected").val(),
                     beginTime: $("#txt_begintime").val(),
@@ -100,7 +100,7 @@
                     thiLevFailureLocation: $("#thirdFailureLocation option:selected").text(),
                 },
                 function (data) {
-                    window.location.href = "/Maintenance/AllApplications";
+                    window.location.href = "/Repair/AllApplications";
                 }
                 );
         }
