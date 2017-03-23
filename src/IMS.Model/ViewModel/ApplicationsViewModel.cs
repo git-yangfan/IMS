@@ -37,7 +37,7 @@ namespace IMS.Model.ViewModel
             this.DiagnoseSheetID= model.ZDDID;
             this.EvaluateSheetID = model.PingGuDID;
             this.ReplyerId = model.HFRID;
-            SetProcedure(model);
+            this.MethodCategory = model.WXFFLB;
             
         }
         public int Order { get; set; }
@@ -64,22 +64,6 @@ namespace IMS.Model.ViewModel
         public int PauseSheetID { get; set; }
         public int DiagnoseSheetID { get; set; }
         public int EvaluateSheetID { get; set; }
-        public string Procedure { get; set; }
-
-        private void SetProcedure(WXShenQing model) 
-        {
-            if (model.DQZT.Contains("自修"))
-            {
-                this.Procedure = "自修";
-            }
-            if (model.DQZT.Contains("缓修"))
-            {
-                this.Procedure = "缓修";
-            }
-            if (model.DQZT.Contains("外修"))
-            {
-                this.Procedure = "外修";
-            }
-        }
+        public string MethodCategory { get; set; }
     }
 }

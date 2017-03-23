@@ -98,7 +98,7 @@
 
         function initTable() {
             $table.bootstrapTable({
-                url: '/Repair/GetAllApplications',         //请求后台的URL（*）
+                url: '/Repair/GetAllApplications',    //请求后台的URL（*）
                 method: 'post',                      //请求方式（*）
                 toolbar: '#toolbar',                //工具按钮用哪个容器
                 striped: true,                      //是否显示行间隔色
@@ -117,7 +117,7 @@
                 minimumCountColumns: 1,             //最少允许的列数
                 clickToSelect: true,                //是否启用点击选中行
                 height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
-                uniqueId: "DeviceNo",                     //每一行的唯一标识，一般为主键列
+                uniqueId: "DeviceNo",                 //每一行的唯一标识，一般为主键列
                 showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
                 cardView: false,                    //是否显示详细视图
                 queryParams: queryParams,
@@ -208,6 +208,9 @@
             if (row.Status == "自修方案失败" || row.Status == "自修方案待审" || row.Status == "自修方案通过") {
                 liToCreate = '<li><a id="a_modifyrepairplan" >修改方案</a></li><li><a id="a_cancel">撤销方案</a></li>';
             };
+            if ( row.Status == "方案撤销中") {
+                liToCreate = '<li><a id="a_cancel">撤销方案</a></li>';
+            };
             if (row.Status == "自修方案通过") {
                 liToCreate = '<li><a id="a_summarize" >维修总结</a></li><li><a id="a_modifyrepairplan" >修改方案</a></li><li><a id="a_cancel">撤销方案</a></li>';
             };
@@ -241,20 +244,24 @@
                 disposingRow = row; indexOfDisposingRow = index;
             },
             'click #a_cancel': function (e, value, row, index) {
-                var procedure = row.Procedure;
-                disposingRow = row; indexOfDisposingRow = index;
-                var msg = "即将撤销" + procedure + "流程，\n\n请您确定？";
-                if (confirm(msg) == true) {
-                    $.post("/Repair/MarkProcedure", { appId: row.Id }, function (Data) {
-                        data = $.parseJSON(Data);
-                        if (data.status == "success") {
-                            $table.bootstrapTable('updateRow', {
-                                index: indexOfDisposingRow,
-                                row: { "Status": data.phase }
-                            });
-                        }
-                    });
+                var methodCategory = row.MethodCategory;
+                if (row.Status != "方案撤销中") {
+                    disposingRow = row; indexOfDisposingRow = index;
+                    var msg = "即将撤销 《" + methodCategory + "》 流程，\n\n请您确定？";
+                    if (confirm(msg) == true) {
+                        $.post("/Repair/MarkProcedure", { appId: row.Id }, function (Data) {
+                            data = $.parseJSON(Data);
+                            if (data.status == "success") {
+                                $table.bootstrapTable('updateRow', {
+                                    index: indexOfDisposingRow,
+                                    row: { "Status": data.phase}
+                                });
+                            }
+                        });
+                    }
                 }
+                else { alert("撤销申请已经提交了，等待审核中！！"); }
+
             }
 
         };
@@ -306,7 +313,7 @@
                         alert(data.msg);
                         $table.bootstrapTable('updateRow', {
                             index: indexOfDisposingRow,
-                            row: { "Status": data.phase }
+                            row: { "Status": data.phase, "MethodCategory": data.methodCategory }
                         });
                     }
                 });

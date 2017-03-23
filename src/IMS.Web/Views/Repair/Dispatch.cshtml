@@ -255,7 +255,6 @@
             //这个地方的颜色还不知道怎么定，状态太多，颜色太多不好看
             var status = row.Status;
             var cssname = "";
-
             if (status == "待审核" || status == "自修方案待审" || status == "外修申请待审" || status == "缓修申请待审") {
                 cssname = 'class="label label-primary"';
             }
@@ -308,7 +307,6 @@
                 $("#txt_show_appear").val(row.FailureAppearance);
                 $("#txt_show_descri").val(row.FailureDescription);
                 $("#forapplicationid").val(row.Id);
-
                 $("#select_team").val(-1);
                 $("#select_engineer").val(-1);
                 $("#txtarea_instruction").val('');
@@ -349,26 +347,27 @@
                 if (status == "缓修申请待审") {
                     PauseRepairAppCheck(row);
                 }
-                if (status == "维修撤销中") {
-                    var procedure = row.Procedure;
-                    var msg = "即将撤销" + procedure + "流程，并删除已有" + procedure + "方案！\n\n请您确定？";
+                if (status == "方案撤销中") {
+                    dispatchingRow = row;
+                    indexOfDispatchingRow = index;
+                    var msg = "即将撤销 《" + dispatchingRow.MethodCategory + "》 流程，并删除已有 《" + dispatchingRow.MethodCategory + "》 方案！\n\n请您确定？";
                     if (confirm(msg) == true) {
-                        var id;
-                        var procedure = row.Procedure;
-                        if (procedure == "自修") {
-                            id = row.SelfRepairPlanID;
+                        var categoryId;
+                        var methodCategory = row.MethodCategory;
+                        if (methodCategory == "自修") {
+                            categoryId = row.SelfRepairPlanID;
                         }
-                        if (procedure == "缓修") {
-                            id = row.PauseSheetID;
+                        if (methodCategory == "缓修") {
+                            categoryId = row.PauseSheetID;
                         }
-                        if (procedure == "外修") {
-                            id = row.OutRepairSheetID;
+                        if (methodCategory == "外修") {
+                            categoryId = row.OutRepairSheetID;
                         }
-                        $.post("/Repair/CancelProcedure", {procedure:procedure, id:id }, function (Data) {
+                        $.post("/Repair/CancelProcedure", { methodCategory: methodCategory, categoryId: categoryId }, function (Data) {
                             data = $.parseJSON(Data);
                             if (data.status == "success") {
                                 $table.bootstrapTable('updateRow', {
-                                    index: indexOfDisposingRow,
+                                    index: indexOfDispatchingRow,
                                     row: { "Status": data.phase }
                                 });
                             }

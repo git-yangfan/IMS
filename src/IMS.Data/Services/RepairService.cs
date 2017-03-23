@@ -41,10 +41,14 @@ namespace IMS.Data.Services
             {"OutRepairFail" , "外修申请失败"},
             {"PauseRepairPass" , "缓修申请通过"},
             {"PauseRepairFail" , "缓修申请失败"},
-            {"Canceling" , "维修撤销中"},
+            {"Canceling" , "方案撤销中"},
             {"CancelOK" , "撤销成功"},
             {"CancelFail" , "撤销失败"},
             {"Reject" , "已驳回"}
+        };
+        public static Dictionary<string, string> MethodCategoryDic = new Dictionary<string, string>() 
+        {
+            {"Self","自修"},{"Out","外修"},{"Pause","缓修"},{"Diagnose","诊断"},
         };
         public enum Role
         {
@@ -210,20 +214,20 @@ namespace IMS.Data.Services
         /// <summary>
         /// 管理员撤销维修方案，更新wxshenqing中的dqzt和维修方案的id，删除对应的方案记录
         /// </summary>
-        /// <param name="procedure"></param>
+        /// <param name="methodCategory"></param>
         /// <param name="appId"></param>
         /// <returns></returns>
-        public bool UpDateApplication(string procedure, int id)
+        public bool CancelProcedure(string methodCategory, int categoryId)
         {
             bool result = false;
             using (var client = DbConfig.GetInstance())
             {
                 client.BeginTran();
                 client.CommandTimeOut = 30000;
-                if (String.Equals(procedure,"自修"))
+                if (String.Equals(methodCategory,"自修"))
                 {
-                    client.Update<WXShenQing>( new{ DQZT = StatusDic["CancelOK"],ZXFAID=0},it => it.ZXFAID == id);
-                    client.Delete<ZXFA>(it => it.ID == id);
+                    client.Update<WXShenQing>( new{ DQZT = StatusDic["CancelOK"],ZXFAID=0,WXFFLB=string.Empty},it => it.ZXFAID == categoryId);
+                    client.Delete<ZXFA>(it => it.ID == categoryId);
                 }
                 try
                 {
@@ -258,7 +262,7 @@ namespace IMS.Data.Services
                     selfRepairPlanM.ID = client.Queryable<ZXFA>().Max(it => it.ID).ObjToInt() + 1;
                     client.Insert<ZXFA>(selfRepairPlanM);
                     //更改申请记录的状态 WXShenQing
-                    client.Update<WXShenQing>(new { DQZT = StatusDic["SelfRepairChecking"], ZXFAID = selfRepairPlanM.ID }, it => it.Id == appId);
+                    client.Update<WXShenQing>(new { DQZT = StatusDic["SelfRepairChecking"], ZXFAID = selfRepairPlanM.ID,WXFFLB=MethodCategoryDic["Self"] }, it => it.Id == appId);
 
                     client.CommitTran();
                     result = true;

@@ -187,7 +187,7 @@ namespace IMS.Web.Controllers.Repair
                 result = RepairService.UpdateSelfRepairPlan(selfRepairPlanVM, selfRepairPlanID);
             }
             if (result)
-                return Content(new { msg = "成功", status = "success", phase = RepairService.StatusDic["SelfRepairChecking"] }.ToJsonString());
+                return Content(new { msg = "成功", status = "success", phase = RepairService.StatusDic["SelfRepairChecking"], methodCategory = RepairService.MethodCategoryDic["Self"] }.ToJsonString());
             else
                 return Content(new { msg = "失败", status = "failed" }.ToJsonString());
         }
@@ -206,9 +206,9 @@ namespace IMS.Web.Controllers.Repair
             }
         }
         [HttpPost]
-        public ActionResult CancelProcedure(string procedure,int id) 
+        public ActionResult CancelProcedure(string methodCategory, int categoryId) 
         {
-            bool result = RepairService.UpDateApplication(procedure, id);
+            bool result = RepairService.CancelProcedure(methodCategory, categoryId);
             if (result)
             {
                 return Content(new { msg = "处理成功", status = "success", phase = RepairService.StatusDic["CancelOK"] }.ToJsonString());

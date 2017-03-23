@@ -33,6 +33,7 @@ namespace IMS.Model.Model
         public int HXDID { get; set; }
         public int ZDDID { get; set; }
         public int PingGuDID { get; set; }
+        public string WXFFLB { get; set; }
 
 
         public WXShenQing() { }
@@ -57,6 +58,7 @@ namespace IMS.Model.Model
             this.ZXFAID = viewModel.SelfRepairPlanID;
             this.HXDID = viewModel.PauseSheetID;
             this.ZDDID = viewModel.DiagnoseSheetID;
+            this.WXFFLB = viewModel.MethodCategory;
         }
     }
 }
