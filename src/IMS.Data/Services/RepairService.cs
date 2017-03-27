@@ -224,9 +224,9 @@ namespace IMS.Data.Services
             {
                 client.BeginTran();
                 client.CommandTimeOut = 30000;
-                if (String.Equals(methodCategory,"自修"))
+                if (String.Equals(methodCategory, "自修"))
                 {
-                    client.Update<WXShenQing>( new{ DQZT = StatusDic["CancelOK"],ZXFAID=0,WXFFLB=string.Empty},it => it.ZXFAID == categoryId);
+                    client.Update<WXShenQing>(new { DQZT = StatusDic["CancelOK"], ZXFAID = 0, WXFFLB = string.Empty }, it => it.ZXFAID == categoryId);
                     client.Delete<ZXFA>(it => it.ID == categoryId);
                 }
                 try
@@ -236,10 +236,10 @@ namespace IMS.Data.Services
                 }
                 catch (Exception)
                 {
-                    
+
                     throw;
                 }
-                
+
             }
             return result;
         }
@@ -262,7 +262,7 @@ namespace IMS.Data.Services
                     selfRepairPlanM.ID = client.Queryable<ZXFA>().Max(it => it.ID).ObjToInt() + 1;
                     client.Insert<ZXFA>(selfRepairPlanM);
                     //更改申请记录的状态 WXShenQing
-                    client.Update<WXShenQing>(new { DQZT = StatusDic["SelfRepairChecking"], ZXFAID = selfRepairPlanM.ID,WXFFLB=MethodCategoryDic["Self"] }, it => it.Id == appId);
+                    client.Update<WXShenQing>(new { DQZT = StatusDic["SelfRepairChecking"], ZXFAID = selfRepairPlanM.ID, WXFFLB = MethodCategoryDic["Self"] }, it => it.Id == appId);
 
                     client.CommitTran();
                     result = true;

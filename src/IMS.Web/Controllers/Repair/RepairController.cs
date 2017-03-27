@@ -142,11 +142,16 @@ namespace IMS.Web.Controllers.Repair
             bool result = RepairService.UpdateSelfRepairPlan(selfRepairPlanID, type, msg);
             if (result)
             {
-                return Content(new { msg = "处理成功", status = "success", phase = RepairService.StatusDic["SelfRepairPass"] }.ToJsonString());
+                string _phase = string.Empty;
+                if (string.Equals(type, "approve"))
+                {_phase = RepairService.StatusDic["SelfRepairPass"];}
+                if (string.Equals(type, "reject"))
+                { _phase = RepairService.StatusDic["SelfRepairFail"]; }
+                return Content(new { msg = "处理成功", status = "success", phase = _phase }.ToJsonString());
             }
             else
             {
-                return Content(new { msg = "处理失败", status = "failed", phase = RepairService.StatusDic["SelfRepairFail"] }.ToJsonString());
+                return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
             }
         }
 
@@ -206,7 +211,7 @@ namespace IMS.Web.Controllers.Repair
             }
         }
         [HttpPost]
-        public ActionResult CancelProcedure(string methodCategory, int categoryId) 
+        public ActionResult CancelProcedure(string methodCategory, int categoryId)
         {
             bool result = RepairService.CancelProcedure(methodCategory, categoryId);
             if (result)
