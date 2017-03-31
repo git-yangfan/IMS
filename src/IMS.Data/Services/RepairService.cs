@@ -44,7 +44,8 @@ namespace IMS.Data.Services
             {"Canceling" , "方案撤销中"},
             {"CancelOK" , "撤销成功"},
             {"CancelFail" , "撤销失败"},
-            {"Reject" , "已驳回"}
+            {"Reject" , "已驳回"},
+            {"End","已总结"}
         };
         public static Dictionary<string, string> MethodCategoryDic = new Dictionary<string, string>() 
         {
@@ -321,7 +322,61 @@ namespace IMS.Data.Services
         }
         #endregion
 
+        public SummarizeViewModel AllInfo(int appId, string type)
+        {
+            SummarizeViewModel SummarizeVM = new SummarizeViewModel();
+            using (var client = DbConfig.GetInstance())
+            {
+                var appM = client.Queryable<WXShenQing>().SingleOrDefault(it => it.Id == appId);
 
+                var pGDM = client.Queryable<PGD>().SingleOrDefault(it => it.ID == appM.PGDID);
+                var dispather = client.Queryable<Users>().SingleOrDefault(it => it.Id == pGDM.PGRID);
+                var engineer = client.Queryable<Users>().SingleOrDefault(it => it.Id == pGDM.WXRID);
+                if (String.Equals(type, "自修"))
+                {
+                    var ZXFA = client.Queryable<ZXFA>().Single(it => it.ID == appM.ZXFAID);
+                    SummarizeVM.SelfRepairVM = new SelfRepairPlanViewModel(ZXFA);
+                }
+                if (dispather!= null)
+                {
+                    SummarizeVM.Dispatcher = dispather.Name;
+                }
+                if (engineer!= null)
+                {
+                    SummarizeVM.Engineer = engineer.Name;
+                }
+                SummarizeVM.Instruction = pGDM.ZSSX;
+                SummarizeVM.DispatchTime = pGDM.PGSJ;
+                SummarizeVM.ApplicationVM = new ApplicationsViewModel(appM);
+                SummarizeVM.ApplicationVM.DeviceShortName = DeviceShortNameAndNoDic[appM.SBBH];
+            }
+            return SummarizeVM;
+        }
+
+        public bool Finish(SummarizeViewModel viewModel) 
+        {
+            bool result = false;
+            using (var client = DbConfig.GetInstance())
+            {
+                client.BeginTran();
+                client.CommandTimeOut = 30000;
+                WXZongJie sumModel = new WXZongJie(viewModel);
+                sumModel.ID = client.Queryable<WXZongJie>().Max(it => it.ID).ObjToInt()+1;
+                client.Insert<WXZongJie>(sumModel);
+                client.Update<WXShenQing>(new { DQZT = StatusDic["End"] },it=>it.Id==viewModel.ApplicationID);
+                try
+                {
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+
+            }
+            return result;
+        }
         public SelfRepairPlanViewModel SelfRepairPlanByAppId(int selfRepairPlanID)
         {
             using (var client = DbConfig.GetInstance())

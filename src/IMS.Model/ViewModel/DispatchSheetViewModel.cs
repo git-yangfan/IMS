@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IMS.Model.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,6 @@ namespace IMS.Model.ViewModel
         public int DispatcherId { get; set; }
         public DateTime DispatchTime { get; set; }
         public int EngineerId { get; set; }
+
     }
 }

@@ -181,6 +181,7 @@
     <Content Include="Content\bootstrap\js\bootstrap.js" />
     <Content Include="Content\bootstrap\js\bootstrap.min.js" />
     <Content Include="Content\bootstrap\js\html5shiv.min.js" />
+    <Content Include="Content\bootstrap\js\JavaScript1.js" />
     <Content Include="Content\bootstrap\js\jquery-1.11.0.min.js" />
     <Content Include="Content\bootstrap\js\jquery.js" />
     <Content Include="Content\bootstrap\js\npm.js" />
@@ -321,6 +322,7 @@
     <Content Include="Views\Common\SubSystem.cshtml" />
     <Content Include="Views\Repair\AllApplications.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
+    <Content Include="Views\Repair\ShowAllInOne.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

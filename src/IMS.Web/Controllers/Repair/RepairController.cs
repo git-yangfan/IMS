@@ -232,10 +232,42 @@ namespace IMS.Web.Controllers.Repair
 
 
 
+        public ActionResult ShowAllInOne(int appId,string type) 
+        {
+            SummarizeViewModel SummarizeVM = RepairService.AllInfo(appId, type);
+            return View(SummarizeVM);
+        }
+        public ActionResult Summarize() 
+        {
+            SummarizeViewModel summarizeVM=new SummarizeViewModel();
+            summarizeVM.ApplicationID =Convert.ToInt32(Request.Params["appID"]);
+            string beginTime = Request.Params["beginTime"];
+            if (!string.IsNullOrEmpty(beginTime))
+            {
+                summarizeVM.BeginTime = Convert.ToDateTime(beginTime);   
+            }            
+            summarizeVM.TimeCost = Convert.ToInt32(Request.Params["timeCost"]);
+            summarizeVM.FailureDescription = Request.Params["description"];
+            summarizeVM.FailureAppearance = Request.Params["appearance"];
+            summarizeVM.Steps= Request.Params["steps"];
+            summarizeVM.Tools = Request.Params["tools"];
+            summarizeVM.SparePartsInfo = Request.Params["partsInfo"];
+            summarizeVM.FstLevFailureLocation = Request.Params["fstLocation"];
+            summarizeVM.SecLevFailureLocation = Request.Params["secLocation"];
+            summarizeVM.ThiLevFailureLocation = Request.Params["thiLocation"];
+            bool result = RepairService.Finish(summarizeVM);
+            if (result)
+            {
+                return Content(new { msg = "处理成功", status = "success"}.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
+            }
+             
+        }
 
-
-
-
+       
 
 
 

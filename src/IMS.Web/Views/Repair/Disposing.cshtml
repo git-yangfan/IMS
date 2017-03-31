@@ -204,29 +204,36 @@
 
 
         function operateFormatter(value, row, index) {
-            var liToCreate = '<li><a id="a_selfrepair" >自修</a></li><li><a href="a_outrepair">外修</a></li><li><a href="#">缓修申请</a></li><li><a href="#">故障诊断</a></li>';
-            if (row.Status == "自修方案失败" || row.Status == "自修方案待审" || row.Status == "自修方案通过") {
-                liToCreate = '<li><a id="a_modifyrepairplan" >修改方案</a></li><li><a id="a_cancel">撤销方案</a></li>';
-            };
-            if ( row.Status == "方案撤销中") {
-                liToCreate = '<li><a id="a_cancel">撤销方案</a></li>';
-            };
-            if (row.Status == "自修方案通过") {
-                liToCreate = '<li><a id="a_summarize" >维修总结</a></li><li><a id="a_modifyrepairplan" >修改方案</a></li><li><a id="a_cancel">撤销方案</a></li>';
-            };
-            if (row.Status == "外修申请待审" || row.Status == "外修申请失败" || row.Status == "外修申请通过") {
-                liToCreate = '<li><a id="a_modifyrepairplan" >修改申请</a></li><li><a id="#">撤销申请</a></li>';
-            };
-            if (row.Status == "缓修申请待审" || row.Status == "缓修申请通过" || row.Status == "缓修申请失败") {
-                liToCreate = '<li><a id="a_modifyrepairplan" >修改申请</a></li><li><a id="#">撤销申请</a></li>';
-            };
-            return ['<div class="btn-group">',
-                    '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
-                    '处理 <span class="caret"></span>',
-                    '</button>',
-                    '<ul class="dropdown-menu">' + liToCreate,
-                    '</ul>',
-                    '</div>'].join('');
+            if (row.Status != "已总结") {
+                var liToCreate = '<li><a id="a_selfrepair" >自修</a></li><li><a href="a_outrepair">外修</a></li><li><a href="#">缓修申请</a></li><li><a href="#">故障诊断</a></li>';
+                if (row.Status == "自修方案失败" || row.Status == "自修方案待审" || row.Status == "自修方案通过") {
+                    liToCreate = '<li><a id="a_modifyrepairplan" >修改方案</a></li><li><a id="a_cancel">撤销方案</a></li>';
+                };
+                if (row.Status == "方案撤销中") {
+                    liToCreate = '<li><a id="a_cancel">撤销方案</a></li>';
+                };
+                if (row.Status == "自修方案通过") {
+                    liToCreate = '<li><a id="a_summarize" >维修总结</a></li><li><a id="a_modifyrepairplan" >修改方案</a></li><li><a id="a_cancel">撤销方案</a></li>';
+                };
+                if (row.Status == "外修申请待审" || row.Status == "外修申请失败" || row.Status == "外修申请通过") {
+                    liToCreate = '<li><a id="a_modifyrepairplan" >修改申请</a></li><li><a id="#">撤销申请</a></li>';
+                };
+                if (row.Status == "缓修申请待审" || row.Status == "缓修申请通过" || row.Status == "缓修申请失败") {
+                    liToCreate = '<li><a id="a_modifyrepairplan" >修改申请</a></li><li><a id="#">撤销申请</a></li>';
+                };
+                return ['<div class="btn-group">',
+                        '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+                        '处理 <span class="caret"></span>',
+                        '</button>',
+                        '<ul class="dropdown-menu">' + liToCreate,
+                        '</ul>',
+                        '</div>'].join('');
+            }
+            else {
+                return ['<button type="button" class="btn dropdown-toggle">',
+                     '已总结',
+                     '</button>'].join('');
+            }
         };
 
         window.operateEvents = {
@@ -261,8 +268,11 @@
                     }
                 }
                 else { alert("撤销申请已经提交了，等待审核中！！"); }
-
-            }
+            },
+            'click #a_summarize': function (e, value, row, index) {
+                var type = row.MethodCategory;
+                window.open("/Repair/ShowAllInOne?appId=" + row.Id + "&type=" + type + "", "总结", 'param');
+            },
 
         };
         function ShowSelfRepairModal(actiontype) {

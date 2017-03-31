@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\WXZongJie.cs" />
     <Compile Include="Model\ZDPGD.cs" />
     <Compile Include="Model\PGD.cs" />
     <Compile Include="Model\SBXX.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="ViewModel\ApplicationsViewModel.cs" />
     <Compile Include="ViewModel\DeviceViewModel.cs" />
     <Compile Include="ViewModel\SelfRepairPlanViewModel.cs" />
+    <Compile Include="ViewModel\SummarizeViewModel.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
