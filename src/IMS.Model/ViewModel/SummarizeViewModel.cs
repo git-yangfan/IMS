@@ -15,17 +15,12 @@ namespace IMS.Model.ViewModel
         public DateTime DispatchTime { get; set; }
         public string Instruction { get; set; }
 
-        public string FailureAppearance { get; set; }
-        public string FailureDescription { get; set; }
-        public string FstLevFailureLocation { get; set; }
-        public string SecLevFailureLocation { get; set; }
-        public string ThiLevFailureLocation { get; set; }
-        public DateTime BeginTime { get; set; }
-        public string Steps { get; set; }
-        public string Tools { get; set; }
-        public string SparePartsInfo { get; set; }
-        public int TimeCost { get; set; }
-        public int ApplicationID { get; set; }
+        public SummarizeViewModel() 
+        {
+            this.ApplicationVM = new ApplicationsViewModel();
+            this.SelfRepairVM = new SelfRepairPlanViewModel();
+        }
+       
 
     }
 }

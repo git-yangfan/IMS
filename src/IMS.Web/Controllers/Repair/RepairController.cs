@@ -21,7 +21,7 @@ namespace IMS.Web.Controllers.Repair
         public ActionResult GetAllApplications(int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername)
         {
             //角色 role 从当前登录的用户信息里获取
-            var AllApplicationsList = RepairService.GetAllApplicationsByRole(RepairService.Role.Manager, sectionName, deviceNo, beginTime, endTime);
+            var AllApplicationsList = RepairService.GetApplicationsByRole(RepairService.Role.Manager, sectionName, deviceNo, beginTime, endTime);
             if (AllApplicationsList != null)
             {
                 var total = AllApplicationsList.Count;
@@ -42,7 +42,7 @@ namespace IMS.Web.Controllers.Repair
             return View();
         }
         [HttpPost]
-        public void AddNewApplication()
+        public void CreatApplication()
         {
             ApplicationsViewModel repairApplicationVM = new ApplicationsViewModel();
             repairApplicationVM.DeviceNo = Request.Params["deviceNo"];
@@ -56,10 +56,10 @@ namespace IMS.Web.Controllers.Repair
             repairApplicationVM.ApplicationTime = DateTime.Now;
             repairApplicationVM.Status = "待审核";
             repairApplicationVM.Modifiable = 0;
-            RepairService.AddNewFailure(repairApplicationVM);
+            RepairService.InsertNewApplication(repairApplicationVM);
         }
         [HttpPost]
-        public ActionResult UpDateApplication()
+        public ActionResult ModifyApplication()
         {
             ApplicationsViewModel repairApplicationVM = new ApplicationsViewModel();
             repairApplicationVM.Id = Convert.ToInt32(Request.Params["applicationId"]);
@@ -69,7 +69,7 @@ namespace IMS.Web.Controllers.Repair
             repairApplicationVM.SecLevFailureLocation = Request.Params["secLevFailureLocation"];
             repairApplicationVM.ThiLevFailureLocation = Request.Params["thiLevFailureLocation"];
             repairApplicationVM.ApplicationTime = DateTime.Now;
-            bool result = RepairService.UpDateApplication(repairApplicationVM);
+            bool result = RepairService.UpdateApplication(repairApplicationVM);
             if (result)
             {
                 return Content(new { msg = "成功", status = "success" }.ToJsonString());
@@ -124,7 +124,7 @@ namespace IMS.Web.Controllers.Repair
         [HttpPost]
         public ActionResult Reject(int applicationId, string rejectReason)
         {
-            var result = RepairService.Reject(applicationId, rejectReason);
+            var result = RepairService.UpdateApplication(applicationId, rejectReason);
             if (result)
             {
                 var data = new { msg = "已经成功驳回", status = "success", phase = RepairService.StatusDic["Reject"] };
@@ -137,14 +137,14 @@ namespace IMS.Web.Controllers.Repair
         }
 
         [HttpPost]
-        public ActionResult UpdateSelfRepairPlanByMngr(int selfRepairPlanID, string type, string msg)
+        public ActionResult CheckSelfRepairPlanByMngr(int selfRepairPlanID, string type, string msg)
         {
             bool result = RepairService.UpdateSelfRepairPlan(selfRepairPlanID, type, msg);
             if (result)
             {
                 string _phase = string.Empty;
                 if (string.Equals(type, "approve"))
-                {_phase = RepairService.StatusDic["SelfRepairPass"];}
+                { _phase = RepairService.StatusDic["SelfRepairPass"]; }
                 if (string.Equals(type, "reject"))
                 { _phase = RepairService.StatusDic["SelfRepairFail"]; }
                 return Content(new { msg = "处理成功", status = "success", phase = _phase }.ToJsonString());
@@ -174,7 +174,7 @@ namespace IMS.Web.Controllers.Repair
             return View();
         }
         [HttpPost]
-        public ActionResult CreatOrUpdateSelfRepairPlanByEngr(int appId, int selfRepairPlanID, string steps, string tools, int timecost, string isspare, string spareparts, string type)
+        public ActionResult CreatOrUpdateSelfRepairPlanByEngr(int appId, int selfRepairPlanID, string steps, string tools, double timecost, string isspare, string spareparts, string type)
         {
             bool result = false;
             SelfRepairPlanViewModel selfRepairPlanVM = new SelfRepairPlanViewModel();
@@ -185,7 +185,7 @@ namespace IMS.Web.Controllers.Repair
             selfRepairPlanVM.SparePartsInfo = spareparts;
             if (string.Equals(type, "Create"))
             {
-                result = RepairService.CreatNewSelfRepairPlan(selfRepairPlanVM, appId);
+                result = RepairService.InsertNewSelfRepairPlan(selfRepairPlanVM, appId);
             }
             if (string.Equals(type, "modify"))
             {
@@ -198,7 +198,7 @@ namespace IMS.Web.Controllers.Repair
         }
 
         [HttpPost]
-        public ActionResult MarkProcedure(int appId)
+        public ActionResult MarkCancelingProcedure(int appId)
         {
             bool result = RepairService.UpDateApplication(appId);
             if (result)
@@ -232,42 +232,45 @@ namespace IMS.Web.Controllers.Repair
 
 
 
-        public ActionResult ShowAllInOne(int appId,string type) 
+        public ActionResult ShowAllInOne(int appId, string type)
         {
             SummarizeViewModel SummarizeVM = RepairService.AllInfo(appId, type);
             return View(SummarizeVM);
         }
-        public ActionResult Summarize() 
+        public ActionResult Summarize()
         {
-            SummarizeViewModel summarizeVM=new SummarizeViewModel();
-            summarizeVM.ApplicationID =Convert.ToInt32(Request.Params["appID"]);
+            SummarizeViewModel summarizeVM = new SummarizeViewModel();
+            summarizeVM.ApplicationVM.Id = Convert.ToInt32(Request.Params["appID"]);
             string beginTime = Request.Params["beginTime"];
             if (!string.IsNullOrEmpty(beginTime))
             {
-                summarizeVM.BeginTime = Convert.ToDateTime(beginTime);   
-            }            
-            summarizeVM.TimeCost = Convert.ToInt32(Request.Params["timeCost"]);
-            summarizeVM.FailureDescription = Request.Params["description"];
-            summarizeVM.FailureAppearance = Request.Params["appearance"];
-            summarizeVM.Steps= Request.Params["steps"];
-            summarizeVM.Tools = Request.Params["tools"];
-            summarizeVM.SparePartsInfo = Request.Params["partsInfo"];
-            summarizeVM.FstLevFailureLocation = Request.Params["fstLocation"];
-            summarizeVM.SecLevFailureLocation = Request.Params["secLocation"];
-            summarizeVM.ThiLevFailureLocation = Request.Params["thiLocation"];
+                summarizeVM.SelfRepairVM.StartTime = Convert.ToDateTime(beginTime);
+            }
+            summarizeVM.SelfRepairVM.ID = Convert.ToInt32(Request.Params["selfRepairPlanId"]);
+            summarizeVM.SelfRepairVM.TimeCost = Convert.ToDouble(Request.Params["timeCost"]);
+            summarizeVM.ApplicationVM.FailureDescription = Request.Params["description"];
+            summarizeVM.ApplicationVM.FailureAppearance = Request.Params["appearance"];
+            summarizeVM.SelfRepairVM.Steps = Request.Params["steps"];
+            summarizeVM.SelfRepairVM.Tools = Request.Params["tools"];
+            var partsInfo = Request.Params["partsInfo"];
+            summarizeVM.SelfRepairVM.IsUseSpareParts = partsInfo == string.Empty ? "否" : "是";
+            summarizeVM.SelfRepairVM.SparePartsInfo = partsInfo;
+            summarizeVM.ApplicationVM.FstLevFailureLocation = Request.Params["fstLocation"];
+            summarizeVM.ApplicationVM.SecLevFailureLocation = Request.Params["secLocation"];
+            summarizeVM.ApplicationVM.ThiLevFailureLocation = Request.Params["thiLocation"];
             bool result = RepairService.Finish(summarizeVM);
             if (result)
             {
-                return Content(new { msg = "处理成功", status = "success"}.ToJsonString());
+                return Content(new { msg = "处理成功", status = "success" }.ToJsonString());
             }
             else
             {
                 return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
             }
-             
+
         }
 
-       
+
 
 
 

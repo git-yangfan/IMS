@@ -230,11 +230,11 @@
             html.push('</div></div></div>');
             html.push('</div>');
             html.push('<div class="row" >');
-            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >报告人</label>');
+            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >申请人</label>');
             html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['ReporterId'] + '>');
             html.push('</div></div></div>');
-            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >报告时间</label>');
-            html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['ReportTime'] + '>');
+            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >申请时间</label>');
+            html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['ApplicationTime'] + '>');
             html.push('</div></div></div>');
             html.push('</div>');
             html.push('<div class="row" >');
@@ -376,33 +376,9 @@
                 }
             }
         };
-
-        function CheckNewPlan(type) {
-            var id = $('#forrepairplanid').val();
-            var msg = $('#txtarea_insruction').val();
-            if (type == "reject") {
-                if (msg == "") {
-                    alert("请填写拒绝的理由");
-                    return;
-                }
-            }
-            if (type == "approve") {
-                if (msg == "") {
-                    msg = "同意";
-                }
-            }
-            $.post("/Repair/UpdateSelfRepairPlanByMngr", { selfRepairPlanID: dispatchingRow.SelfRepairPlanID, type: type, msg: msg }, function (Data) {
-                data = $.parseJSON(Data);
-                if (data.status == "success") {
-                    alert(data.msg);
-                    $table.bootstrapTable('updateRow', {
-                        index: indexOfDispatchingRow,
-                        row: { "Status": data.phase }
-                    });
-                }
-            });
-        }
-
+        function Search() {
+            $table.bootstrapTable('refresh', { url: '/Repair/GetAllApplications' });
+        };
 
         function Dispatch() {
             $.post(
@@ -442,8 +418,31 @@
             }
         }
 
-        function RefreshTable() {
-            $('#table_dispatch').bootstrapTable('refresh', { url: '/Repair/GetAllApplications' });
-        };
+        function CheckNewPlan(type) {
+            var id = $('#forrepairplanid').val();
+            var msg = $('#txtarea_insruction').val();
+            if (type == "reject") {
+                if (msg == "") {
+                    alert("请填写拒绝的理由");
+                    return;
+                }
+            }
+            if (type == "approve") {
+                if (msg == "") {
+                    msg = "同意";
+                }
+            }
+            $.post("/Repair/CheckSelfRepairPlanByMngr", { selfRepairPlanID: dispatchingRow.SelfRepairPlanID, type: type, msg: msg }, function (Data) {
+                data = $.parseJSON(Data);
+                if (data.status == "success") {
+                    alert(data.msg);
+                    $table.bootstrapTable('updateRow', {
+                        index: indexOfDispatchingRow,
+                        row: { "Status": data.phase }
+                    });
+                }
+            });
+        }
+
     </script>
 }

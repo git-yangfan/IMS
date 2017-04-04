@@ -14,11 +14,12 @@ namespace IMS.Model.Model
         public string GONGJU { get; set; }
         public string SFSYBJ { get; set; }
         public string BJXX { get; set; }
-        public int YJYS { get; set; }//预计用时
+        public double WXYS { get; set; }//预计用时
         public DateTime HFSJ { get; set; }
         public int HFRID { get; set; }
         public string HFXX { get; set; }
         public string SFTG { get; set; }
+        public DateTime KSSJ { get; set; }
 
 
         public ZXFA(SelfRepairPlanViewModel VM)
@@ -27,7 +28,8 @@ namespace IMS.Model.Model
             this.GONGJU = VM.Tools;
             this.SFSYBJ = VM.IsUseSpareParts;
             this.BJXX = VM.SparePartsInfo;
-            this.YJYS = VM.TimeCost;
+            this.WXYS = VM.TimeCost;
+            this.KSSJ = VM.StartTime;
         }
         public ZXFA() { }
     }

@@ -14,176 +14,111 @@
     <script src="~/Content/bootstrap/js/jquery-1.11.0.min.js"></script>
     <script src="~/Content/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Content/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
-    <style type="text/css">
-        .tg {
-            border-collapse: collapse;
-            border-spacing: 0;
-            border-color: #999;
-            width: 850px;
-            padding: 1px;
-            margin: 1px;
-            font-size: 12px;
-        }
-
-            .tg td {
-                font-family: Arial, sans-serif;
-                font-size: 14px;
-                padding: 10px 5px;
-                border-style: solid;
-                border-width: 1px;
-                overflow: hidden;
-                word-break: normal;
-                border-color: #999;
-                color: #444;
-                background-color: #F7FDFA;
-            }
-
-            .tg th {
-                font-family: Arial, sans-serif;
-                font-size: 14px;
-                font-weight: normal;
-                padding: 10px 5px;
-                border-style: solid;
-                border-width: 1px;
-                overflow: hidden;
-                word-break: normal;
-                border-color: #999;
-                color: #fff;
-                background-color: #26ADE4;
-            }
-
-            .tg .tg-pmhw {
-                font-size: 10px;
-                background-color: #c0c0c0;
-                color: #000000;
-                text-align: right;
-                vertical-align: top;
-            }
-
-            .tg .tg-l9q5 {
-                background-color: #c0c0c0;
-                color: #000000;
-                vertical-align: top;
-            }
-
-            .tg .tg-2de4 {
-                background-color: #c0c0c0;
-                color: #000000;
-                text-align: right;
-                vertical-align: top;
-                width: 150px;
-            }
-
-            .tg .tg-pxng {
-                background-color: #ffffff;
-                color: #000000;
-                vertical-align: top;
-                width: 180px;
-            }
-
-            .tg .tg-fefd {
-                color: #000000;
-                vertical-align: top;
-            }
-    </style>
+    
 </head>
 <body>
     <input type="hidden" id="sum_appid" value="@Model.ApplicationVM.Id" />
-    <div class="tg-wrap">
-        <table class="tg">
-            <tr>
-                <th class="tg-2de4">故障设备</th>
-                <th class="tg-pxng">@Model.ApplicationVM.DeviceShortName</th>
-                <th class="tg-pmhw">发生时间</th>
-                <th class="tg-pxng">@Model.ApplicationVM.BeginTime</th>
-                <th class="tg-2de4">报修时间</th>
-                <th class="tg-pxng">@Model.ApplicationVM.ApplicationTime</th>
-            </tr>
-            <tr>
-                <td class="tg-2de4">故障部位</td>
-                <td class="tg-fefd" colspan="5">@Model.ApplicationVM.FullLocation</td>
-            </tr>
-            <tr>
-                <td class="tg-2de4">故障描述</td>
-                <td class="tg-pxng" colspan="5">@Model.ApplicationVM.FailureDescription</td>
-            </tr>
-            <tr>
-                <td class="tg-2de4">故障现象</td>
-                <td class="tg-fefd" colspan="5">@Model.ApplicationVM.FailureAppearance</td>
-            </tr>
-            <tr>
-                <td class="tg-2de4">审核人</td>
-                <td class="tg-fefd">@Model.Dispatcher</td>
-                <td class="tg-2de4">审核时间</td>
-                <td class="tg-fefd">@Model.DispatchTime</td>
-                <td class="tg-2de4">审核结果</td>
-                <td class="tg-fefd"></td>
-            </tr>
-            <tr>
-                <td class="tg-2de4">维修（诊断）工程师</td>
-                <td class="tg-fefd">@Model.Engineer</td>
-                <td class="tg-2de4">指示事项</td>
-                <td class="tg-fefd" colspan="3">@Model.Instruction</td>
-            </tr>
-            <tr>
-                <td class="tg-2de4">维修开始时间</td>
-                <td class="tg-fefd">
-                    <div class='input-group date' id='div_fssj'>
-                        <input type='text' id="sum_begintime" data-date-format="yyyy-mm-dd hh:ii" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
-                </td>
-                <td class="tg-2de4">维修用时</td>
-                <td class="tg-fefd">
-                    <input type="text" id="sum_timecost" />
-                </td>
-                <td class="tg-2de4">故障描述</td>
-                <td class="tg-fefd">
-                    <textarea id="sum_description"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td class="tg-2de4">一级故障部位</td>
-                <td class="tg-fefd">
-                    <select id="firstFailureLocation">
-                        <option value="-1">请选择</option>
-                    </select>
-                </td>
-                <td class="tg-2de4">二级故障部位</td>
-                <td class="tg-fefd">
-                    <select id="secondFailureLocation">
-                        <option value="-1">请选择</option>
-                    </select>
-                </td>
-                <td class="tg-l9q5">三级故障部位</td>
-                <td class="tg-fefd">
-                    <select id="thirdFailureLocation">
-                        <option value="-1">请选择</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td class="tg-2de4">故障现象</td>
-                <td class="tg-pxng" colspan="5"><textarea id="sum_appearance">@Model.ApplicationVM.FailureAppearance</textarea></td>
-            </tr>
-            <tr>
-                <td class="tg-2de4" rowspan="2">维修步骤</td>
-                <td class="tg-fefd" colspan="5" rowspan="2"><textarea id="sum_steps">@Model.SelfRepairVM.Steps</textarea> </td>
-            </tr>
-            <tr></tr>
-            <tr>
-                <td class="tg-2de4">维修工具</td>
-                <td class="tg-fefd" colspan="3"><textarea id="sum_tools">@Model.SelfRepairVM.Tools</textarea></td>
-                <td class="tg-2de4">备件信息</td>
-                <td class="tg-fefd" colspan="3"><textarea id="sum_spareparts">@Model.SelfRepairVM.SparePartsInfo</textarea></td>
-            </tr>
-        </table>
-        <input type="button" value="取消" />
-        <input type="button" onclick="summarize()" value="提交">
-    </div>
+    <input type="hidden" id="sum_selfrepairid" value="@Model.ApplicationVM.SelfRepairPlanID" />
+    <div class="center-block" style="width:910px;height:760px;margin-top:5px">
+        <div class="table-responsive" >
+            <table class="table table-bordered">
+                <tr>
+                    <td class="info">故障设备</td>
+                    <td>@Model.ApplicationVM.DeviceShortName</td>
+                    <td class="info">发生时间</td>
+                    <td>@Model.ApplicationVM.BeginTime</td>
+                    <td class="info">报修时间</td>
+                    <td>@Model.ApplicationVM.ApplicationTime</td>
+                </tr>
+                <tr>
+                    <td class="info">故障部位</td>
+                    <td colspan="5">@Model.ApplicationVM.FullLocation</td>
+                </tr>
+                <tr>
+                    <td class="info">故障描述</td>
+                    <td colspan="5">@Model.ApplicationVM.FailureDescription</td>
+                </tr>
+                <tr>
+                    <td class="info">故障现象</td>
+                    <td colspan="5">@Model.ApplicationVM.FailureAppearance</td>
+                </tr>
+                <tr>
+                    <td class="info">审核人</td>
+                    <td>@Model.Dispatcher</td>
+                    <td class="info">审核时间</td>
+                    <td>@Model.DispatchTime</td>
+                    <td class="info">审核结果</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="info">维修（诊断）工程师</td>
+                    <td>@Model.Engineer</td>
+                    <td class="info">指示事项</td>
+                    <td colspan="3">@Model.Instruction</td>
+                </tr>
+                <tr>
+                    <td class="info">维修开始时间</td>
+                    <td>
+                        <div class='input-group date' id='div_fssj'>
+                            <input type='text' id="sum_begintime" data-date-format="yyyy-mm-dd hh:ii" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="info">维修用时</td>
+                    <td>
+                        <input type="text" id="sum_timecost" />
+                    </td>
+                    <td class="info">故障描述</td>
+                    <td>
+                        <textarea id="sum_description"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="info">一级故障部位</td>
+                    <td>
+                        <select id="firstFailureLocation">
+                            <option value="-1">请选择</option>
+                        </select>
+                    </td>
+                    <td class="info">二级故障部位</td>
+                    <td>
+                        <select id="secondFailureLocation">
+                            <option value="-1">请选择</option>
+                        </select>
+                    </td>
+                    <td class="info">三级故障部位</td>
+                    <td>
+                        <select id="thirdFailureLocation">
+                            <option value="-1">请选择</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="info">故障现象</td>
+                    <td colspan="5"><textarea id="sum_appearance">@Model.ApplicationVM.FailureAppearance</textarea></td>
+                </tr>
+                <tr>
+                    <td class="info" rowspan="2">维修步骤</td>
+                    <td colspan="5" rowspan="2"><textarea id="sum_steps">@Model.SelfRepairVM.Steps</textarea> </td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td class="info">维修工具</td>
+                    <td colspan="3"><textarea id="sum_tools">@Model.SelfRepairVM.Tools</textarea></td>
+                    <td class="info">备件信息</td>
+                    <td colspan="3"><textarea id="sum_spareparts">@Model.SelfRepairVM.SparePartsInfo</textarea></td>
+                </tr>
+            </table>
+        </div>
+        <div style="text-align:right">
 
+            <button type="button" class="btn btn-default" onclick="window.opener=null;window.close()"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+            <button type="button" class="btn btn-success" onclick="summarize()"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>提交</button>
+
+        </div>
+    </div>
     <script type="text/javascript">
         $(function () {
             IniteDropdownList();
@@ -280,6 +215,7 @@
             $.post("/Repair/Summarize",
                 {
                     appID: $("#sum_appid").val(),
+                    selfRepairPlanId:$("#sum_selfrepairid").val(),
                     beginTime: $("#sum_begintime").val(),
                     timeCost: $("#sum_timecost").val(),
                     description: $("#sum_description").val(),

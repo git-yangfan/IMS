@@ -23,20 +23,20 @@ namespace IMS.Model.Model
         public int WXYS { get; set; }
 
         public WXZongJie() { }
-        public WXZongJie(SummarizeViewModel viewModel) 
-        {
-            this.WXSQID = viewModel.ApplicationID;
-            this.GZBWA = viewModel.FstLevFailureLocation;
-            this.GZBWB = viewModel.SecLevFailureLocation;
-            this.GZBWC = viewModel.ThiLevFailureLocation;
-            this.GZXIANXIANG = viewModel.FailureAppearance;
-            this.GZMS = viewModel.FailureDescription;
-            this.WXBUZHOU = viewModel.Steps;
-            this.WXGJ = viewModel.Tools;
-            this.KSSJ = viewModel.BeginTime;
-            this.BJXX = viewModel.SparePartsInfo;
-            this.WXYS = viewModel.TimeCost;
-        }
+        //public WXZongJie(SummarizeViewModel viewModel) 
+        //{
+        //    this.WXSQID = viewModel.ApplicationID;
+        //    this.GZBWA = viewModel.FstLevFailureLocation;
+        //    this.GZBWB = viewModel.SecLevFailureLocation;
+        //    this.GZBWC = viewModel.ThiLevFailureLocation;
+        //    this.GZXIANXIANG = viewModel.FailureAppearance;
+        //    this.GZMS = viewModel.FailureDescription;
+        //    this.WXBUZHOU = viewModel.Steps;
+        //    this.WXGJ = viewModel.Tools;
+        //    this.KSSJ = viewModel.BeginTime;
+        //    this.BJXX = viewModel.SparePartsInfo;
+        //    this.WXYS = viewModel.TimeCost;
+        //}
 
     }
 }

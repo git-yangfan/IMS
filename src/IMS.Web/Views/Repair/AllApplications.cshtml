@@ -205,7 +205,7 @@
             var FullLocation = fstLocation + (secLocation == "请选择" ? "" : "/" + secLocation) + (thiLocation == "请选择" ? "" : "/" + thiLocation);
 
             $.post(
-               "/Repair/UpDateApplication",
+               "/Repair/ModifyApplication",
                {
                    applicationId: $("#txt_forapplicationid").val(),
                    failureAppearance: Appearance,

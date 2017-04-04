@@ -14,11 +14,12 @@ namespace IMS.Model.ViewModel
         public string Tools { get; set; }
         public string IsUseSpareParts { get; set; }
         public string SparePartsInfo { get; set; }
-        public int TimeCost { get; set; }
+        public double TimeCost { get; set; }
         public DateTime ReplyTime { get; set; }
         public int ReplyerId { get; set; }
         public string ReplyMsg { get; set; }
         public string IsPass { get; set; }
+        public DateTime  StartTime { get; set; }
 
         public SelfRepairPlanViewModel() { }
         public SelfRepairPlanViewModel(ZXFA model) 
@@ -28,11 +29,12 @@ namespace IMS.Model.ViewModel
             this.Tools = model.GONGJU;
             this.IsUseSpareParts = model.SFSYBJ;
             this.SparePartsInfo = model.BJXX;
-            this.TimeCost = model.YJYS;
+            this.TimeCost = model.WXYS;
             this.ReplyTime = model.HFSJ;
             this.ReplyerId = model.HFRID;
             this.ReplyMsg = model.HFXX;
             this.IsPass = model.SFTG;
+            this.StartTime = model.KSSJ;
         }
     }
 }
