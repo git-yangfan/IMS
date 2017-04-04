@@ -402,7 +402,7 @@ namespace IMS.Data.Services
         }
 
 
-        public List<ApplicationsViewModel> GetApplicationsByRole(Role role, string sectionName, string deviceNo, string beginTime, string endTime)
+        public List<ApplicationsViewModel> GetApplicationsByRole(Role role, string sectionName, string deviceNo, string beginTime, string endTime, string ordername, string order)
         {
             using (var client = DbConfig.GetInstance())
             {
@@ -441,9 +441,13 @@ namespace IMS.Data.Services
                 {
                     sql.Where("DQZT!=@Checking and DQZT!=@Reject and DQZT!=@End", StatusDic);
                 }
+                if (!string.IsNullOrEmpty(ordername)&&!string.IsNullOrEmpty(order))
+                {
+                    sql.OrderBy(ordername+" "+ order);
+                }
                 try
                 {
-                    listWithDeviceNo = sql.OrderBy(g => g.FSSJ).ToList();
+                    listWithDeviceNo = sql.ToList();
                 }
                 catch (Exception)
                 {

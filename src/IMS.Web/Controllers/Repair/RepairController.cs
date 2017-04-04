@@ -13,15 +13,45 @@ namespace IMS.Web.Controllers.Repair
     {
         // GET: Repair
 
-
+        private Dictionary<string, string> sortNameDic = new Dictionary<string, string>() 
+        {
+            {"Id","Id"},
+            {"DeviceNo","SBBH"},
+            {"DeviceShortName","SBBH"},
+            {"BeginTime","FSSJ"},
+            {"ApplicationTime","SQSJ"},
+            {"ApplicantId","SQRId"},
+            {"FailureAppearance","GZXianXiang"},
+            {"FailureDescription","GZMS"},
+            {"FstLevFailureLocation","GZBWA"},
+            {"SecLevFailureLocation","GZBWB"},
+            {"ThiLevFailureLocation","GZBWC"},
+            {"Modifiable","SFKYXG"},
+            {"ReplyTime","HFSJ"},
+            {"ReplyMsg","HFXX"},
+            {"Status","DQZT"},
+            {"DispatchSheetID","PGDID"},
+            {"SelfRepairPlanID","ZXFAID"},
+            {"OutRepairSheetID","WXDID"},
+            {"PauseSheetID","HXDID"},
+            {"DiagnoseSheetID","ZDDID"},
+            {"EvaluateSheetID","PingGuDID"},
+            {"ReplyerId","HFRID"},
+            {"MethodCategory","WXFFLB"},
+        };
 
 
         RepairService RepairService = new RepairService();
         [HttpPost]
-        public ActionResult GetAllApplications(int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername)
+        public ActionResult GetAllApplications(int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername, string order)
         {
             //角色 role 从当前登录的用户信息里获取
-            var AllApplicationsList = RepairService.GetApplicationsByRole(RepairService.Role.Manager, sectionName, deviceNo, beginTime, endTime);
+            string _sortName = string.Empty;
+            if (!string.IsNullOrEmpty(ordername))
+            {
+                 _sortName = sortNameDic[ordername];
+            }
+            var AllApplicationsList = RepairService.GetApplicationsByRole(RepairService.Role.Manager, sectionName, deviceNo, beginTime, endTime, _sortName, order);
             if (AllApplicationsList != null)
             {
                 var total = AllApplicationsList.Count;
@@ -305,13 +335,15 @@ namespace IMS.Web.Controllers.Repair
             {
                 var oModel = new DeviceViewModel();
                 oModel.DeviceNo = i.ToString();
-                oModel.DeviceName = Guid.NewGuid().ToString();
+                oModel.DeviceName = "设备"+i;
                 lstRes.Add(oModel);
             }
 
             var total = lstRes.Count;
             var rows = lstRes;
-            return Json(new { total = total, rows = rows }, JsonRequestBehavior.AllowGet);
+            //return Json(new {rows = rows }, JsonRequestBehavior.AllowGet);
+            return Json(lstRes, JsonRequestBehavior.AllowGet);
+        
         }
 
     }

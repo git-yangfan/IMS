@@ -212,51 +212,51 @@
         </div>
     </div>
 
-<div class="modal " id="estimatemodal" tabindex="-1" role="dialog" aria-labelledby="outrepair" style="z-index:5000;">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
+    <div class="modal " id="estimatemodal" tabindex="-1" role="dialog" aria-labelledby="outrepair" style="z-index:5000;">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">设备评估</h4>
-                </div>
-                <div class="modal-body row">
-                    <div class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">评估</label>
-                            <div class="col-sm-9">
-                                <input type="text" id="txt_company" class="required" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">评估</label>
-                            <div class="col-sm-3">
-                                <input type="text" id="txt_contacter" class="required" />
-                            </div>
-                            <label class="col-sm-2 control-label">评估</label>
-                            <div class="col-sm-3">
-                                <input type="text" id="txt_phone" class="required" />
-                            </div>
-                        </div>
-
-                        <div class="form-group ">
-                            <label class="col-sm-2 control-label">备注信息</label>
-                            <div class="col-sm-9">
-                                <textarea id="txtarea_info" rows="2"></textarea>
-                            </div>
-                        </div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">设备评估</h4>
                     </div>
+                    <div class="modal-body row">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">评估</label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="txt_company" class="required" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">评估</label>
+                                <div class="col-sm-3">
+                                    <input type="text" id="txt_contacter" class="required" />
+                                </div>
+                                <label class="col-sm-2 control-label">评估</label>
+                                <div class="col-sm-3">
+                                    <input type="text" id="txt_phone" class="required" />
+                                </div>
+                            </div>
 
+                            <div class="form-group ">
+                                <label class="col-sm-2 control-label">备注信息</label>
+                                <div class="col-sm-9">
+                                    <textarea id="txtarea_info" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>放弃</button>
+                        <button type="button" id="btn_submit" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>放弃</button>
-                    <button type="button" id="btn_submit" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
-                </div>
+
             </div>
-
         </div>
     </div>
-</div>
 
 
     <script>
@@ -377,19 +377,19 @@
         function operateFormatter(value, row, index) {
             if (row.Status != "已总结") {
                 var liToCreate = '<li><a id="a_selfrepair" >自修</a></li><li><a id="a_outrepair">外修</a></li><li><a id="a_pauserepair">缓修</a></li><li><a id="a_estimate">评估</a></li>';
-                if (row.Status == "自修方案待审" || row.Status == "自修方案失败" ) {
+                if (row.Status == "自修方案待审" || row.Status == "自修方案失败") {
                     liToCreate = '<li><a id="a_modifyrepairplan" >修改方案</a></li><li><a id="a_cancel">撤销方案</a></li>';
                 };
                 if (row.Status == "自修方案通过") {
                     liToCreate = '<li><a id="a_summarize" >维修总结</a></li><li><a id="a_modifyrepairplan" >修改方案</a></li><li><a id="a_cancel">撤销方案</a></li>';
                 };
-                if (row.Status == "外修申请待审" || row.Status == "外修申请失败" ) {
+                if (row.Status == "外修申请待审" || row.Status == "外修申请失败") {
                     liToCreate = '<li><a id="a_modifyrepairplan" >修改申请</a></li><li><a id="#">撤销申请</a></li>';
                 };
                 if (row.Status == "外修申请通过") {
                     liToCreate = '<li><a id="a_summarize" >维修总结</a></li><li><a id="a_modifyrepairplan" >修改申请</a></li><li><a id="a_cancel">撤销申请</a></li>';
                 };
-                if (row.Status == "缓修申请待审" || row.Status == "缓修申请失败" ) {
+                if (row.Status == "缓修申请待审" || row.Status == "缓修申请失败") {
                     liToCreate = '<li><a id="a_pauserepair" >修改申请</a></li><li><a id="#">撤销申请</a></li>';
                 };
                 if (row.Status == "缓修申请通过") {
@@ -432,7 +432,7 @@
                 disposingRow = row; indexOfDisposingRow = index;
                 ShowOutRepairModal();
             },
-            'click #a_estimate':function (e, value, row, index) {
+            'click #a_estimate': function (e, value, row, index) {
                 disposingRow = row; indexOfDisposingRow = index;
                 ShowEstimateModal();
             },
@@ -524,10 +524,12 @@
         function ShowOutRepairModal() {
             $("#outrepairmodal").modal();
         }
-        function ShowEstimateModal() { $("#estimatemodal").modal(); }
+        function ShowEstimateModal() {
+            $("#estimatemodal").modal();
+        }
 
 
-       
+
     </script>
 
 }
