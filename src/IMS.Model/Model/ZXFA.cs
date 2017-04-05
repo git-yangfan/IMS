@@ -30,6 +30,11 @@ namespace IMS.Model.Model
             this.BJXX = VM.SparePartsInfo;
             this.WXYS = VM.TimeCost;
             this.KSSJ = VM.StartTime;
+            if (!int.Equals(VM.ID,null))
+            {
+               this.ID = VM.ID; 
+            }
+            
         }
         public ZXFA() { }
     }

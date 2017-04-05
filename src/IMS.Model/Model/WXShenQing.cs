@@ -59,6 +59,10 @@ namespace IMS.Model.Model
             this.HXDID = viewModel.PauseSheetID;
             this.ZDDID = viewModel.DiagnoseSheetID;
             this.WXFFLB = viewModel.MethodCategory;
+            if (!int.Equals(viewModel.Id,null))
+            {
+                this.Id = viewModel.Id;
+            }
         }
     }
 }

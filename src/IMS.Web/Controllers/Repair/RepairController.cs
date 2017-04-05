@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using IMS.Json;
+using IMS.Model.Model;
 
 namespace IMS.Web.Controllers.Repair
 {
@@ -42,32 +43,7 @@ namespace IMS.Web.Controllers.Repair
 
 
         RepairService RepairService = new RepairService();
-        [HttpPost]
-        public ActionResult GetAllApplications(int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername, string order)
-        {
-            //角色 role 从当前登录的用户信息里获取
-            string _sortName = string.Empty;
-            if (!string.IsNullOrEmpty(ordername))
-            {
-                 _sortName = sortNameDic[ordername];
-            }
-            var AllApplicationsList = RepairService.GetApplicationsByRole(RepairService.Role.Manager, sectionName, deviceNo, beginTime, endTime, _sortName, order);
-            if (AllApplicationsList != null)
-            {
-                var total = AllApplicationsList.Count;
-                var rows = AllApplicationsList.Skip(offset).Take(limit).ToList();
-                var d = new { total = total, rows = rows };
-                return Content(d.ToJsonString());
-            }
-            else
-                return Json("");
-        }
-        #region 维修申请---操作工人
         public ActionResult NewApplication()
-        {
-            return View();
-        }
-        public ActionResult AllApplications()
         {
             return View();
         }
@@ -86,20 +62,56 @@ namespace IMS.Web.Controllers.Repair
             repairApplicationVM.ApplicationTime = DateTime.Now;
             repairApplicationVM.Status = "待审核";
             repairApplicationVM.Modifiable = 0;
-            RepairService.InsertNewApplication(repairApplicationVM);
+            WXShenQing repariApplicationM = new WXShenQing(repairApplicationVM);
+            RepairService.InsertNewApplication(repariApplicationM);//这个地方应该有结果判定，但是这个页面不重要不做了
         }
+        public ActionResult AllApplications()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult GetAllApplications(int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername, string order)
+        {
+            //角色 role 从当前登录的用户信息里获取
+            string _sortName = string.Empty;
+            if (!string.IsNullOrEmpty(ordername))
+            {
+                _sortName = sortNameDic[ordername];
+            }
+            var applicationMList = RepairService.GetApplicationsByRole(RepairService.Role.Manager, sectionName, deviceNo, beginTime, endTime, _sortName, order);
+            List<ApplicationsViewModel> ApplicationVMList = new List<ApplicationsViewModel>();
+            for (int i = 0; i < applicationMList.Count; i++)
+            {
+                var item = applicationMList[i];
+                ApplicationsViewModel viewModel = new ApplicationsViewModel(item);
+                viewModel.Order = i + 1;//暂时用不上
+                viewModel.DeviceShortName = RepairService.DeviceShortNameAndNoDic[item.SBBH];
+                ApplicationVMList.Add(viewModel);
+            }
+            if (ApplicationVMList != null)
+            {
+                var total = ApplicationVMList.Count;
+                var rows = ApplicationVMList.Skip(offset).Take(limit).ToList();
+                var result = new { total = total, rows = rows };
+                return Content(result.ToJsonString());
+            }
+            else
+                return Json("");
+        }
+
+
+
         [HttpPost]
         public ActionResult ModifyApplication()
         {
             ApplicationsViewModel repairApplicationVM = new ApplicationsViewModel();
-            repairApplicationVM.Id = Convert.ToInt32(Request.Params["applicationId"]);
-            repairApplicationVM.FailureAppearance = Request.Params["failureAppearance"];
-            repairApplicationVM.FailureDescription = Request.Params["failureDescription"];
-            repairApplicationVM.FstLevFailureLocation = Request.Params["fstLevFailureLocation"];
-            repairApplicationVM.SecLevFailureLocation = Request.Params["secLevFailureLocation"];
-            repairApplicationVM.ThiLevFailureLocation = Request.Params["thiLevFailureLocation"];
-            repairApplicationVM.ApplicationTime = DateTime.Now;
-            bool result = RepairService.UpdateApplication(repairApplicationVM);
+            int id = Convert.ToInt32(Request.Params["applicationId"]);
+            string appearance = Request.Params["failureAppearance"];
+            string description = Request.Params["failureDescription"];
+            string firstLocation = Request.Params["fstLevFailureLocation"];
+            string secondLocation = Request.Params["secLevFailureLocation"];
+            string thirdLocation = Request.Params["thiLevFailureLocation"];
+            bool result = RepairService.UpdateApplication(id, appearance, description, firstLocation, secondLocation, thirdLocation);
             if (result)
             {
                 return Content(new { msg = "成功", status = "success" }.ToJsonString());
@@ -123,7 +135,7 @@ namespace IMS.Web.Controllers.Repair
                 return Content(new { msg = "删除失败", status = "failed" }.ToJsonString());
             }
         }
-        #endregion
+
 
 
 
@@ -135,12 +147,24 @@ namespace IMS.Web.Controllers.Repair
         [HttpPost]
         public ActionResult Dispatch(int applicationId, string workType, int engineerId, string instruction)
         {
+            bool result = false;
             DispatchSheetViewModel dispatchSheetVM = new DispatchSheetViewModel();
             dispatchSheetVM.Instruction = instruction;
             dispatchSheetVM.EngineerId = engineerId;
             dispatchSheetVM.DispatcherId = 9999;
             dispatchSheetVM.DispatchTime = DateTime.Now;
-            bool result = RepairService.Dispatch(dispatchSheetVM, workType, applicationId);
+            PGD dispatchSheetM = null;
+            ZDPGD diagnoseSheetM = null;
+            if (String.Equals(workType, "维修"))
+            {
+                dispatchSheetM = new PGD(dispatchSheetVM);
+                result = RepairService.RepairDispatch(dispatchSheetM, applicationId);
+            }
+            if (String.Equals(workType, "故障诊断"))
+            {
+                diagnoseSheetM = new ZDPGD(dispatchSheetVM);
+                result = RepairService.DiagnoseDispatch(diagnoseSheetM, applicationId);
+            }
             if (result)
             {
                 return Content(new { msg = "成功", status = "success", phase = RepairService.StatusDic["Repairing"] }.ToJsonString());
@@ -169,7 +193,15 @@ namespace IMS.Web.Controllers.Repair
         [HttpPost]
         public ActionResult CheckSelfRepairPlanByMngr(int selfRepairPlanID, string type, string msg)
         {
-            bool result = RepairService.UpdateSelfRepairPlan(selfRepairPlanID, type, msg);
+            bool result = false;
+            if (string.Equals(type, "approve"))
+            {
+                result = RepairService.ApproveSelfRepairPlan(selfRepairPlanID, msg);
+            }
+            if (string.Equals(type, "reject"))
+            {
+                result = RepairService.RejectSelfRepairPlan(selfRepairPlanID, msg);
+            }
             if (result)
             {
                 string _phase = string.Empty;
@@ -213,13 +245,14 @@ namespace IMS.Web.Controllers.Repair
             selfRepairPlanVM.TimeCost = timecost;
             selfRepairPlanVM.IsUseSpareParts = isspare;
             selfRepairPlanVM.SparePartsInfo = spareparts;
+            ZXFA selfRepairPlanM = new ZXFA(selfRepairPlanVM);
             if (string.Equals(type, "Create"))
             {
-                result = RepairService.InsertNewSelfRepairPlan(selfRepairPlanVM, appId);
+                result = RepairService.InsertNewSelfRepairPlan(selfRepairPlanM, appId);
             }
             if (string.Equals(type, "modify"))
             {
-                result = RepairService.UpdateSelfRepairPlan(selfRepairPlanVM, selfRepairPlanID);
+                result = RepairService.UpdateSelfRepairPlan(selfRepairPlanM, selfRepairPlanID);
             }
             if (result)
                 return Content(new { msg = "成功", status = "success", phase = RepairService.StatusDic["SelfRepairChecking"], methodCategory = RepairService.MethodCategoryDic["Self"] }.ToJsonString());
@@ -264,7 +297,22 @@ namespace IMS.Web.Controllers.Repair
 
         public ActionResult ShowAllInOne(int appId, string type)
         {
-            SummarizeViewModel SummarizeVM = RepairService.AllInfo(appId, type);
+            SummarizeViewModel SummarizeVM = new SummarizeViewModel();
+            if (String.Equals(type, "自修"))
+            {
+                PGD dispatchSheetM = new PGD();
+                ZXFA selfRepairPlanM = new ZXFA();
+                string dispatherName = string.Empty;
+                string engineerName = string.Empty;
+                WXShenQing applicationM = RepairService.AllInfo(appId, ref dispatchSheetM, ref selfRepairPlanM, ref dispatherName, ref engineerName);
+                SummarizeVM.Instruction = dispatchSheetM.ZSSX;
+                SummarizeVM.DispatchTime = dispatchSheetM.PGSJ;
+                SummarizeVM.Dispatcher = dispatherName;
+                SummarizeVM.Engineer = engineerName;
+                SummarizeVM.ApplicationVM = new ApplicationsViewModel(applicationM);
+                SummarizeVM.ApplicationVM.DeviceShortName = RepairService.DeviceShortNameAndNoDic[applicationM.SBBH];
+                SummarizeVM.SelfRepairVM = new SelfRepairPlanViewModel(selfRepairPlanM);
+            }
             return View(SummarizeVM);
         }
         public ActionResult Summarize()
@@ -278,17 +326,19 @@ namespace IMS.Web.Controllers.Repair
             }
             summarizeVM.SelfRepairVM.ID = Convert.ToInt32(Request.Params["selfRepairPlanId"]);
             summarizeVM.SelfRepairVM.TimeCost = Convert.ToDouble(Request.Params["timeCost"]);
-            summarizeVM.ApplicationVM.FailureDescription = Request.Params["description"];
-            summarizeVM.ApplicationVM.FailureAppearance = Request.Params["appearance"];
             summarizeVM.SelfRepairVM.Steps = Request.Params["steps"];
             summarizeVM.SelfRepairVM.Tools = Request.Params["tools"];
             var partsInfo = Request.Params["partsInfo"];
             summarizeVM.SelfRepairVM.IsUseSpareParts = partsInfo == string.Empty ? "否" : "是";
             summarizeVM.SelfRepairVM.SparePartsInfo = partsInfo;
+            summarizeVM.ApplicationVM.FailureDescription = Request.Params["description"];
+            summarizeVM.ApplicationVM.FailureAppearance = Request.Params["appearance"];
             summarizeVM.ApplicationVM.FstLevFailureLocation = Request.Params["fstLocation"];
             summarizeVM.ApplicationVM.SecLevFailureLocation = Request.Params["secLocation"];
             summarizeVM.ApplicationVM.ThiLevFailureLocation = Request.Params["thiLocation"];
-            bool result = RepairService.Finish(summarizeVM);
+            WXShenQing applicationM = new WXShenQing(summarizeVM.ApplicationVM);
+            ZXFA selfRepairPlanM = new ZXFA(summarizeVM.SelfRepairVM);
+            bool result = RepairService.Finish(applicationM, selfRepairPlanM);
             if (result)
             {
                 return Content(new { msg = "处理成功", status = "success" }.ToJsonString());
@@ -307,10 +357,11 @@ namespace IMS.Web.Controllers.Repair
         [HttpPost]
         public ActionResult GetSelfRepairPlanByAppId(int selfRepairPlanID)
         {
-            SelfRepairPlanViewModel ResultVM = RepairService.SelfRepairPlanByAppId(selfRepairPlanID);
-            if (ResultVM != null)
+            ZXFA resultM = RepairService.SelfRepairPlanByAppId(selfRepairPlanID);
+            SelfRepairPlanViewModel resultVM = new SelfRepairPlanViewModel(resultM);
+            if (resultVM != null)
             {
-                return Content(new { msg = "找到方案", status = "success", data = ResultVM }.ToJsonString());
+                return Content(new { msg = "找到方案", status = "success", data = resultVM }.ToJsonString());
             }
             else
             {
@@ -335,7 +386,7 @@ namespace IMS.Web.Controllers.Repair
             {
                 var oModel = new DeviceViewModel();
                 oModel.DeviceNo = i.ToString();
-                oModel.DeviceName = "设备"+i;
+                oModel.DeviceName = "设备" + i;
                 lstRes.Add(oModel);
             }
 
@@ -343,7 +394,7 @@ namespace IMS.Web.Controllers.Repair
             var rows = lstRes;
             //return Json(new {rows = rows }, JsonRequestBehavior.AllowGet);
             return Json(lstRes, JsonRequestBehavior.AllowGet);
-        
+
         }
 
     }

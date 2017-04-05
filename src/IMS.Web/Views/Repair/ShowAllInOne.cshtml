@@ -14,13 +14,14 @@
     <script src="~/Content/bootstrap/js/jquery-1.11.0.min.js"></script>
     <script src="~/Content/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Content/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
-    
+
 </head>
 <body>
     <input type="hidden" id="sum_appid" value="@Model.ApplicationVM.Id" />
     <input type="hidden" id="sum_selfrepairid" value="@Model.ApplicationVM.SelfRepairPlanID" />
+    <input type="hidden" id="sum_status" value="@Model.ApplicationVM.Status" />
     <div class="center-block" style="width:910px;height:760px;margin-top:5px">
-        <div class="table-responsive" >
+        <div class="table-responsive">
             <table class="table table-bordered">
                 <tr>
                     <td class="info">故障设备</td>
@@ -215,7 +216,7 @@
             $.post("/Repair/Summarize",
                 {
                     appID: $("#sum_appid").val(),
-                    selfRepairPlanId:$("#sum_selfrepairid").val(),
+                    selfRepairPlanId: $("#sum_selfrepairid").val(),
                     beginTime: $("#sum_begintime").val(),
                     timeCost: $("#sum_timecost").val(),
                     description: $("#sum_description").val(),
@@ -229,12 +230,11 @@
                 },
             function (Data) {
                 data = $.parseJSON(Data);
-                if (data.status == "success") { }
-            }
-                );
-            var a = $("#sum_tools").val();
-            alert(a);
-
+                if (data.status == "success") {
+                    alert(data.msg);
+                    window.opener = null; window.close();
+                }
+            });
         }
     </script>
 </body>
