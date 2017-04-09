@@ -55,6 +55,10 @@
       <HintPath>..\packages\Autofac.Mvc5.4.0.0\lib\net451\Autofac.Integration.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="AutoMapper, Version=6.0.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.6.0.2\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -154,12 +158,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\AutoMapperConfiguration.cs" />
+    <Compile Include="Config\AutoMapperConfiguration.Partial.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\Repair\RepairController.cs" />
     <Compile Include="Controllers\Common\CommonController.cs" />
+    <Compile Include="Areas\Repair\Controllers\RepairController.cs" />
+    <Compile Include="Areas\Repair\RepairAreaRegistration.cs" />
+    <Compile Include="Controllers\Common\DefaultController.cs" />
+    <Compile Include="Controllers\Repair\RepairController.cs" />
+    <Compile Include="Areas\Repair\Controllers\CommonController.cs" />
     <Compile Include="Controllers\Role\RoleController.cs" />
+    <Compile Include="Dic\CommonDic.cs" />
+    <Compile Include="Dic\Role.cs" />
+    <Compile Include="Dto\BaseDto.cs" />
+    <Compile Include="Dto\DeviceDto.cs" />
+    <Compile Include="Dto\ApplicationDto.cs" />
+    <Compile Include="Dto\DispatchDto.cs" />
+    <Compile Include="Dto\EngineerDto.cs" />
+    <Compile Include="Dto\ResultDto.cs" />
+    <Compile Include="Dto\SelfRepairPlanDto.cs" />
+    <Compile Include="Dto\SubSystemDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -283,6 +303,16 @@
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Areas\Repair\Views\web.config" />
+    <Content Include="Areas\Repair\Views\Repair\Index.cshtml" />
+    <Content Include="Areas\Repair\Views\Repair\NewApplication.cshtml" />
+    <Content Include="Areas\Repair\Views\Common\EngineerSelect.cshtml" />
+    <Content Include="Areas\Repair\Views\Common\SearchBar.cshtml" />
+    <Content Include="Areas\Repair\Views\Common\SubSystem.cshtml" />
+    <Content Include="Areas\Repair\Views\Repair\AllApplications.cshtml" />
+    <Content Include="Areas\Repair\Views\Repair\Dispatch.cshtml" />
+    <Content Include="Areas\Repair\Views\Repair\Disposing.cshtml" />
+    <Content Include="Areas\Repair\Views\Repair\ShowAllInOne.cshtml" />
     <None Include="Properties\PublishProfiles\IMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -290,6 +320,8 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -313,7 +345,6 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Repair\GetDepartment.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Repair\NewApplication.cshtml" />
     <Content Include="Views\Repair\Dispatch.cshtml" />
     <Content Include="Views\Repair\Disposing.cshtml" />
@@ -323,9 +354,13 @@
     <Content Include="Views\Repair\AllApplications.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\Repair\ShowAllInOne.cshtml" />
+    <Content Include="Views\Repair\Index.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Repair\Views\Default\" />
+    <Folder Include="Views\Default\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

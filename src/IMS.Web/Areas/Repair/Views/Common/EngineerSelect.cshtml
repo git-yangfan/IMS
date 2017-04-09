@@ -1,0 +1,54 @@
+﻿<label for="select_team">选择班组：</label>
+<select id="select_team">
+    <option value="-1">请选择</option>
+</select>
+<label for="select_engineer">选择工程师：</label>
+<select id="select_engineer">
+    <option value="-1">请选择</option>
+</select>
+<script type="text/javascript">
+    $(function () {
+        LoadTeamName();
+        $("#select_team").change(
+            function () {
+                LoadEngineerName();
+            });
+    });
+
+
+    function LoadTeamName() {
+        $.post(
+            "/Repair/Common/GetTeamOrEngrName",
+            {type:"team",teamName:null},
+            function (Data) {
+                if (Data != "") {
+                    $.each(Data.data, function (i, item) {
+                        $("<option></option>").text(item["TeamName"]).appendTo($("#select_team"));
+                    })
+                }
+                else {
+                    alert("加载班组或人员信息时出错啦！");
+                }
+            });
+    };
+
+
+    function LoadEngineerName() {
+        $("#select_engineer").empty();
+        $("<option></option>").val("-1").text("请选择").appendTo($("#select_engineer"));
+        $.post(
+            "/Repair/Common/GetTeamOrEngrName",
+            { type: "Engineer", teamName: $("#select_team option:selected").text() },
+            function (Data) {
+                if (Data != "") {
+                    $.each(Data.data, function (i, item) {
+                        $("<option></option>").val(item["EngineerId"]).text(item["EngineerName"]).appendTo($("#select_engineer"));
+                    })
+                }
+                else {
+                    alert("加载班组或人员信息时出错啦！");
+                }
+            });
+    };
+
+</script>

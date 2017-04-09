@@ -1,0 +1,448 @@
+﻿@{
+    ViewBag.Title = "Dispatch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Dispatch</h2>
+
+@section ContentBody{
+    <input type="hidden" id="forapplicationid" />
+
+    @{Html.RenderAction("SearchBar", "Common");}
+
+    <div>
+        <table id="table_dispatch"></table>
+    </div>
+
+
+    <div class="modal fade " id="modalfordispatch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index:5000">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">派工</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="form-group ">
+                            <label for="txt_rolename">故障设备</label>
+                            <input type="text" name="txt_rolename" id="txt_show_device">
+                        </div>
+                        <div class="form-group">
+                            <label for="txt_roledesc">故障发生时间</label>
+                            <input type="text" name="txt_roledesc" id="txt_show_begintime">
+                        </div>
+                        <div class="form-group ">
+                            <label for="txt_roledesc">故障部位</label>
+                            <input type="text" name="txt_roledesc" id="txt_show_location">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txt_defaulturl_Web">故障现象</label>
+                            <input type="text" name="txt_defaulturl_Web" id="txt_show_appear">
+                        </div>
+                        <div class="form-group ">
+                            <label for="txt_defaulturl_Web">故障描述</label>
+                            <input type="text" name="txt_defaulturl_Web" id="txt_show_descri">
+                        </div>
+                        <div class="form-group">
+                            <label for="txt_defaulturl_Web">选择人员</label>
+                            @{Html.RenderAction("EngineerSelect", "Common");}
+                            <label>作业类别</label>
+                            <select id="select_worktype">
+                                <option value="-1">请选择</option>
+                                <option value="0">维修</option>
+                                <option value="1">故障诊断</option>
+                            </select>
+                            <label for="txt_defaulturl_Web">指示事项</label>
+                            <textarea id="txtarea_instruction"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                        <button type="button" id="btn_submit" class="btn btn-primary" onclick="Dispatch()" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>派工</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade " id="modalforreject" style="z-index:5000">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">驳回</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group ">
+                            <label>驳回理由</label>
+                            <textarea id="txtarea_rejectreason"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                        <button type="button" id="btn_reject" class="btn btn-primary" onclick="Reject()" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>驳回</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal " id="selfrepairtocheck" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index:5000;">
+        <div class="modal-dialog " role="document">
+            <input type="hidden" id="forrepairplanid" />
+            <div class="modal-content">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">审核自修方案</h4>
+                    </div>
+                    <div class="modal-body form-horizontal row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">维修步骤</label>
+                            <div class="col-sm-10">
+                                <textarea id="txtarea_repairsteps" rows="7" readonly></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">维修工具</label>
+                            <div class="col-sm-10">
+                                <textarea id="txtarea_repairtools" rows="2" readonly></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">预估用时</label>
+                            <div class="col-sm-3 ">
+                                <input type="text" id="input_timecost" readonly>
+                            </div>
+                            <label class="col-sm-3 control-label">是否使用备件</label>
+                            <div class="col-sm-3">
+                                <label class="radio-inline">
+                                    <input type="radio" name="isspareparts" id="inlineRadio1" value="是"> 是
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="isspareparts" id="inlineRadio2" value="否"> 否
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备件信息</label>
+                            <div class="col-sm-10">
+                                <textarea id="txtarea_spareparts" rows="3" readonly></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">作业指示</label>
+                            <div class="col-sm-10">
+                                <textarea id="txtarea_insruction" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" onclick="CheckNewPlan('reject')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>驳回</button>
+                        <button type="button" id="btn_submit" class="btn btn-primary" onclick="CheckNewPlan('approve')" data-dismiss="modal"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>通过</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var $table = $('#table_dispatch');
+        var dispatchingRow;
+        var indexOfDispatchingRow;
+        $(function () {
+            initTable();
+        })
+
+        function initTable() {
+            $table.bootstrapTable({
+                url: '/Repair/GetAllApplications',         //请求后台的URL（*）
+                method: 'post',                      //请求方式（*）
+                toolbar: '#toolbar',                //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1,                       //初始化加载第一页，默认第一页
+                pageSize: 10,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 1,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "DeviceNo",                     //每一行的唯一标识，一般为主键列
+                showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                queryParams: queryParams,
+                detailView: true,
+                detailFormatter: detailFormatter,
+                columns: [
+                    { field: 'DeviceShortName', title: '故障设备', sortable: true },
+                    { field: 'BeginTime', title: '发生时间', sortable: true },
+                    { field: 'FullLocation', title: '故障部位' },
+                    { field: 'FailureAppearance', title: '故障现象', sortable: true },
+                    { field: 'FailureDescription', title: '故障描述', sortable: true },
+                    { field: 'Status', title: '当前状态', sortable: true, align: 'left', formatter: cssFormatter },
+                    { field: 'Modifiable', title: '操作', align: 'center', events: operateEvents, formatter: operateFormatter }
+                ]
+            });
+        }
+
+        //得到查询的参数
+        function queryParams(params) {
+            var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                limit: params.limit,   //页面大小
+                offset: params.offset,  //页码
+                order: params.order,
+                ordername: params.sort,
+                sectionName: $("#select_worksection option:selected").text(),
+                deviceNo: $("#select_device option:selected").val(),
+                beginTime: $("#txt_begintime").val(),
+                endTime: $("#txt_endtime").val()
+            };
+            return temp;
+        };
+
+        function detailFormatter(index, row) {
+            var html = [];
+            html.push('<div class="form-horizontal">');
+            html.push('<div class="row" >');
+            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >故障设备</label>');
+            html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['DeviceShortName'] + '>');
+            html.push('</div></div></div>');
+            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >发生时间</label>');
+            html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['BeginTime'] + '>');
+            html.push('</div></div></div>');
+            html.push('</div>');
+            html.push('<div class="row" >');
+            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >申请人</label>');
+            html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['ReporterId'] + '>');
+            html.push('</div></div></div>');
+            html.push('<div class="col-sm-4"><div class="row"><label class="control-label col-sm-4" >申请时间</label>');
+            html.push('<div class="col-sm-8"><input type="text" class="form-control" value=' + row['ApplicationTime'] + '>');
+            html.push('</div></div></div>');
+            html.push('</div>');
+            html.push('<div class="row" >');
+            html.push('<div class="col-sm-8"><div class="row"><label class="control-label col-sm-2" >故障现象</label>');
+            html.push('<div class="col-sm-10"><textarea rows="3" class="form-control" >' + row['FailureAppearance'] + '</textarea>');
+            html.push('</div></div></div>');
+            html.push('</div>');
+            html.push('<div class="row" >');
+            html.push('<div class="col-sm-8"><div class="row"><label class="control-label col-sm-2" >故障描述</label>');
+            html.push('<div class="col-sm-10"><textarea rows="3" class="form-control" >' + row['FailureDescription'] + '</textarea>');
+            html.push('</div></div></div>');
+            html.push('</div>');
+            html.push('</div>');
+            return html.join('');
+        }
+
+        function cssFormatter(value, row, index) {
+            //这个地方的颜色还不知道怎么定，状态太多，颜色太多不好看
+            var status = row.Status;
+            var cssname = "";
+            if (status == "待审核" || status == "自修方案待审" || status == "外修申请待审" || status == "缓修申请待审") {
+                cssname = 'class="label label-primary"';
+            }
+            if (status == "待维修" || status == "自修方案通过" || status == "外修申请通过" || status == "缓修申请通过") {
+                cssname = 'class="label label-success"';
+            }
+            if (status == "已驳回" || status == "自修方案失败" || status == "外修申请失败" || status == "缓修申请失败") {
+                cssname = 'class="label label-warning"';
+            }
+            return [
+                '<span ' + cssname + '>' + row.Status + '</span>'
+            ].join('');
+        };
+
+
+        function operateFormatter(value, row, index) {
+            var status = row.Status;
+            if (status == "待审核" || status == "已驳回") {
+                return ['<div class="btn-group" >',
+                    '<button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+                    '处理 <span class="caret"></span>',
+                    '</button>',
+                    '<ul class="dropdown-menu" >',
+                      '<li><a id="a_dispatch">派工</a></li>',
+                      '<li><a id="a_reject">驳回</a></li>',
+                    '</ul></div>'
+                ].join('');
+            }
+            else {
+                return [
+               '<button id="btn_check" type="button" class="dispatch btn btn-default btn-sm">',
+               '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>审核',
+               '</button>'
+                ].join('');
+            }
+
+        };
+        window.operateEvents = {
+            'click #a_dispatch': function (e, value, row, index) {
+                dispatchingRow = row;
+                indexOfDispatchingRow = index;
+                var status = row.Status;
+                if (status != "待审核") {
+                    alert("您已经完成处理！请勿重复操作");
+                    return;
+                }
+                $("#txt_show_device").val(row.DeviceShortName);
+                $("#txt_show_begintime").val(row.BeginTime);
+                $("#txt_show_location").val(row.FullLocation);
+                $("#txt_show_appear").val(row.FailureAppearance);
+                $("#txt_show_descri").val(row.FailureDescription);
+                $("#forapplicationid").val(row.Id);
+                $("#select_team").val(-1);
+                $("#select_engineer").val(-1);
+                $("#txtarea_instruction").val('');
+                $('#modalfordispatch').modal();
+            },
+            'click #a_reject': function (e, value, row, index) {
+                dispatchingRow = row;
+                indexOfDispatchingRow = index;
+                var status = row.Status;
+                if (status != "待审核") {
+                    alert("您已经完成处理！请勿重复操作");
+                    return;
+                }
+                $("#txtarea_rejectreason").val('');
+                $("#modalforreject").modal();
+            },
+            'click #btn_check': function (e, value, row, index) {
+                dispatchingRow = row;
+                indexOfDispatchingRow = index;
+                var status = row.Status;
+                if (status == "自修方案待审") {
+                    $.post("/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanID: row.SelfRepairPlanID }, function (Data) {
+                        data = $.parseJSON(Data);
+                        if (data.status == "success") {
+                            $('#txtarea_repairsteps').val(data.data["Steps"]);
+                            $('#txtarea_repairtools').val(data.data["Tools"]);
+                            $('#input_timecost').val(data.data["TimeCost"]);
+                            $('#txtarea_repairsteps').val(data.data["Steps"]);
+                            $('#txtarea_spareparts').val(data.data["SparePartsInfo"]);
+                            $('#forrepairplanid').val(data.data["ID"]);
+                        }
+                    });
+                    $('#selfrepairtocheck').modal();
+                }
+                if (status == "外修申请待审") {
+                    OutRepairAppCheck(row);
+                }
+                if (status == "缓修申请待审") {
+                    PauseRepairAppCheck(row);
+                }
+                if (status == "方案撤销中") {
+                    dispatchingRow = row;
+                    indexOfDispatchingRow = index;
+                    var msg = "即将撤销 《" + dispatchingRow.MethodCategory + "》 流程，并删除已有 《" + dispatchingRow.MethodCategory + "》 方案！\n\n请您确定？";
+                    if (confirm(msg) == true) {
+                        var categoryId;
+                        var methodCategory = row.MethodCategory;
+                        if (methodCategory == "自修") {
+                            categoryId = row.SelfRepairPlanID;
+                        }
+                        if (methodCategory == "缓修") {
+                            categoryId = row.PauseSheetID;
+                        }
+                        if (methodCategory == "外修") {
+                            categoryId = row.OutRepairSheetID;
+                        }
+                        $.post("/Repair/CancelProcedure", { methodCategory: methodCategory, categoryId: categoryId }, function (Data) {
+                            data = $.parseJSON(Data);
+                            if (data.status == "success") {
+                                $table.bootstrapTable('updateRow', {
+                                    index: indexOfDispatchingRow,
+                                    row: { "Status": data.phase }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        };
+        function Search() {
+            $table.bootstrapTable('refresh', { url: '/Repair/GetAllApplications' });
+        };
+
+        function Dispatch() {
+            $.post(
+                "/Repair/Dispatch",
+                { applicationId: dispatchingRow.Id, workType: $("#select_worktype option:selected").text(), engineerId: $("#select_engineer").val(), instruction: $("#txtarea_instruction").val() },
+                function (Data) {
+                    data = $.parseJSON(Data);
+                    if (data.status == "success") {
+                        $table.bootstrapTable('updateRow', {
+                            index: indexOfDispatchingRow,
+                            row: { "Status": data.phase }
+                        });
+                    }
+                    alert(data.msg);
+                });
+        };
+
+        function Reject() {
+            var reason = $("#txtarea_rejectreason").val();
+            if (reason == "") {
+                alert("拒绝人总该有个理由的！！");
+            }
+            else {
+                $.post(
+                    "/Repair/Reject",
+                    { applicationId: dispatchingRow.Id, rejectReason: reason },
+                    function (Data) {
+                        var data = $.parseJSON(Data);
+                        if (data.status == "success") {
+                            $table.bootstrapTable('updateRow', {
+                                index: indexOfDispatchingRow,
+                                row: { "Status": data.phase }
+                            });
+                        }
+                        alert(data.msg);
+                    });
+            }
+        }
+
+        function CheckNewPlan(type) {
+            var id = $('#forrepairplanid').val();
+            var msg = $('#txtarea_insruction').val();
+            if (type == "reject") {
+                if (msg == "") {
+                    alert("请填写拒绝的理由");
+                    return;
+                }
+            }
+            if (type == "approve") {
+                if (msg == "") {
+                    msg = "同意";
+                }
+            }
+            $.post("/Repair/CheckSelfRepairPlanByMngr", { selfRepairPlanID: dispatchingRow.SelfRepairPlanID, type: type, msg: msg }, function (Data) {
+                data = $.parseJSON(Data);
+                if (data.status == "success") {
+                    alert(data.msg);
+                    $table.bootstrapTable('updateRow', {
+                        index: indexOfDispatchingRow,
+                        row: { "Status": data.phase }
+                    });
+                }
+            });
+        }
+
+    </script>
+}

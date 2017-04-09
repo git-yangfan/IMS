@@ -72,10 +72,13 @@
         var indexofrowtomodify;
         $(function () {
             initTable();
+            $("#firstFailureLocation").change(function () {
+                GetSecondLevelSubSysList();
+            });
         })
         function initTable() {
             $table.bootstrapTable({
-                url: '/Repair/GetAllApplications',         //请求后台的URL（*）
+                url: '/Repair/Repair/GetAllApplications',         //请求后台的URL（*）
                 method: 'post',                      //请求方式（*）
                 toolbar: '#toolbar',                //工具按钮用哪个容器
                 striped: true,                      //是否显示行间隔色
@@ -163,10 +166,10 @@
                     indexofrowtomodify = index;
                     $("#txt_failuredevice").val(row.DeviceShortName);
                     $("#txt_begintimem").val(row.BeginTime);
-                    GetFirstLevelSubSysList();
                     $("#txtarea_appearance").val(row.FailureAppearance);
                     $("#txtarea_description").val(row.FailureDescription);
                     $("#txt_forapplicationid").val(row.Id);
+                    IniteDropdownList();
                     $('#myModal').modal();
                 }
             },
@@ -206,7 +209,7 @@
             var FullLocation = fstLocation + (secLocation == "请选择" ? "" : "/" + secLocation) + (thiLocation == "请选择" ? "" : "/" + thiLocation);
 
             $.post(
-               "/Repair/ModifyApplication",
+               "/Repair/Repair/ModifyApplication",
                {
                    applicationId: $("#txt_forapplicationid").val(),
                    failureAppearance: Appearance,
@@ -233,74 +236,75 @@
 
 
         function RefreshTable() {
-            $('#tb_allapplications').bootstrapTable('refresh', { url: '/Repair/GetAllApplications' });
+            $('#tb_allapplications').bootstrapTable('refresh', { url: '/Repair/Repair/GetAllApplications' });
         }
 
 
 
-        function GetFirstLevelSubSysList() {
+        function IniteDropdownList() {
             $.post(
-                "/Common/GetSubSystemList",
-                { lev: 0, parentId: 0 },
-                function (data) {
-                    $.each(data, function (i, item) {
-                        $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
+            "/Repair/Common/GetSubSystemList",
+            { lev: 0, parentId: 0 },
+            function (Data) {
+                $.each(Data.data, function (i, item) {
+                    $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
+                });
+                $("#firstFailureLocation option[location='" + rowtomodify.FirstLocation + "']").attr("Selected", true);
+                $.post("/Repair/Common/GetSubSystemList", { lev: 1, parentId: $("#firstFailureLocation").val() }, function (Data) {
+                    $.each(Data.data, function (i, item) {
+                        $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
                     });
-                    $("#firstFailureLocation option[location='" + rowtomodify.FstLevFailureLocation + "']").attr("Selected", true);
-                    GetSecondLevelSubSysList();
-                });
-            $("#firstFailureLocation").change(function () {
-                GetSecondLevelSubSysList();
-            });
-        }
-        function GetSecondLevelSubSysList() {
-            $("#secondFailureLocation").empty();
-            $("<option></option>").val("-1").text("请选择").appendTo($("#secondFailureLocation"));
-            $("#thirdFailureLocation").empty();
-            $("<option></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
-            $.post(
-            "/Common/GetSubSystemList",
-            { lev: 1, parentId: $("#firstFailureLocation").val() },
-            function (data) {
-                $.each(data, function (i, item) {
-                    $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
-                });
-                if ($("#firstFailureLocation option:selected").text() == rowtomodify.FstLevFailureLocation) {
-                    $("#secondFailureLocation option[location='" + rowtomodify.SecLevFailureLocation + "']").attr("Selected", true);
-                }
-                GetThirdLevelSubSysList();
-            });
-            $("#secondFailureLocation").change(function () {
-                GetThirdLevelSubSysList();
-            });
-        }
-        function GetThirdLevelSubSysList() {
-            $("#thirdFailureLocation").empty();
-            $("<option ></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
-            $.post(
-            "/Common/GetSubSystemList",
-            { lev: 2, parentId: $("#secondFailureLocation").val() },
-            function (data) {
-                $.each(data, function (i, item) {
-                    $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#thirdFailureLocation"));
-                });
-                if ($("#secondFailureLocation option:selected").text() == rowtomodify.SecLevFailureLocation) {
-                    $("#thirdFailureLocation option[location='" + rowtomodify.ThiLevFailureLocation + "']").attr("Selected", true);
-                }
-            });
-        }
+                    $("#secondFailureLocation option[location='" + rowtomodify.SecondLocation + "']").attr("Selected", true);
+                    $.post("/Repair/Common/GetSubSystemList", { lev: 2, parentId: $("#secondFailureLocation").val() }, function (Data) {
+                        $.each(Data.data, function (i, item) {
+                            $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#thirdFailureLocation"));
+                        });
+                        $("#thirdFailureLocation option[location='" + rowtomodify.ThirdLocation + "']").attr("Selected", true);
 
-        function SetSelectDefualtText(lev) {
-            if (lev = "first") {
-                $("#firstFailureLocation option[location='" + rowtomodify.FstLevFailureLocation + "']").attr("Selected", true);
-            }
-            if (lev = "second") {
-                $("#secondFailureLocation option[location='" + rowtomodify.SecLevFailureLocation + "']").attr("Selected", true);
-            }
-            if (lev = "third") {
-                $("#thirdFailureLocation option[location='" + rowtomodify.ThiLevFailureLocation + "']").attr("Selected", true);
-            }
-        }
+                    });
+                });
+            });}
 
+            function GetFirstLevelSubSysList() {
+                $.post(
+                    "/Repair/Common/GetSubSystemList",
+                    { lev: 0, parentId: 0 },
+                    function (Data) {
+                        $.each(Data.data, function (i, item) {
+                            $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
+                        })
+                    });
+
+            }
+            function GetSecondLevelSubSysList() {
+                $("#secondFailureLocation").empty();
+                $("<option></option>").val("-1").text("请选择").appendTo($("#secondFailureLocation"));
+                $("#thirdFailureLocation").empty();
+                $("<option></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
+                $.post(
+                "/Repair/Common/GetSubSystemList",
+                { lev: 1, parentId: $("#firstFailureLocation").val() },
+                function (Data) {
+                    $.each(Data.data, function (i, item) {
+                        $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
+                    })
+                });
+                $("#secondFailureLocation").change(function () {
+                    GetThirdLevelSubSysList();
+                });
+            }
+            function GetThirdLevelSubSysList() {
+                $("#thirdFailureLocation").empty();
+                $("<option ></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
+                $.post(
+                "/Repair/Common/GetSubSystemList",
+                { lev: 2, parentId: $("#secondFailureLocation").val() },
+                function (Data) {
+                    $.each(Data.data, function (i, item) {
+                        $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#thirdFailureLocation"));
+                    })
+                });
+            }
+        
     </script>
 }

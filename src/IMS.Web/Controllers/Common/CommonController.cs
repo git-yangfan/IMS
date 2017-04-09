@@ -4,7 +4,7 @@ using IMS.Model.ViewModel;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
-namespace IMS.Web.Controllers.Partial
+namespace IMS.Web.Controllers.Common
 {
     public class CommonController : Controller
     {

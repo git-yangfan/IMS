@@ -21,8 +21,6 @@ namespace IMS.Data.Services
                 subSystemList = client.Queryable<SubSystem>().Where(s => s.Lev == lev).Where(s => s.Pid == pid).ToList();
             }
             return subSystemList;
-
-
         }
         public static List<EngineerViewModel> GetTeamOrEngrName(string type, string teamName)
         {

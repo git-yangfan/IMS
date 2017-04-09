@@ -16,6 +16,9 @@ namespace IMS.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            //AutoMapper
+            IMS.Web.Config.AutoMapperConfiguration.Config();
+            IMS.Web.Config.AutoMapperConfiguration.ConfigExt();
         }
     }
 }

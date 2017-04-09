@@ -396,6 +396,10 @@ namespace IMS.Web.Controllers.Repair
             return Json(lstRes, JsonRequestBehavior.AllowGet);
 
         }
+        public ActionResult Index() 
+        {
+            return View();
+        }
 
     }
 }
