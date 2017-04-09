@@ -239,8 +239,6 @@
             $('#tb_allapplications').bootstrapTable('refresh', { url: '/Repair/Repair/GetAllApplications' });
         }
 
-
-
         function IniteDropdownList() {
             $.post(
             "/Repair/Common/GetSubSystemList",
@@ -275,7 +273,6 @@
                         $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
                     })
                 });
-
         }
         function GetSecondLevelSubSysList() {
             $("#secondFailureLocation").empty();
