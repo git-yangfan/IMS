@@ -158,7 +158,7 @@
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 var status = row.Status;
-                if (status != "待审核" ) {
+                if (status != "待审核") {
                     alert("申请已经受理，无法修改");
                     return;
                 } else {
@@ -263,48 +263,49 @@
 
                     });
                 });
-            });}
+            });
+        }
 
-            function GetFirstLevelSubSysList() {
-                $.post(
-                    "/Repair/Common/GetSubSystemList",
-                    { lev: 0, parentId: 0 },
-                    function (Data) {
-                        $.each(Data.data, function (i, item) {
-                            $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
-                        })
-                    });
-
-            }
-            function GetSecondLevelSubSysList() {
-                $("#secondFailureLocation").empty();
-                $("<option></option>").val("-1").text("请选择").appendTo($("#secondFailureLocation"));
-                $("#thirdFailureLocation").empty();
-                $("<option></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
-                $.post(
+        function GetFirstLevelSubSysList() {
+            $.post(
                 "/Repair/Common/GetSubSystemList",
-                { lev: 1, parentId: $("#firstFailureLocation").val() },
+                { lev: 0, parentId: 0 },
                 function (Data) {
                     $.each(Data.data, function (i, item) {
-                        $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
+                        $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#firstFailureLocation"));
                     })
                 });
-                $("#secondFailureLocation").change(function () {
-                    GetThirdLevelSubSysList();
-                });
-            }
-            function GetThirdLevelSubSysList() {
-                $("#thirdFailureLocation").empty();
-                $("<option ></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
-                $.post(
-                "/Repair/Common/GetSubSystemList",
-                { lev: 2, parentId: $("#secondFailureLocation").val() },
-                function (Data) {
-                    $.each(Data.data, function (i, item) {
-                        $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#thirdFailureLocation"));
-                    })
-                });
-            }
-        
+
+        }
+        function GetSecondLevelSubSysList() {
+            $("#secondFailureLocation").empty();
+            $("<option></option>").val("-1").text("请选择").appendTo($("#secondFailureLocation"));
+            $("#thirdFailureLocation").empty();
+            $("<option></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
+            $.post(
+            "/Repair/Common/GetSubSystemList",
+            { lev: 1, parentId: $("#firstFailureLocation").val() },
+            function (Data) {
+                $.each(Data.data, function (i, item) {
+                    $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#secondFailureLocation"));
+                })
+            });
+            $("#secondFailureLocation").change(function () {
+                GetThirdLevelSubSysList();
+            });
+        }
+        function GetThirdLevelSubSysList() {
+            $("#thirdFailureLocation").empty();
+            $("<option ></option>").val("-1").text("请选择").appendTo($("#thirdFailureLocation"));
+            $.post(
+            "/Repair/Common/GetSubSystemList",
+            { lev: 2, parentId: $("#secondFailureLocation").val() },
+            function (Data) {
+                $.each(Data.data, function (i, item) {
+                    $("<option location=" + item["Name"] + "></option>").val(item["Id"]).text(item["Name"]).appendTo($("#thirdFailureLocation"));
+                })
+            });
+        }
+
     </script>
 }
