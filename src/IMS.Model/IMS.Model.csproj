@@ -49,49 +49,7 @@
     <Compile Include="Entity\SelfRepairPlan.cs" />
     <Compile Include="Entity\SubSystem.cs" />
     <Compile Include="Entity\Users.cs" />
-    <Compile Include="Model\PGD.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\SBXX.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\SubSystem.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\Users.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\WXShenQing.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\WXZongJie.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\ZDPGD.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\ZXFA.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModel\ApplicationsViewModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ViewModel\DeviceViewModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ViewModel\DispatchSheetViewModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ViewModel\EngineerViewModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ViewModel\SelfRepairPlanViewModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ViewModel\SummarizeViewModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

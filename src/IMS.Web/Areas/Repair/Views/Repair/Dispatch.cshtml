@@ -167,7 +167,7 @@
 
         function initTable() {
             $table.bootstrapTable({
-                url: '/Repair/GetAllApplications',         //请求后台的URL（*）
+                url: '/Repair/Repair/GetAllApplications',         //请求后台的URL（*）
                 method: 'post',                      //请求方式（*）
                 toolbar: '#toolbar',                //工具按钮用哪个容器
                 striped: true,                      //是否显示行间隔色
@@ -328,13 +328,13 @@
                 indexOfDispatchingRow = index;
                 var status = row.Status;
                 if (status == "自修方案待审") {
-                    $.post("/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanID: row.SelfRepairPlanID }, function (Data) {
+                    $.post("/Repair/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanID: row.SelfRepairPlanID }, function (Data) {
                         data = $.parseJSON(Data);
                         if (data.status == "success") {
-                            $('#txtarea_repairsteps').val(data.data["Steps"]);
-                            $('#txtarea_repairtools').val(data.data["Tools"]);
+                            $('#txtarea_repairsteps').val(data.data["Step"]);
+                            $('#txtarea_repairtools').val(data.data["Tool"]);
                             $('#input_timecost').val(data.data["TimeCost"]);
-                            $('#txtarea_repairsteps').val(data.data["Steps"]);
+                            $('#txtarea_repairsteps').val(data.data["Step"]);
                             $('#txtarea_spareparts').val(data.data["SparePartsInfo"]);
                             $('#forrepairplanid').val(data.data["ID"]);
                         }
@@ -363,7 +363,7 @@
                         if (methodCategory == "外修") {
                             categoryId = row.OutRepairSheetID;
                         }
-                        $.post("/Repair/CancelProcedure", { methodCategory: methodCategory, categoryId: categoryId }, function (Data) {
+                        $.post("/Repair/Repair/CancelProcedure", { methodCategory: methodCategory, categoryId: categoryId }, function (Data) {
                             data = $.parseJSON(Data);
                             if (data.status == "success") {
                                 $table.bootstrapTable('updateRow', {
@@ -377,12 +377,12 @@
             }
         };
         function Search() {
-            $table.bootstrapTable('refresh', { url: '/Repair/GetAllApplications' });
+            $table.bootstrapTable('refresh', { url: '/Repair/Repair/GetAllApplications' });
         };
 
         function Dispatch() {
             $.post(
-                "/Repair/Dispatch",
+                "/Repair/Repair/Dispatch",
                 { applicationId: dispatchingRow.Id, workType: $("#select_worktype option:selected").text(), engineerId: $("#select_engineer").val(), instruction: $("#txtarea_instruction").val() },
                 function (Data) {
                     data = $.parseJSON(Data);
@@ -403,7 +403,7 @@
             }
             else {
                 $.post(
-                    "/Repair/Reject",
+                    "/Repair/Repair/Reject",
                     { applicationId: dispatchingRow.Id, rejectReason: reason },
                     function (Data) {
                         var data = $.parseJSON(Data);
@@ -432,7 +432,7 @@
                     msg = "同意";
                 }
             }
-            $.post("/Repair/CheckSelfRepairPlanByMngr", { selfRepairPlanID: dispatchingRow.SelfRepairPlanID, type: type, msg: msg }, function (Data) {
+            $.post("/Repair/Repair/CheckSelfRepairPlanByMngr", { selfRepairPlanID: dispatchingRow.SelfRepairPlanID, type: type, msg: msg }, function (Data) {
                 data = $.parseJSON(Data);
                 if (data.status == "success") {
                     alert(data.msg);

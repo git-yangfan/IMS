@@ -163,13 +163,9 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\Common\CommonController.cs" />
     <Compile Include="Areas\Repair\Controllers\RepairController.cs" />
     <Compile Include="Areas\Repair\RepairAreaRegistration.cs" />
-    <Compile Include="Controllers\Common\DefaultController.cs" />
-    <Compile Include="Controllers\Repair\RepairController.cs" />
     <Compile Include="Areas\Repair\Controllers\CommonController.cs" />
-    <Compile Include="Controllers\Role\RoleController.cs" />
     <Compile Include="Dic\CommonDic.cs" />
     <Compile Include="Dic\Role.cs" />
     <Compile Include="Dto\BaseDto.cs" />
@@ -180,6 +176,7 @@
     <Compile Include="Dto\ResultDto.cs" />
     <Compile Include="Dto\SelfRepairPlanDto.cs" />
     <Compile Include="Dto\SubSystemDto.cs" />
+    <Compile Include="Dto\SummarizeDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -336,31 +333,15 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
-    <Content Include="Views\Manage\ChangePassword.cshtml" />
-    <Content Include="Views\Manage\Index.cshtml" />
-    <Content Include="Views\Manage\ManageLogins.cshtml" />
-    <Content Include="Views\Manage\SetPassword.cshtml" />
-    <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Repair\GetDepartment.cshtml" />
-    <Content Include="Views\Repair\NewApplication.cshtml" />
-    <Content Include="Views\Repair\Dispatch.cshtml" />
-    <Content Include="Views\Repair\Disposing.cshtml" />
-    <Content Include="Views\Common\SearchBar.cshtml" />
-    <Content Include="Views\Common\EngineerSelect.cshtml" />
-    <Content Include="Views\Common\SubSystem.cshtml" />
-    <Content Include="Views\Repair\AllApplications.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
-    <Content Include="Views\Repair\ShowAllInOne.cshtml" />
-    <Content Include="Views\Repair\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Repair\Views\Default\" />
-    <Folder Include="Views\Default\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

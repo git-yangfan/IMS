@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using IMS.Data.DAL;
-using IMS.Data.Services;
 using IMS.Model.Entity;
 using IMS.Web.Dic;
 using IMS.Web.Dto;
@@ -141,47 +140,47 @@ namespace IMS.Web.Areas.Repair.Controllers
                 return Content(new { msg = "失败", status = "failed" }.ToJsonString());
             }
         }
-        //[HttpPost]
-        //public ActionResult Reject(int applicationId, string rejectReason)
-        //{
-        //    var result = RepairService.UpdateApplication(applicationId, rejectReason);
-        //    if (result)
-        //    {
-        //        var data = new { msg = "已经成功驳回", status = "success", phase = RepairService.StatusDic["Reject"] };
-        //        return Content(data.ToJsonString());
-        //    }
-        //    else
-        //    {
-        //        return Content(new { msg = "驳回失败", status = "failed" }.ToJsonString());
-        //    }
-        //}
+        [HttpPost]
+        public ActionResult Reject(int applicationId, string rejectReason)
+        {
+            var result = RepairService.UpdateApplication(applicationId, rejectReason);
+            if (result)
+            {
+                var data = new { msg = "已经成功驳回", status = "success", phase = RepairDAL.StatusDic["Reject"] };
+                return Content(data.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "驳回失败", status = "failed" }.ToJsonString());
+            }
+        }
 
-        //[HttpPost]
-        //public ActionResult CheckSelfRepairPlanByMngr(int selfRepairPlanID, string type, string msg)
-        //{
-        //    bool result = false;
-        //    if (string.Equals(type, "approve"))
-        //    {
-        //        result = RepairService.ApproveSelfRepairPlan(selfRepairPlanID, msg);
-        //    }
-        //    if (string.Equals(type, "reject"))
-        //    {
-        //        result = RepairService.RejectSelfRepairPlan(selfRepairPlanID, msg);
-        //    }
-        //    if (result)
-        //    {
-        //        string _phase = string.Empty;
-        //        if (string.Equals(type, "approve"))
-        //        { _phase = RepairService.StatusDic["SelfRepairPass"]; }
-        //        if (string.Equals(type, "reject"))
-        //        { _phase = RepairService.StatusDic["SelfRepairFail"]; }
-        //        return Content(new { msg = "处理成功", status = "success", phase = _phase }.ToJsonString());
-        //    }
-        //    else
-        //    {
-        //        return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
-        //    }
-        //}
+        [HttpPost]
+        public ActionResult CheckSelfRepairPlanByMngr(int selfRepairPlanID, string type, string msg)
+        {
+            bool result = false;
+            if (string.Equals(type, "approve"))
+            {
+                result = RepairService.ApproveSelfRepairPlan(selfRepairPlanID, msg);
+            }
+            if (string.Equals(type, "reject"))
+            {
+                result = RepairService.RejectSelfRepairPlan(selfRepairPlanID, msg);
+            }
+            if (result)
+            {
+                string _phase = string.Empty;
+                if (string.Equals(type, "approve"))
+                { _phase = RepairDAL.StatusDic["SelfRepairPass"]; }
+                if (string.Equals(type, "reject"))
+                { _phase = RepairDAL.StatusDic["SelfRepairFail"]; }
+                return Content(new { msg = "处理成功", status = "success", phase = _phase }.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
+            }
+        }
 
 
 
@@ -192,66 +191,67 @@ namespace IMS.Web.Areas.Repair.Controllers
 
 
         //#region 维修申请处理---维修工程师
-        //public ActionResult Disposing()
-        //{
-        //    return View();
-        //}
+        public ActionResult Disposing()
+        {
+            return View();
+        }
 
-        //public ActionResult NewRepairPlan()
-        //{
-        //    return View();
-        //}
-        //[HttpPost]
-        //public ActionResult CreatOrUpdateSelfRepairPlanByEngr(int appId, int selfRepairPlanID, string steps, string tools, double timecost, string isspare, string spareparts, string type)
-        //{
-        //    bool result = false;
-        //    SelfRepairPlanDto selfRepairPlanVM = new SelfRepairPlanDto();
-        //    selfRepairPlanVM.Steps = steps;
-        //    selfRepairPlanVM.Tools = tools;
-        //    selfRepairPlanVM.TimeCost = timecost;
-        //    selfRepairPlanVM.IsUseSpareParts = isspare;
-        //    selfRepairPlanVM.SparePartsInfo = spareparts;
-        //    ZXFA selfRepairPlanM = new ZXFA(selfRepairPlanVM);
-        //    if (string.Equals(type, "Create"))
-        //    {
-        //        result = RepairService.InsertNewSelfRepairPlan(selfRepairPlanM, appId);
-        //    }
-        //    if (string.Equals(type, "modify"))
-        //    {
-        //        result = RepairService.UpdateSelfRepairPlan(selfRepairPlanM, selfRepairPlanID);
-        //    }
-        //    if (result)
-        //        return Content(new { msg = "成功", status = "success", phase = RepairService.StatusDic["SelfRepairChecking"], methodCategory = RepairService.MethodCategoryDic["Self"] }.ToJsonString());
-        //    else
-        //        return Content(new { msg = "失败", status = "failed" }.ToJsonString());
-        //}
+        public ActionResult NewRepairPlan()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult CreatOrUpdateSelfRepairPlanByEngr(int appId, int selfRepairPlanID, string steps, string tools, double timecost, string isspare, string spareparts, string type)
+        {
+            bool result = false;
+            SelfRepairPlanDto selfRepairPlanDto = new SelfRepairPlanDto();
+            selfRepairPlanDto.Step = steps;
+            selfRepairPlanDto.Tool = tools;
+            selfRepairPlanDto.TimeCost = timecost;
+            selfRepairPlanDto.IsUseSpareParts = isspare;
+            selfRepairPlanDto.SparePartsInfo = spareparts;
+            var selfRepairPlan = Mapper.Map<SelfRepairPlanDto, SelfRepairPlan>(selfRepairPlanDto);
+            int selfPlanId=0;
+            if (string.Equals(type, "Create"))
+            {
+                result = RepairService.InsertNewSelfRepairPlan(selfRepairPlan, appId,out selfPlanId);
+            }
+            if (string.Equals(type, "modify"))
+            {
+                result = RepairService.UpdateSelfRepairPlan(selfRepairPlan, selfRepairPlanID);
+            }
+            if (result)
+                return Content(new { msg = "成功", status = "success", phase = RepairDAL.StatusDic["SelfRepairChecking"], methodCategory = RepairDAL.MethodCategoryDic["Self"], SelfRepairPlanID = selfPlanId }.ToJsonString());
+            else
+                return Content(new { msg = "失败", status = "failed" }.ToJsonString());
+        }
 
-        //[HttpPost]
-        //public ActionResult MarkCancelingProcedure(int appId)
-        //{
-        //    bool result = RepairService.UpDateApplication(appId);
-        //    if (result)
-        //    {
-        //        return Content(new { msg = "处理成功", status = "success", phase = RepairService.StatusDic["Canceling"] }.ToJsonString());
-        //    }
-        //    else
-        //    {
-        //        return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
-        //    }
-        //}
-        //[HttpPost]
-        //public ActionResult CancelProcedure(string methodCategory, int categoryId)
-        //{
-        //    bool result = RepairService.CancelProcedure(methodCategory, categoryId);
-        //    if (result)
-        //    {
-        //        return Content(new { msg = "处理成功", status = "success", phase = RepairService.StatusDic["CancelOK"] }.ToJsonString());
-        //    }
-        //    else
-        //    {
-        //        return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
-        //    }
-        //}
+        [HttpPost]
+        public ActionResult MarkCancelingProcedure(int appId)
+        {
+            bool result = RepairService.UpDateApplication(appId);
+            if (result)
+            {
+                return Content(new { msg = "处理成功", status = "success", phase = RepairDAL.StatusDic["Canceling"] }.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
+            }
+        }
+        [HttpPost]
+        public ActionResult CancelProcedure(string methodCategory, int categoryId)
+        {
+            bool result = RepairService.CancelProcedure(methodCategory, categoryId);
+            if (result)
+            {
+                return Content(new { msg = "处理成功", status = "success", phase = RepairDAL.StatusDic["CancelOK"] }.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
+            }
+        }
 
         //#endregion
 
@@ -261,79 +261,80 @@ namespace IMS.Web.Areas.Repair.Controllers
 
 
 
-        //public ActionResult ShowAllInOne(int appId, string type)
-        //{
-        //    SummarizeViewModel SummarizeVM = new SummarizeViewModel();
-        //    if (String.Equals(type, "自修"))
-        //    {
-        //        Dispatch dispatchSheetM = new Dispatch();
-        //        ZXFA selfRepairPlanM = new ZXFA();
-        //        string dispatherName = string.Empty;
-        //        string engineerName = string.Empty;
-        //        WXShenQing applicationM = RepairService.AllInfo(appId, ref dispatchSheetM, ref selfRepairPlanM, ref dispatherName, ref engineerName);
-        //        SummarizeVM.Instruction = dispatchSheetM.ZSSX;
-        //        SummarizeVM.DispatchTime = dispatchSheetM.PGSJ;
-        //        SummarizeVM.Dispatcher = dispatherName;
-        //        SummarizeVM.Engineer = engineerName;
-        //        SummarizeVM.ApplicationVM = new ApplicationsViewModel(applicationM);
-        //        SummarizeVM.ApplicationVM.DeviceShortName = RepairService.DeviceShortNameAndNoDic[applicationM.SBBH];
-        //        SummarizeVM.SelfRepairVM = new SelfRepairPlanDto(selfRepairPlanM);
-        //    }
-        //    return View(SummarizeVM);
-        //}
-        //public ActionResult Summarize()
-        //{
-        //    SummarizeViewModel summarizeVM = new SummarizeViewModel();
-        //    summarizeVM.ApplicationVM.Id = Convert.ToInt32(Request.Params["appID"]);
-        //    string beginTime = Request.Params["beginTime"];
-        //    if (!string.IsNullOrEmpty(beginTime))
-        //    {
-        //        summarizeVM.SelfRepairVM.StartTime = Convert.ToDateTime(beginTime);
-        //    }
-        //    summarizeVM.SelfRepairVM.ID = Convert.ToInt32(Request.Params["selfRepairPlanId"]);
-        //    summarizeVM.SelfRepairVM.TimeCost = Convert.ToDouble(Request.Params["timeCost"]);
-        //    summarizeVM.SelfRepairVM.Steps = Request.Params["steps"];
-        //    summarizeVM.SelfRepairVM.Tools = Request.Params["tools"];
-        //    var partsInfo = Request.Params["partsInfo"];
-        //    summarizeVM.SelfRepairVM.IsUseSpareParts = partsInfo == string.Empty ? "否" : "是";
-        //    summarizeVM.SelfRepairVM.SparePartsInfo = partsInfo;
-        //    summarizeVM.ApplicationVM.FailureDescription = Request.Params["description"];
-        //    summarizeVM.ApplicationVM.FailureAppearance = Request.Params["appearance"];
-        //    summarizeVM.ApplicationVM.FstLevFailureLocation = Request.Params["fstLocation"];
-        //    summarizeVM.ApplicationVM.SecLevFailureLocation = Request.Params["secLocation"];
-        //    summarizeVM.ApplicationVM.ThiLevFailureLocation = Request.Params["thiLocation"];
-        //    WXShenQing applicationM = new WXShenQing(summarizeVM.ApplicationVM);
-        //    ZXFA selfRepairPlanM = new ZXFA(summarizeVM.SelfRepairVM);
-        //    bool result = RepairService.Finish(applicationM, selfRepairPlanM);
-        //    if (result)
-        //    {
-        //        return Content(new { msg = "处理成功", status = "success" }.ToJsonString());
-        //    }
-        //    else
-        //    {
-        //        return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
-        //    }
+        public ActionResult ShowAllInOne(int appId, string type)
+        {
+            SummarizeDto SummarizeVM = new SummarizeDto();
+            if (String.Equals(type, "自修"))
+            {
+                Dispatch dispatchSheetM = new Dispatch();
+                SelfRepairPlan selfRepairPlanM = new SelfRepairPlan();
+                string dispatherName = string.Empty;
+                string engineerName = string.Empty;
+                RepairApplication applicationM = RepairService.AllInfo(appId, ref dispatchSheetM, ref selfRepairPlanM, ref dispatherName, ref engineerName);
+                SummarizeVM.Instruction = dispatchSheetM.Instruction;
+                SummarizeVM.DispatchTime = dispatchSheetM.CreatTime;
+                SummarizeVM.Dispatcher = dispatherName;
+                SummarizeVM.Engineer = engineerName;
+                SummarizeVM.ApplicationDto =Mapper.Map<RepairApplication,ApplicationDto>(applicationM);
+                SummarizeVM.SelfRepairDto = Mapper.Map<SelfRepairPlan, SelfRepairPlanDto>(selfRepairPlanM);
+            }
+            return View(SummarizeVM);
+        }
+        public ActionResult Summarize()
+        {
+            SummarizeDto summarizeDto = new SummarizeDto();
+            summarizeDto.ApplicationDto = new ApplicationDto();
+            summarizeDto.SelfRepairDto = new SelfRepairPlanDto();
+            summarizeDto.ApplicationDto.Id = Convert.ToInt32(Request.Params["appID"]);
+            string beginTime = Request.Params["beginTime"];
+            if (!string.IsNullOrEmpty(beginTime))
+            {
+                summarizeDto.SelfRepairDto.StartTime = Convert.ToDateTime(beginTime);
+            }
+            summarizeDto.SelfRepairDto.ID = Convert.ToInt32(Request.Params["selfRepairPlanId"]);
+            summarizeDto.SelfRepairDto.TimeCost = Convert.ToDouble(Request.Params["timeCost"]);
+            summarizeDto.SelfRepairDto.Step = Request.Params["steps"];
+            summarizeDto.SelfRepairDto.Tool = Request.Params["tools"];
+            var partsInfo = Request.Params["partsInfo"];
+            summarizeDto.SelfRepairDto.IsUseSpareParts = partsInfo == string.Empty ? "否" : "是";
+            summarizeDto.SelfRepairDto.SparePartsInfo = partsInfo;
+            summarizeDto.ApplicationDto.FailureDescription = Request.Params["description"];
+            summarizeDto.ApplicationDto.FailureAppearance = Request.Params["appearance"];
+            summarizeDto.ApplicationDto.FirstLocation = Request.Params["fstLocation"];
+            summarizeDto.ApplicationDto.SecondLocation = Request.Params["secLocation"];
+            summarizeDto.ApplicationDto.ThirdLocation= Request.Params["thiLocation"];
+            var application = Mapper.Map<ApplicationDto, RepairApplication>(summarizeDto.ApplicationDto);
+            var selfRepairPlan = Mapper.Map<SelfRepairPlanDto,SelfRepairPlan>(summarizeDto.SelfRepairDto);
+            bool result = RepairService.Finish(application, selfRepairPlan);
+            if (result)
+            {
+                return Content(new { msg = "处理成功", status = "success" }.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "处理失败", status = "failed" }.ToJsonString());
+            }
 
-        //}
-
-
-
+        }
 
 
-        //[HttpPost]
-        //public ActionResult GetSelfRepairPlanByAppId(int selfRepairPlanID)
-        //{
-        //    ZXFA resultM = RepairService.SelfRepairPlanByAppId(selfRepairPlanID);
-        //    SelfRepairPlanDto resultVM = new SelfRepairPlanDto(resultM);
-        //    if (resultVM != null)
-        //    {
-        //        return Content(new { msg = "找到方案", status = "success", data = resultVM }.ToJsonString());
-        //    }
-        //    else
-        //    {
-        //        return Content(new { msg = "未找到方案", status = "failed" }.ToJsonString());
-        //    }
-        //}
+
+
+
+        [HttpPost]
+        public ActionResult GetSelfRepairPlanByAppId(int selfRepairPlanID)
+        {
+            SelfRepairPlan resultM = RepairService.SelfRepairPlanByAppId(selfRepairPlanID);
+            SelfRepairPlanDto resultDto =Mapper.Map<SelfRepairPlan,SelfRepairPlanDto>(resultM);
+            if (resultDto != null)
+            {
+                return Content(new { msg = "找到方案", status = "success", data = resultDto }.ToJsonString());
+            }
+            else
+            {
+                return Content(new { msg = "未找到方案", status = "failed" }.ToJsonString());
+            }
+        }
 
         ///// <summary>
         ///// 测试功能的

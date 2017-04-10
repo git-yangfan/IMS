@@ -155,7 +155,6 @@ namespace IMS.Data.DAL
                     bool result = client.Update<RepairApplication>(
                         new
                         {
-                            SFKYXG = 0,
                             ReplyTime = DateTime.Now,
                             ReplyMsg = rejectReason,
                             Status = StatusDic["Reject"]
@@ -209,10 +208,10 @@ namespace IMS.Data.DAL
                 try
                 {
                     client.BeginTran();
-                    client.CommandTimeOut = 30000;
-                    //dispatch.Id = client.Queryable<Dispatch>().Max(it => it.Id).ObjToInt() + 1;
-                    client.Insert<Dispatch>(dispatch);
-                    client.Update<RepairApplication>(new { Status = StatusDic["Repairing"], ReplyTime = DateTime.Now, ReplyMsg = "同意", DispatchID = dispatch.Id}, it => it.Id == applicationId);
+                    client.CommandTimeOut = 30000;   
+                    client.Insert<Dispatch>(dispatch).ObjToInt();
+                    var dispatchId = client.Queryable<Dispatch>().Max(it => it.Id).ObjToInt();                 
+                    client.Update<RepairApplication>(new { Status = StatusDic["Repairing"], ReplyTime = DateTime.Now, ReplyMsg = "同意", DispatchSheetID = dispatchId }, it => it.Id == applicationId);
                     client.CommitTran();
                     isDispatchSuccess = true;
                 }
@@ -231,10 +230,10 @@ namespace IMS.Data.DAL
                 try
                 {
                     client.BeginTran();
-                    client.CommandTimeOut = 30000;
-                    //dispatchSheetM.Id= client.Queryable<DiagnoseDispatch>().Max(it => it.Id).ObjToInt() + 1;
-                    client.Insert<DiagnoseDispatch>(diagnoseDispatch);
-                    client.Update<RepairApplication>(new { SFKYXG = 1, Status = StatusDic["Repairing"], ReplyTime = DateTime.Now, ReplyMsg = "同意", DiagnoseDispatchID = diagnoseDispatch.Id }, it => it.Id == applicationId);
+                    client.CommandTimeOut = 30000; 
+                    client.Insert<DiagnoseDispatch>(diagnoseDispatch).ObjToInt();
+                    var diagnoseDispatchId = client.Queryable<DiagnoseDispatch>().Max(it => it.Id).ObjToInt() ;
+                    client.Update<RepairApplication>(new { Status = StatusDic["Repairing"], ReplyTime = DateTime.Now, ReplyMsg = "同意", DiagnoseSheetID = diagnoseDispatchId }, it => it.Id == applicationId);
                     client.CommitTran();
                     isDispatchSuccess = true;
                 }
@@ -245,198 +244,199 @@ namespace IMS.Data.DAL
                 return isDispatchSuccess;
             }
         }
-        //public bool ApproveSelfRepairPlan(int selfRepairPlanID, string msg)
-        //{
-        //    bool result = false;
-        //    using (var client = DbConfig.GetInstance())
-        //    {
-        //        client.BeginTran();
-        //        client.CommandTimeOut = 30000;
-        //        client.Update<RepairApplication>(new { Status = StatusDic["SelfRepairPass"] }, it => it.SelfRepairPlanID == selfRepairPlanID);
-        //        client.Update<SelfRepairPlan>(new { ReplyTime = DateTime.Now, ReplyMsg = msg, HFRID = 9999, SFTG = "是" }, it => it.Id == selfRepairPlanID);
-        //        try
-        //        {
-        //            client.CommitTran();
-        //            result = true;
-        //        }
-        //        catch (Exception)
-        //        {
-        //            throw;
-        //        }
-        //        return result;
-        //    }
-        //}
-        //public bool RejectSelfRepairPlan(int selfRepairPlanID, string msg)
-        //{
-        //    bool result = false;
-        //    using (var client = DbConfig.GetInstance())
-        //    {
-        //        client.BeginTran();
-        //        client.CommandTimeOut = 30000;
-        //        client.Update<RepairApplication>(new { Status = StatusDic["SelfRepairFail"] }, it => it.SelfRepairPlanID == selfRepairPlanID);
-        //        client.Update<SelfRepairPlan>(new { ReplyTime = DateTime.Now, ReplyMsg = msg, HFRID = 9999, SFTG = "否" }, it => it.Id == selfRepairPlanID);
-        //        try
-        //        {
-        //            client.CommitTran();
-        //            result = true;
-        //        }
-        //        catch (Exception)
-        //        {
-        //            throw;
-        //        }
-        //        return result;
-        //    }
-        //}
-        //public bool InsertNewSelfRepairPlan(SelfRepairPlan selfRepairPlanM, int appId)
-        //{
-        //    bool result = false;
-        //    using (var client = DbConfig.GetInstance())
-        //    {
-        //        try
-        //        {
-        //            client.BeginTran();
-        //            client.CommandTimeOut = 30000;
-        //            //插入新的自修方案 SelfRepairPlan
-        //            selfRepairPlanM.Id = client.Queryable<SelfRepairPlan>().Max(it => it.Id).ObjToInt() + 1;
-        //            client.Insert<SelfRepairPlan>(selfRepairPlanM);
-        //            //更改申请记录的状态 RepairApplication
-        //            client.Update<RepairApplication>(new { Status = StatusDic["SelfRepairChecking"], SelfRepairPlanID = selfRepairPlanM.Id, WXFFLB = MethodCategoryDic["Self"] }, it => it.Id == appId);
-        //            client.CommitTran();
-        //            result = true;
-        //        }
-        //        catch (Exception)
-        //        {
-        //            throw;
-        //        }
-        //    }
-        //    return result;
-        //}
-        //public bool UpdateSelfRepairPlan(SelfRepairPlan selfRepairPlanM, int planId)
-        //{
-        //    bool result = false;
-        //    using (var client = DbConfig.GetInstance())
-        //    {
-        //        client.BeginTran();
-        //        client.CommandTimeOut = 30000;
-        //        //更新gzsq中的当前状态
-        //        client.Update<RepairApplication>(new { Status = StatusDic["SelfRepairChecking"] }, it => it.SelfRepairPlanID == planId);
-        //        //更新SelfRepairPlan
-        //        client.DisableUpdateColumns = new string[] { "ID" };//id不更新
-        //        client.Update<SelfRepairPlan>(selfRepairPlanM, it => it.Id == planId);
-        //        try
-        //        {
-        //            client.CommitTran();
-        //            result = true;
-        //        }
-        //        catch (Exception)
-        //        {
-        //            throw;
-        //        }
-        //    }
-        //    return result;
-        //}
-        ///// <summary>
-        ///// 管理员撤销维修方案，更新RepairApplication中的Status和维修方案的id，删除对应的方案记录
-        ///// </summary>
-        ///// <param name="methodCategory"></param>
-        ///// <param name="appId"></param>
-        ///// <returns></returns>
-        //public bool CancelProcedure(string methodCategory, int categoryId)
-        //{
-        //    bool result = false;
-        //    using (var client = DbConfig.GetInstance())
-        //    {
-        //        client.BeginTran();
-        //        client.CommandTimeOut = 30000;
-        //        if (String.Equals(methodCategory, "自修"))
-        //        {
-        //            client.Update<RepairApplication>(new { Status = StatusDic["CancelOK"], SelfRepairPlanID = 0, WXFFLB = string.Empty }, it => it.SelfRepairPlanID == categoryId);
-        //            client.Delete<SelfRepairPlan>(it => it.Id == categoryId);
-        //        }
-        //        try
-        //        {
-        //            client.CommitTran();
-        //            result = true;
-        //        }
-        //        catch (Exception)
-        //        {
-        //            throw;
-        //        }
-        //    }
-        //    return result;
-        //}
-        //public RepairApplication AllInfo(int appId, ref Dispatch dispatchSheetM, ref SelfRepairPlan selfRepairPlanM, ref string dispatherName, ref string engineerName)
-        //{
-        //    using (var client = DbConfig.GetInstance())
-        //    {
-        //        var appM = client.Queryable<RepairApplication>().SingleOrDefault(it => it.Id == appId);
-        //        var DispatchM = client.Queryable<Dispatch>().SingleOrDefault(it => it.ID == appM.DispatchID);
-        //        var dispather = client.Queryable<Users>().SingleOrDefault(it => it.Id == DispatchM.PGRID);
-        //        var engineer = client.Queryable<Users>().SingleOrDefault(it => it.Id == DispatchM.WXRID);
-        //        var SelfRepairPlan = client.Queryable<SelfRepairPlan>().Single(it => it.ID == appM.SelfRepairPlanID);
-        //        selfRepairPlanM = SelfRepairPlan;
-        //        if (dispather != null)
-        //        {
-        //            dispatherName = dispather.Name;
-        //        }
-        //        if (engineer != null)
-        //        {
-        //            engineerName = engineer.Name;
-        //        }
-        //        dispatchSheetM = DispatchM;
-        //        return appM;
-        //    }
+        public bool ApproveSelfRepairPlan(int selfRepairPlanID, string msg)
+        {
+            bool result = false;
+            using (var client = DbConfig.GetInstance())
+            {
+                client.BeginTran();
+                client.CommandTimeOut = 30000;
+                client.Update<RepairApplication>(new { Status = StatusDic["SelfRepairPass"] }, it => it.SelfRepairPlanID == selfRepairPlanID);
+                client.Update<SelfRepairPlan>(new { ReplyTime = DateTime.Now, ReplyMsg = msg, ReplyerId = 9999, IsPass = "是" }, it => it.Id == selfRepairPlanID);
+                try
+                {
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return result;
+            }
+        }
+        public bool RejectSelfRepairPlan(int selfRepairPlanID, string msg)
+        {
+            bool result = false;
+            using (var client = DbConfig.GetInstance())
+            {
+                client.BeginTran();
+                client.CommandTimeOut = 30000;
+                client.Update<RepairApplication>(new { Status = StatusDic["SelfRepairFail"] }, it => it.SelfRepairPlanID == selfRepairPlanID);
+                client.Update<SelfRepairPlan>(new { ReplyTime = DateTime.Now, ReplyMsg = msg, ReplyerId = 9999, IsPass = "否" }, it => it.Id == selfRepairPlanID);
+                try
+                {
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return result;
+            }
+        }
+        public bool InsertNewSelfRepairPlan(SelfRepairPlan selfRepairPlan, int appId, out int selfPlanId)
+        {
+            bool result = false;
+            using (var client = DbConfig.GetInstance())
+            {
+                try
+                {
+                    client.BeginTran();
+                    client.CommandTimeOut = 30000;
+                    //插入新的自修方案 SelfRepairPlan
+                    client.Insert<SelfRepairPlan>(selfRepairPlan);
+                    var  planId = client.Queryable<SelfRepairPlan>().Max(it => it.Id).ObjToInt();
+                    selfPlanId = planId;
+                    //更改申请记录的状态 RepairApplication
+                    client.Update<RepairApplication>(new { Status = StatusDic["SelfRepairChecking"], SelfRepairPlanID = planId, MethodCategory = MethodCategoryDic["Self"] }, it => it.Id == appId);
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return result;
+        }
+        public bool UpdateSelfRepairPlan(SelfRepairPlan selfRepairPlanM, int planId)
+        {
+            bool result = false;
+            using (var client = DbConfig.GetInstance())
+            {
+                client.BeginTran();
+                client.CommandTimeOut = 30000;
+                //更新gzsq中的当前状态
+                client.Update<RepairApplication>(new { Status = StatusDic["SelfRepairChecking"] }, it => it.SelfRepairPlanID == planId);
+                //更新SelfRepairPlan
+                client.DisableUpdateColumns = new string[] { "ID" };//id不更新
+                client.Update<SelfRepairPlan>(selfRepairPlanM, it => it.Id == planId);
+                try
+                {
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return result;
+        }
+        /// <summary>
+        /// 管理员撤销维修方案，更新RepairApplication中的Status和维修方案的id，删除对应的方案记录
+        /// </summary>
+        /// <param name="methodCategory"></param>
+        /// <param name="appId"></param>
+        /// <returns></returns>
+        public bool CancelProcedure(string methodCategory, int categoryId)
+        {
+            bool result = false;
+            using (var client = DbConfig.GetInstance())
+            {
+                client.BeginTran();
+                client.CommandTimeOut = 30000;
+                if (String.Equals(methodCategory, "自修"))
+                {
+                    client.Update<RepairApplication>(new { Status = StatusDic["CancelOK"], SelfRepairPlanID = 0, MethodCategory = string.Empty }, it => it.SelfRepairPlanID == categoryId);
+                    client.Delete<SelfRepairPlan>(it => it.Id == categoryId);
+                }
+                try
+                {
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return result;
+        }
+        public RepairApplication AllInfo(int appId, ref Dispatch dispatchSheetM, ref SelfRepairPlan selfRepairPlanM, ref string dispatherName, ref string engineerName)
+        {
+            using (var client = DbConfig.GetInstance())
+            {
+                var appM = client.Queryable<RepairApplication>().SingleOrDefault(it => it.Id == appId);
+                var DispatchM = client.Queryable<Dispatch>().SingleOrDefault(it => it.Id== appM.DispatchSheetID);
+                var dispather = client.Queryable<Users>().SingleOrDefault(it => it.Id == DispatchM.Dispatcher);
+                var engineer = client.Queryable<Users>().SingleOrDefault(it => it.Id == DispatchM.Engineer);
+                var SelfRepairPlan = client.Queryable<SelfRepairPlan>().Single(it => it.Id == appM.SelfRepairPlanID);
+                selfRepairPlanM = SelfRepairPlan;
+                if (dispather != null)
+                {
+                    dispatherName = dispather.Name;
+                }
+                if (engineer != null)
+                {
+                    engineerName = engineer.Name;
+                }
+                dispatchSheetM = DispatchM;
+                return appM;
+            }
 
-        //}
+        }
 
-        //public bool Finish(RepairApplication applicationM, SelfRepairPlan selfRepairPlanM)
-        //{
-        //    bool result = false;
-        //    using (var client = DbConfig.GetInstance())
-        //    {
-        //        client.BeginTran();
-        //        client.CommandTimeOut = 30000;
-        //        client.Update<RepairApplication>(
-        //            new
-        //            {
-        //                FirstLocation = applicationM.FirstLocation,
-        //                SecondLocation = applicationM.SecondLocation,
-        //                ThirdLocation = applicationM.ThirdLocation,
-        //                FailureAppearance = applicationM.FailureAppearance,
-        //                FailureDescription = applicationM.FailureDescription,
-        //                Status = StatusDic["End"]
-        //            }, it => it.Id == applicationM.Id);
-        //        client.Update<SelfRepairPlan>(
-        //            new
-        //            {
-        //                StartTime = selfRepairPlanM.StartTime,
-        //                TimeCost = selfRepairPlanM.TimeCost,
-        //                IsUseSpareParts = selfRepairPlanM.IsUseSpareParts,
-        //                Step = selfRepairPlanM.Step,
-        //                Tool = selfRepairPlanM.Tool,
-        //                SparePartsInfo = selfRepairPlanM.SparePartsInfo,
-        //            }, it => it.Id== selfRepairPlanM.Id);
-        //        try
-        //        {
-        //            client.CommitTran();
-        //            result = true;
-        //        }
-        //        catch (Exception)
-        //        {
-        //            throw;
-        //        }
+        public bool Finish(RepairApplication applicationM, SelfRepairPlan selfRepairPlanM)
+        {
+            bool result = false;
+            using (var client = DbConfig.GetInstance())
+            {
+                client.BeginTran();
+                client.CommandTimeOut = 30000;
+                client.Update<RepairApplication>(
+                    new
+                    {
+                        FirstLocation = applicationM.FirstLocation,
+                        SecondLocation = applicationM.SecondLocation,
+                        ThirdLocation = applicationM.ThirdLocation,
+                        FailureAppearance = applicationM.FailureAppearance,
+                        FailureDescription = applicationM.FailureDescription,
+                        Status = StatusDic["End"]
+                    }, it => it.Id == applicationM.Id);
+                client.Update<SelfRepairPlan>(
+                    new
+                    {
+                        StartTime = selfRepairPlanM.StartTime,
+                        TimeCost = selfRepairPlanM.TimeCost,
+                        IsUseSpareParts = selfRepairPlanM.IsUseSpareParts,
+                        Step = selfRepairPlanM.Step,
+                        Tool = selfRepairPlanM.Tool,
+                        SparePartsInfo = selfRepairPlanM.SparePartsInfo,
+                    }, it => it.Id == selfRepairPlanM.Id);
+                try
+                {
+                    client.CommitTran();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
 
-        //    }
-        //    return result;
-        //}
-        //public SelfRepairPlan SelfRepairPlanByAppId(int selfRepairPlanID)
-        //{
-        //    using (var client = DbConfig.GetInstance())
-        //    {
-        //        SelfRepairPlan selfRepairPlanM = client.Queryable<SelfRepairPlan>().Single(it => it.Id== selfRepairPlanID);
-        //        return selfRepairPlanM;
-        //    }
-        //}
+            }
+            return result;
+        }
+        public SelfRepairPlan SelfRepairPlanByAppId(int selfRepairPlanID)
+        {
+            using (var client = DbConfig.GetInstance())
+            {
+                SelfRepairPlan selfRepairPlanM = client.Queryable<SelfRepairPlan>().Single(it => it.Id == selfRepairPlanID);
+                return selfRepairPlanM;
+            }
+        }
 
 
 

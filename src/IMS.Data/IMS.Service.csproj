@@ -56,8 +56,6 @@
     <Compile Include="DAL\RepairDAL.cs" />
     <Compile Include="Dao\DbConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\CommonService.cs" />
-    <Compile Include="Services\RepairService.cs" />
     <Compile Include="Utils\DataUtils.cs" />
   </ItemGroup>
   <ItemGroup>

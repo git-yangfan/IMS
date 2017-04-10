@@ -182,7 +182,7 @@
                 else {
                     //删除数据库数据
                     $.post(
-                        "/Failure/DeleteApplication",
+                        "/Repair/Repair/DeleteApplication",
                          { applicationId: row.Id },
                          function (Data) {
                              var data = $.parseJSON(Data);
