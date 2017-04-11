@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using IMS.Data.DAL;
 using IMS.Model.Entity;
-using IMS.Web.Dic;
 using IMS.Web.Dto;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,8 @@ using System.Linq.Expressions;
 using System.Web;
 using IMS.Json;
 using System.Web.Mvc;
+using IMS.Dic;
+using IMS.Extensions;
 
 namespace IMS.Web.Areas.Repair.Controllers
 {
@@ -43,7 +44,7 @@ namespace IMS.Web.Areas.Repair.Controllers
             return View();
         }
         //[HttpPost]
-        public ActionResult GetAllApplications(int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername, string order)
+        public ActionResult GetAllApplications1(int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername, string order)
         {
             //角色 role 从当前登录的用户信息里获取
             string _sortName = string.Empty;
@@ -52,8 +53,53 @@ namespace IMS.Web.Areas.Repair.Controllers
                 _sortName = CommonDic.AppSortDic[ordername];
             }
 
-            var applicationList = RepairService.ApplicationsByRole(Role.Manager.ToString(), sectionName, deviceNo, beginTime, endTime, ordername, order, limit, offset);
+            var applicationList = RepairService.ApplicationsByRole1(IMS.Dic.Role.Manager.ToString(), sectionName, deviceNo, beginTime, endTime, ordername, order, limit, offset);
             List<ApplicationDto> ApplicationDtoList =Mapper.Map<List<RepairApplication>,List<ApplicationDto>>(applicationList);
+            if (ApplicationDtoList != null)
+            {
+                var total = ApplicationDtoList.Count;
+                var rows = ApplicationDtoList.Skip(offset).Take(limit).ToList();
+                var result = new { total = total, rows = rows };
+                return Content(result.ToJsonString());
+            }
+            else
+                return Json("");
+        }
+
+        public ActionResult GetAllApplications(int limit, int offset, string sectionName, string deviceNo, string beginTime, string endTime, string ordername, string order)
+        {
+            //角色 role 从当前登录的用户信息里获取
+            string _sortName = string.Empty;
+            string role = "Worker";
+            if (!string.IsNullOrEmpty(ordername))
+            {
+                _sortName = CommonDic.AppSortDic[ordername];
+            }
+            Expression<Func<RepairApplication, bool>> exp = item => !item.IsDeleted;
+            if (!String.IsNullOrEmpty(deviceNo) && !String.Equals(deviceNo, "-1"))
+            {
+                exp = exp.And(g => g.DeviceNo == deviceNo);
+            }
+            if (!String.IsNullOrEmpty(beginTime))
+            {
+                DateTime _beginTime = Convert.ToDateTime(beginTime);
+                exp = exp.And(g => g.BeginTime > _beginTime);
+            }
+            if (String.Equals(role, "Worker"))
+            {
+                exp = exp.And(g => g.Status == "待审核").Or(g => g.Status == "已驳回");
+            }
+            if (String.Equals(role, "Engineer"))
+            {
+                exp = exp.And(g => g.Status != "待审核").And(g => g.Status != "已驳回").And(g => g.Status != "已总结");
+            }
+            if (!String.IsNullOrEmpty(endTime))
+            {
+                DateTime _endTime = Convert.ToDateTime(endTime);
+                exp = exp.And(g => g.BeginTime < _endTime);
+            }
+            var applicationList = RepairService.ApplicationsByRole(sectionName, ordername, order, exp,limit,offset);
+            List<ApplicationDto> ApplicationDtoList = Mapper.Map<List<RepairApplication>, List<ApplicationDto>>(applicationList);
             if (ApplicationDtoList != null)
             {
                 var total = ApplicationDtoList.Count;

@@ -72,6 +72,7 @@
         var indexofrowtomodify;
         $(function () {
             initTable();
+            var tab = null;
             $("#firstFailureLocation").change(function () {
                 GetSecondLevelSubSysList();
             });
@@ -131,15 +132,12 @@
         function cssFormatter(value, row, index) {
             var status = row.Status;
             var cssname = "";
-            if (status == "待审核") {
+            if (status == "待审核") 
                 cssname = 'class="btn btn-default btn-sm"';
-            }
-            if (status == "待维修") {
+            if (status == "待维修")
                 cssname = 'class="btn btn-success btn-sm "';
-            }
-            if (status == "已驳回") {
+            if (status == "已驳回") 
                 cssname = 'class="btn btn-danger btn-sm"';
-            }
             return [
                 '<span ' + cssname + '>' + row.Status + '</span>'
             ].join('');

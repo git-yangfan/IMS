@@ -71,7 +71,7 @@ namespace IMS.Data.DAL
             return result;
 
         }
-        public List<RepairApplication> ApplicationsByRole(string role, string sectionName, string deviceNo, string beginTime, string endTime, string ordername, string order, int limit, int offset)
+        public List<RepairApplication> ApplicationsByRole1(string role, string sectionName, string deviceNo, string beginTime, string endTime, string ordername, string order, int limit, int offset)
         {
             using (var client = DbConfig.GetInstance())
             {
@@ -127,6 +127,46 @@ namespace IMS.Data.DAL
             }
 
         }
+
+        public List<RepairApplication> ApplicationsByRole(string sectionName, string ordername, string order, System.Linq.Expressions.Expression<Func<RepairApplication, bool>> exp, int limit, int offset)
+        {
+            using (var client = DbConfig.GetInstance())
+            {
+                List<RepairApplication> listWithDeviceNo = new List<RepairApplication>();
+                var sql = client.Queryable<RepairApplication>();
+                if (!String.IsNullOrEmpty(sectionName) && !String.Equals(sectionName, "请选择"))
+                {
+                    var deviceofSelectSection = client.Queryable<Device>().Where(c => c.WorkSection == sectionName).ToList();
+                    List<string> deviceNosofSelectSection = new List<string>();
+                    foreach (var item in deviceofSelectSection)
+                    {
+                        deviceNosofSelectSection.Add(item.DeviceNo);
+                    }
+                    sql.In("DeviceNo", deviceNosofSelectSection);
+                }
+                sql.Where(exp);
+                if (!string.IsNullOrEmpty(ordername) && !string.IsNullOrEmpty(order))
+                {
+                    sql.OrderBy(ordername + " " + order);
+                }
+                else
+                {
+                    sql.OrderBy(it => it.BeginTime, OrderByType.Desc);
+                }
+                try
+                {
+                    listWithDeviceNo = sql.Skip(offset).Take(limit).ToList();
+                    //listWithDeviceNo = sql.ToList();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return listWithDeviceNo;
+            }
+
+        }
+
         /// <summary>
         /// 维修工程师撤销某个维修方案，只标记维修申请表中的 Status为 撤销中
         /// </summary>

@@ -166,8 +166,6 @@
     <Compile Include="Areas\Repair\Controllers\RepairController.cs" />
     <Compile Include="Areas\Repair\RepairAreaRegistration.cs" />
     <Compile Include="Areas\Repair\Controllers\CommonController.cs" />
-    <Compile Include="Dic\CommonDic.cs" />
-    <Compile Include="Dic\Role.cs" />
     <Compile Include="Dto\BaseDto.cs" />
     <Compile Include="Dto\DeviceDto.cs" />
     <Compile Include="Dto\ApplicationDto.cs" />
@@ -198,6 +196,7 @@
     <Content Include="Content\bootstrap\js\bootstrap.js" />
     <Content Include="Content\bootstrap\js\bootstrap.min.js" />
     <Content Include="Content\bootstrap\js\html5shiv.min.js" />
+    <Content Include="Content\bootstrap\js\IMS.table.js" />
     <Content Include="Content\bootstrap\js\JavaScript1.js" />
     <Content Include="Content\bootstrap\js\jquery-1.11.0.min.js" />
     <Content Include="Content\bootstrap\js\jquery.js" />
