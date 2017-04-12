@@ -328,7 +328,7 @@
                 indexOfDispatchingRow = index;
                 var status = row.Status;
                 if (status == "自修方案待审") {
-                    $.post("/Repair/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanID: row.SelfRepairPlanID }, function (Data) {
+                    $.post("/Repair/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanId: row.SelfRepairPlanID }, function (Data) {
                         data = $.parseJSON(Data);
                         if (data.status == "success") {
                             $('#txtarea_repairsteps').val(data.data["Step"]);

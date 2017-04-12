@@ -67,6 +67,10 @@
       <Project>{aa89dcf3-5e2c-4f1d-9f08-d8016824d580}</Project>
       <Name>IMS.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\IMS\IMS.csproj">
+      <Project>{819f80c8-2cf4-45fc-98a4-31fbed8396c2}</Project>
+      <Name>IMS</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

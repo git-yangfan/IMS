@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace IMS.Dic
+namespace IMS.Enume
 {
     public static class CommonDic
     {

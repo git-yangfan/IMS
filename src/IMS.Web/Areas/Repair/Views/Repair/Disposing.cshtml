@@ -472,7 +472,7 @@
             $('#txtarea_spareparts').val('');
             //加载相似案例
             if (actiontype == "modify") {
-                $.post("/Repair/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanID: disposingRow.SelfRepairPlanID}, function (Data) {
+                $.post("/Repair/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanId: disposingRow.SelfRepairPlanID}, function (Data) {
                     data = $.parseJSON(Data);
                     if (data.status == "success") {
                         $('#txtarea_repairsteps').val(data.data["Step"]);

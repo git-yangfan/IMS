@@ -300,7 +300,6 @@
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Areas\Repair\Views\web.config" />
-    <Content Include="Areas\Repair\Views\Repair\Index.cshtml" />
     <Content Include="Areas\Repair\Views\Repair\NewApplication.cshtml" />
     <Content Include="Areas\Repair\Views\Common\EngineerSelect.cshtml" />
     <Content Include="Areas\Repair\Views\Common\SearchBar.cshtml" />
