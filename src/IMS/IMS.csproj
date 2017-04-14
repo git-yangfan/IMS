@@ -60,13 +60,27 @@
     <Compile Include="Collections\ITypeList.cs" />
     <Compile Include="Collections\TypeList.cs" />
     <Compile Include="Configs\Config.cs" />
+    <Compile Include="Enume\CommonDic.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Enume\CurrentStatus.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Enume\MethodCategory.cs" />
+    <Compile Include="Enume\Role.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Extensions\ComparableExtensions.cs" />
     <Compile Include="Extensions\DataTableExtensions.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DayOfWeekExtensions.cs" />
     <Compile Include="Extensions\EventHandlerExtensions.cs" />
+    <Compile Include="Extensions\ExpressionExtention.cs" />
+    <Compile Include="Extensions\ExpressionParameterHelper.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GZip\GZip.cs" />
     <Compile Include="IO\DirectoryHelper.cs" />
     <Compile Include="IO\Extensions\StreamExtensions.cs" />
