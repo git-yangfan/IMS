@@ -14,7 +14,8 @@ namespace IMS.Web
                         "~/Content/bootstrap/table/bootstrap-table.js",
                         "~/Content/bootstrap/table/locale/bootstrap-table-zh-CN.js",
                         "~/Content/bootstrap/js/bootstrap-datetimepicker.js",
-                       "~/Content/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"));
+                       "~/Content/bootstrap/js/bootstrap-datetimepicker.zh-CN.js",
+                       "~/Content/bootstrap/js/IMS.table.js"));
 
             bundles.Add(new ScriptBundle("~/Content/bootstrap/js/Table").Include(
                         "~/Content/bootstrap/table/bootstrap-table.js",

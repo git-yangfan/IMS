@@ -1,4 +1,5 @@
-﻿
+﻿var testIMS = 1;
+IMS = {};
 IMS.table = function (config) {
     this.id = config.id;
     this.url = config.url;
@@ -10,11 +11,11 @@ IMS.table = function (config) {
     //}
 }
 //加载datatable
-IMS.table.prototype.load =function () {
+IMS.table.prototype.load = function () {
     var tablePrefix = "#table_server_";
     var _this = this;
     var _table = $("#" + _this.id);
-          $table.bootstrapTable({
+    _table.bootstrapTable({
               url: _this.url,         //请求后台的URL（*）
               method: 'post',                      //请求方式（*）
               toolbar: '#toolbar',                //工具按钮用哪个容器

@@ -4,7 +4,6 @@
 }
 
 <h2>Disposing</h2>
-
 @section ContentBody{
     @{Html.RenderAction("SearchBar", "Common");}
     <div>
@@ -262,9 +261,30 @@
     <script>
         var $table = $('#table_disposing');
         var disposingRow;
+       
         var indexOfDisposingRow;
         $(function () {
-            initTable();
+            //initTable();
+            var cols = [
+                    { field: 'DeviceShortName', title: '故障设备', sortable: true },
+                    { field: 'BeginTime', title: '发生时间', sortable: true },
+                    { field: 'FullLocation', title: '故障部位' },
+                    { field: 'FailureAppearance', title: '故障现象', sortable: true },
+                    { field: 'FailureDescription', title: '故障描述', sortable: true },
+                    { field: 'Status', title: '当前状态', sortable: true, align: 'center', formatter: cssFormatter },
+                    { field: 'Modifiable', title: '操作', align: 'center', events: operateEvents, formatter: operateFormatter, width: '120px' }
+            ];
+            var config = {
+                id: "table_disposing",
+                url: "/Repair/Repair/GetAllApplications",
+                columns: cols,
+                params: queryParams
+            };
+            var grid = null;
+            debugger;
+            grid = new IMS.table(config);
+            grid.load();
+
         })
 
         function initTable() {
@@ -472,7 +492,7 @@
             $('#txtarea_spareparts').val('');
             //加载相似案例
             if (actiontype == "modify") {
-                $.post("/Repair/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanId: disposingRow.SelfRepairPlanID}, function (Data) {
+                $.post("/Repair/Repair/GetSelfRepairPlanByAppId", { selfRepairPlanId: disposingRow.SelfRepairPlanID }, function (Data) {
                     data = $.parseJSON(Data);
                     if (data.status == "success") {
                         $('#txtarea_repairsteps').val(data.data["Step"]);
@@ -531,5 +551,4 @@
 
 
     </script>
-
 }

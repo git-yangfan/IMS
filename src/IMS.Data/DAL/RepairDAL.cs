@@ -319,7 +319,7 @@ namespace IMS.Data.DAL
                 client.Update<RepairApplication>(
                     new
                     {
-                       Status = CurrentStatus.自修方案待审.ToString()
+                        Status = CurrentStatus.自修方案待审.ToString()
                     }, it => it.SelfRepairPlanID == planId);
                 //更新SelfRepairPlan
                 client.DisableUpdateColumns = new string[] { "ID" };//id不更新
