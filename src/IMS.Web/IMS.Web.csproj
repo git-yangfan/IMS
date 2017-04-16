@@ -158,6 +158,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\Employee\Controllers\EmployeeController.cs" />
+    <Compile Include="Areas\Employee\EmployeeAreaRegistration.cs" />
     <Compile Include="Config\AutoMapperConfiguration.cs" />
     <Compile Include="Config\AutoMapperConfiguration.Partial.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -170,6 +172,7 @@
     <Compile Include="Dto\DeviceDto.cs" />
     <Compile Include="Dto\ApplicationDto.cs" />
     <Compile Include="Dto\DispatchDto.cs" />
+    <Compile Include="Dto\EmployeeDto.cs" />
     <Compile Include="Dto\EngineerDto.cs" />
     <Compile Include="Dto\ResultDto.cs" />
     <Compile Include="Dto\SelfRepairPlanDto.cs" />
@@ -308,6 +311,8 @@
     <Content Include="Areas\Repair\Views\Repair\Dispatch.cshtml" />
     <Content Include="Areas\Repair\Views\Repair\Disposing.cshtml" />
     <Content Include="Areas\Repair\Views\Repair\ShowAllInOne.cshtml" />
+    <Content Include="Areas\Employee\Views\web.config" />
+    <Content Include="Areas\Employee\Views\Employee\Index.cshtml" />
     <None Include="Properties\PublishProfiles\IMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -338,7 +343,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Repair\Views\Default\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
   <ItemGroup>

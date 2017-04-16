@@ -43,6 +43,10 @@ namespace IMS.Web.Config
                     .ForMember(u => u.TeamName, e => e.MapFrom(s => s.BanZu))
                     .ForMember(u => u.EngineerId, e => e.MapFrom(s => s.Id));
 
+                cfg.CreateMap<EmployeeDto, Employee>();
+                cfg.CreateMap<Employee, EmployeeDto>();
+
+
             });
         }
     }
