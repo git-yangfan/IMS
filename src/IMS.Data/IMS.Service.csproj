@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="DAL\CommonDAL.cs" />
     <Compile Include="DAL\EmployeeDAL.cs" />
+    <Compile Include="DAL\EvaluateDAL.cs" />
     <Compile Include="DAL\RepairDAL.cs" />
     <Compile Include="Dao\DbConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

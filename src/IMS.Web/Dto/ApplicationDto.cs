@@ -34,5 +34,7 @@ namespace IMS.Web.Dto
         public int DiagnoseSheetID { get; set; }
         public int EvaluateSheetID { get; set; }
         public string MethodCategory { get; set; }
+        public string FailureType { get; set; }
+        public string FailureReason { get; set; }
     }
 }

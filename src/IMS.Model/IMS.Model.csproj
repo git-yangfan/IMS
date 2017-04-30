@@ -46,6 +46,7 @@
     <Compile Include="Entity\DiagnoseDispatch.cs" />
     <Compile Include="Entity\Dispatch.cs" />
     <Compile Include="Entity\Employee.cs" />
+    <Compile Include="Entity\MMDD_SBLY.cs" />
     <Compile Include="Entity\RepairApplication.cs" />
     <Compile Include="Entity\SelfRepairPlan.cs" />
     <Compile Include="Entity\SubSystem.cs" />

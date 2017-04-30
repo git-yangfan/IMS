@@ -1,0 +1,110 @@
+﻿
+<div class="panel-body" style="padding-bottom:0px;">
+    <div class="panel panel-default">
+        <div class="panel-heading">查询条件</div>
+        <div class="panel-body">
+
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="select_worksection">所属工段</label>
+                    <div class="col-sm-2">
+                        <select id="select_worksection">
+                            <option value="-1">请选择</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-1 control-label" for="select_device">设备类型</label>
+                    <div class="col-sm-2">
+                        <select id="select_type">
+                            <option value="-1">请选择</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-1 control-label" for="select_device">故障设备</label>
+                    <div class="col-sm-2">
+                        <select id="select_device">
+                            <option value="-1">请选择</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">开始时间</label>
+                    <div class="col-sm-2">
+                        <div class='input-group date ' id='div_search_begintime'>
+                            <input type='text' class="form-control" id="txt_begintime" />
+                            <span class="input-group-addon">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <label class="col-sm-1 control-label">结束时间</label>
+                    <div class="col-sm-2">
+                        <div class='input-group date ' id='div_search_endtime'>
+                            <input type='text' class="form-control" id="txt_endtime" />
+                            <span class="input-group-addon">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <label class="col-sm-1 control-label">子系统</label>
+                    <div class="col-sm-2">
+                        <select id="select_device">
+                            <option value="-1">请选择</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-1" style="text-align:right;">
+                        <button type="button" id="btn_query" class="btn btn-primary" onclick="Search()">查询</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(function () {
+        $('#div_search_begintime').datetimepicker({
+            //日期格式化，只显示日期
+            language: 'zh-CN',     //中文化
+            todayBtn: true,
+            pickerPosition: "bottom-left"
+        });
+        $('#div_search_endtime').datetimepicker({
+            //日期格式化，只显示日期
+            language: 'zh-CN',     //中文化
+            todayBtn: true,
+            pickerPosition: "bottom-left"
+        });
+        LoadWorkSectionNames();
+        $("#select_worksection").change(function () {
+            LoadDeviceNames();
+        });
+    });
+
+    function LoadWorkSectionNames() {
+        $.post(
+            "/Repair/Common/GetWorkSectionNameList",
+            function (Data) {
+                $.each(Data.data, function (i, item) {
+                    $("<option></option>").text(item["WorkSection"]).appendTo($("#select_worksection"));
+                })
+            });
+    };
+
+    function LoadDeviceNames() {
+        $("#select_device").empty();
+        $("<option></option>").val("-1").text("请选择").appendTo($("#select_device"));
+
+        $.post(
+            "/Repair/Common/GetDeviceNamesBySection",
+            { sectionName: $("#select_worksection option:selected").text() },
+            function (Data) {
+                $.each(Data.data, function (i, item) {
+                    $("<option></option>").val(item["DeviceNo"]).text(item["ShortName"]).appendTo($("#select_device"));
+                })
+            });
+    }
+
+</script>

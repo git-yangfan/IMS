@@ -33,6 +33,16 @@
 
 
                 @{Html.RenderAction("SubSystem", "Common");}
+            <span>故障类别</span>
+            <select id="failuretype">
+                <option value="-1">请选择</option>
+                <option value="1">操作使用</option>
+                <option value="2">维修保养</option>
+                <option value="3">设计缺陷</option>
+                <option value="4">设备老化</option>
+
+            </select>
+
                 <span><label>故障现象</label></span><textarea id="txtarea_appearance"></textarea>
                 <span><label>故障描述</label></span><textarea id="txtarea_description"></textarea>
             </div>
@@ -98,6 +108,7 @@
                         fstLevFailureLocation: $("#firstFailureLocation option:selected").text(),
                         secLevFailureLocation: $("#secondFailureLocation option:selected").text(),
                         thiLevFailureLocation: $("#thirdFailureLocation option:selected").text(),
+                        failureType: $("#failuretype option:selected").text(),
                     },
                     function (Data) {
                         window.location.href = "/Repair/Repair/AllApplications";

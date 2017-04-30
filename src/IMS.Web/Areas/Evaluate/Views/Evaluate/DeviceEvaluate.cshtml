@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "DeviceEvaluate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts{
+    <script src="~/Content/bootstrap/js/echarts.min.js"></script>}
+@section StylesAfter{
+    <link href="~/Content/Compare.css" rel="stylesheet" />
+
+}
+<h2>DeviceEvaluate</h2>
+@section ContentBody{
+
+
+    <div class="row">
+        <div class=" horizontal">
+            <div class="col-lg-5">
+                <div id="failuretype" style="width: 600px;height:400px;">  </div>
+            </div>
+            <div class="col-lg-2"></div>
+            <div class="col-lg-5">
+                <div id="failurelocation" style="width: 600px;height:400px;"> </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+         <table class="commpare-table param-compare param-table" id="paramTable"></table>
+
+        
+
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            InitPage();
+           
+        })
+      
+
+        var options = [];
+        var configs = [];
+        function InitPage() {
+            $.post("/Evaluate/Evaluate/EvaluateResult", {},
+                function (Data) {
+                    json = $.parseJSON(Data);
+                    if (json.flag) {
+                        for (var i = 0; i < json.data.Curves.length; i++) {
+                            config = {
+                                title: json.data.Curves[i].DisplayName,
+                                xdata: json.data.Curves[i].XValues,
+                                ycount: json.data.Curves[i].YCountValues,
+                                ytime: json.data.Curves[i].YTimeValues,
+                            };
+                            configs.push(config);
+                        }
+                        CreatOption();
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(options[0]);
+                        myChart2.setOption(options[1]);
+                    }
+                    else
+                        alert(json.msg);
+                });
+        }
+
+        function CreatOption() {
+
+            for (var i = 0; i < configs.length; i++) {
+                var option = {
+                    title: {
+                        text: configs[i].title
+                    },
+                    tooltip: {},
+                    legend: {
+                        data: ['停工次数', '停工时间']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: { readOnly: false },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        data: configs[i].xdata,
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    },
+                    yAxis: [{
+                        type: 'value',
+                        scale: true,
+                        name: '次数',
+                        max: 30,
+                        min: 0,
+                        boundaryGap: [0.2, 0.2]
+                    }, {
+                        type: 'value',
+                        scale: true,
+                        name: '停工时间',
+                        max: 6000,
+                        min: 0,
+                        boundaryGap: [0.2, 0.2]
+                    }],
+                    series: [{
+                        name: '停工次数',
+                        type: 'bar',
+                        data: configs[i].ycount
+                    }, {
+                        name: '停工时间',
+                        type: 'bar',
+                        yAxisIndex: 1,
+                        data: configs[i].ytime
+                    }]
+                };
+                options.push(option);
+            }
+        }
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('failuretype'));
+        var myChart2 = echarts.init(document.getElementById('failurelocation'));
+
+
+    </script>
+}
+

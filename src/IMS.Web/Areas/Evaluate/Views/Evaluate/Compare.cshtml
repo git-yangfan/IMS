@@ -1,0 +1,398 @@
+﻿@{
+    ViewBag.Title = "Compare";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+    <script src="~/Content/bootstrap/js/echarts.min.js"></script>
+}
+@section StylesAfter{
+    <link href="~/Content/Compare.css" rel="stylesheet" />
+
+}
+<h2>Compare</h2>
+
+@section ContentBody{
+  <input id="devstocompare" type="hidden" value="@ViewData["devices"]" />
+    <div class=" row">
+        <table class="commpare-table param-compare param-table" id="paramTable">
+
+            <tr id="tr1" class="produce-pic">
+                <th class="compare-table-head" rowspan="2">
+                    <strong>参数信息</strong>
+                    <label node-type="hideSame" for="hide-same"><i></i><input class="J_HideSame" id="hide-same" type="checkbox" name="" value="" data-rel="fixeHideSame"><span id="same-text">隐藏相同项</span></label>
+                    <label node-type="onlyMarked" for="only-marked"><i></i><input class="J_OnlyMarked" id="only-marked" type="checkbox" data-rel="fixeOnlyMarked"><span id="text-marked">只显示选中项</span></label>
+                </th>
+                <td><div class="pic"><a href="/notebook/index394009.shtml"><img src="http://2c.zol-img.com.cn/product/146_160x120/768/cecUl2TzM0zg.jpg" alt="联想E40-70-IFI（i5 4210U/4GB/500GB/Win7）" /></a></div></td>
+                <td><div class="pic"><a href="/ultrabook/index1155716.shtml"><img src="http://2e.zol-img.com.cn/product/178_160x120/788/ceftUEKoGbYN6.jpg" alt="联想YOGA 5 Pro（i5 7200U/8GB/512GB）" /></a></div></td>
+                <td><div class="pic"><a href="/ultrabook/index1163368.shtml"><img src="http://2a.zol-img.com.cn/product/180_160x120/576/cexe0lVVQJY.jpg" alt="戴尔XPS 13 微边框（XPS 13-9365-D1805TS）" /></a></div></td>
+                <td>
+                    <div class="pic default"><img src="http://icon.zol-img.com.cn/products/v3/default-compare-add.png" alt="" width="160" height="120"></div>
+                </td>
+            </tr>
+
+            <tr id="tr2" class="product-choose">
+                <td>
+                    <div class="select-item">
+                        <span class="select-trigger">lenovo（联想）</span>
+                    </div>
+                    <div class="select-item">
+                        <span class="select-trigger">联想E40-70-IFI（i5 4210U/4GB/500GB/Win7）</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="select-item">
+                        <span class="select-trigger">lenovo（联想）</span><i></i>
+                    </div>
+                    <div class="select-item">
+                        <span class="select-trigger">联想YOGA 5 Pro（i5 7200U/8GB/512GB）</span><i></i>
+
+                    </div>
+                </td>
+                <td>
+                    <div class="select-item">
+                        <span class="select-trigger">DELL（戴尔）</span><i></i>
+                    </div>
+                    <div class="select-item">
+                        <span class="select-trigger">戴尔XPS 13 微边框（XPS 13-9365-D1805TS）</span><i></i>
+
+                    </div>
+                </td>
+                <td>
+                    <div class="select-item">
+                        <span class="select-trigger">请选择品牌</span><i></i>
+                    </div>
+                    <div class="select-item select-item-empty">
+                        <span class="select-trigger">请选择型号</span><i></i>
+                    </div>
+                </td>
+            </tr>
+
+            <tr id="tr3" class="product-name">
+                <th>设备简称</th>
+                <td><div class="product-name-inner"><a href="/notebook/index394009.shtml">联想E40-70-IFI（i5 4210U/4GB/500GB/Win7）</a></div></td>
+                <td><div class="product-name-inner"><a href="/ultrabook/index1155716.shtml">联想YOGA 5 Pro（i5 7200U/8GB/512GB）</a></div></td>
+                <td><div class="product-name-inner"><a href="/ultrabook/index1163368.shtml">戴尔XPS 13 微边框（XPS 13-9365-D1805TS）</a></div></td>
+                <td class="unavailable"></td>
+            </tr>
+            <tr id="tr4" class="product-price">
+                <th>设备名称</th>
+                <td><a href="/395/394009/price.shtml" target="_blank"><span class="price"><b>￥</b>3599</span></a><p><a class="merchant-num" href="/395/394009/price.shtml" target="_blank"><b>207</b> 个商家</a></p>
+                <td><a href="/1156/1155716/price.shtml" target="_blank"><span class="price"><b>￥</b>9499</span></a><p><a class="merchant-num" href="/1156/1155716/price.shtml" target="_blank"><b>202</b> 个商家</a></p>
+                <td><a href="/1164/1163368/price.shtml" target="_blank"><span class="price"><b>￥</b>1.5万</span></a><p><a class="merchant-num" href="/1164/1163368/price.shtml" target="_blank"><b>105</b> 个商家</a></p>
+                <td class="unavailable"></td>
+            </tr>
+            <tr id="tr5">
+                <th>设备编号</th>
+                <td> <div class="grade clearfix"><span class="score">5.6</span><span class="stars"><em style="width:56%"></em></span></div><p class="comment-num"><a href="/395/394009/review.shtml"><b>24</b> 人点评</a></p> </td>
+                <td> <div class="grade clearfix"><span class="score">8.2</span><span class="stars"><em style="width:82%"></em></span></div><p class="comment-num"><a href="/1156/1155716/review.shtml"><b>20</b> 人点评</a></p> </td>
+                <td> <div class="grade clearfix"><span class="score">7.6</span><span class="stars"><em style="width:76%"></em></span></div><p class="comment-num"><a href="/1164/1163368/review.shtml"><b>2</b> 人点评</a></p> </td>
+                <td class="unavailable"></td>
+            </tr>
+
+            <tr class="cate-tr hover-disabled cate-item-on" data-rel="param_list_1" id="param_list_1">
+                <td data-anchor="1" class="cate-title" colspan="5"><strong><i></i>台账信息</strong></td>
+            </tr>
+            <tr id="tr6" class="param_list_1" data-rel-num="1">
+                <th>生产厂家</th>
+                <td><div class="param-content">2014年12月</div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p28640_1.html'>2016年09月</a></div></td>
+                <td><div class="param-content">2017年01月</div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr7" class="param_list_1" data-rel-num="1">
+                <th>出厂日期</th>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p5900_1.html'>商用</a></div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p5901_1.html'>家用</a></div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p5901_1.html'>家用</a></div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr8" class="param_list_1" data-rel-num="1">
+                <th>设备规格</th>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_s1226_1.html'>商务办公本</a></div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_s1229_1.html'>时尚轻薄本</a>，二合一笔记本，Ultrabook笔记本，<a href='/notebook_index/subcate16_list_s7254_1.html'>IPS硬屏笔记本</a></div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_s1229_1.html'>时尚轻薄本</a>，二合一笔记本</div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr9" class="param_list_1" data-rel-num="1">
+                <th>设备类型</th>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p22160_1.html'>预装Windows 7 Home Basic 64bit（64位家庭普通版）</a></div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p27968_1.html'>预装Windows 10 Home Basic 64bit（64位家庭普通版）</a></div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p27968_1.html'>预装Windows 10 Home Basic 64bit（64位家庭普通版）</a></div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr10" class="param_list_1" data-rel-num="1">
+                <th>投产日期</th>
+                <td> </td>
+                <td><div class="param-content">触控，变形</div></td>
+                <td><div class="param-content">变形</div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr11" class="param_list_1" data-rel-num="1">
+                <th>使用部门</th>
+                <td> </td>
+                <td><div class="param-content">翻转</div></td>
+                <td><div class="param-content">翻转</div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr12" class="param_list_1" data-rel-num="1">
+                <th>所属车间</th>
+                <td> </td>
+                <td><div class="param-content">翻转</div></td>
+                <td><div class="param-content">翻转</div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr class="cate-tr hover-disabled cate-item-on" data-rel="param_list_2" id="param_list_2">
+                <td data-anchor="1" class="cate-title" colspan="5"><strong><i></i>DNC相关</strong></td>
+            </tr>
+            <tr id="tr13" class="param_list_2" data-rel-num="2">
+                <th>SUA</th>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_s4706_1.html'>英特尔 酷睿i5 4代系列</a></div></td>
+                <td><div class="param-content">英特尔 酷睿i5 7代系列</div></td>
+                <td><div class="param-content">英特尔 酷睿i7 7代系列</div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr14" class="param_list_2" data-rel-num="2">
+                <th>EUR</th>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_s5589_1.html'>Intel 酷睿i5 4210U</a></div></td>
+                <td><div class="param-content">Intel 酷睿 i5 7200U</div></td>
+                <td><div class="param-content">Intel 酷睿i7 7Y75</div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr15" class="param_list_2" data-rel-num="2">
+                <th>开机时间</th>
+                <td><div class="param-content">1.7GHz</div></td>
+                <td><div class="param-content">2.5GHz</div></td>
+                <td><div class="param-content">1.3GHz</div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr16" class="param_list_2" data-rel-num="2">
+                <th>开机率</th>
+                <td><div class="param-content">2.7GHz</div></td>
+                <td><div class="param-content">3.1GHz</div></td>
+                <td><div class="param-content">3.6GHz</div></td>
+                <td class="unavailable"> </td>
+            </tr>
+
+            <tr class="cate-tr hover-disabled cate-item-on" data-rel="param_list_3" id="param_list_3">
+                <td data-anchor="1" class="cate-title" colspan="5"><strong><i></i>可靠性参数</strong></td>
+            </tr>
+            <tr id="tr17" class="param_list_3" data-rel-num="3">
+                <th>MTBF</th>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p25312_1.html'>4GB（4GB×1）</a></div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p25338_1.html'>8GB（8GB×1）</a></div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_s5730_1.html'>16GB</a></div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr18" class="param_list_3" data-rel-num="3">
+                <th>ALPH</th>
+                <td><div class="param-content">DDR3LL（低电压版）1600MHz</div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p27947_1.html'>DDR4 2133MHz</a></div></td>
+                <td><div class="param-content"><a href='/notebook_index/subcate16_list_p28848_1.html'>LPDDR3（低功耗版）1866MHz</a></div></td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr19" class="param_list_3" data-rel-num="3">
+                <th>BETA</th>
+                <td><div class="param-content">2xSO-DIMM</div></td>
+                <td> </td>
+                <td> </td>
+                <td class="unavailable"> </td>
+            </tr>
+            <tr id="tr20" class="param_list_3" data-rel-num="3">
+                <th>概率密度函数图</th>
+                <td><div id="failuretype" style="width: 200px;height:200px;">  </div></td>
+                <td><div id="failuretype1" style="width: 200px;height:200px;">  </div> </td>
+                <td><div id="failuretype2" style="width: 200px;height:200px;">  </div>  </td>
+                <td> <div id="failuretype3" style="width: 200px;height:200px;">  </div> </td>
+            </tr>
+
+        </table>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            Compare();
+          
+        })
+
+       
+
+       
+
+        var options = [];
+        var configs = [];
+        function Compare() {
+            var devs = $("#devstocompare").val().split(',');
+            $.post("/Evaluate/Evaluate/CompareDevice", { devices: devs, starttime: "", endtime: "" },
+               function (Data) {
+                   json = $.parseJSON(Data);
+                   if (json.flag) {
+
+                       var tdfortr2 = [];
+                       var tdfortr3 = [];
+                       var tdfortr4 = [];
+                       var tdfortr5 = [];
+                       var tdfortr6 = [];
+                       var tdfortr7 = [];
+                       var tdfortr8 = [];
+                       var tdfortr8 = [];
+                       var tdfortr9 = [];
+                       var tdfortr10 = [];
+                       var tdfortr11 = [];
+                       var tdfortr12 = [];
+                       var tdfortr13 = [];
+                       var tdfortr14 = [];
+                       var tdfortr15 = [];
+                       var tdfortr16 = [];
+                       var tdfortr17 = [];
+                       var tdfortr18 = [];
+                       var tdfortr19 = [];
+                       var blanktdcount = 0;
+
+                       tdfortr3.push('<th>设备简称</th>');
+                       tdfortr4.push('<th>设备名称</th>');
+                       tdfortr5.push('<th>设备编号</th>');
+                       tdfortr6.push('<th>生产厂家</th>');
+                       tdfortr7.push('<th>出厂日期</th>');
+                       tdfortr8.push('<th>设备规格</th>');
+                       tdfortr9.push('<th>设备类型</th>');
+                       tdfortr10.push('<th>投产日期</th>');
+                       tdfortr11.push('<th>使用部门</th>');
+                       tdfortr12.push('<th>所属车间</th>');
+                       tdfortr13.push('<th>日历时间</th>');
+                       tdfortr14.push('<th>完好时间</th>');
+                       tdfortr15.push('<th>开机时间</th>');
+                       tdfortr16.push('<th>开机率</th>');
+                       tdfortr17.push('<th>MTBF</th>');
+                       tdfortr18.push('<th>ALPH</th>');
+                       tdfortr19.push('<th>BETA</th>');
+                       for (var i = 0; i < json.data.length; i++) {
+                           blanktdcount = 4 - json.data.length;
+                           tdfortr2.push('<td><div class="select-item"><span class="select-trigger">' + json.data[i].Device.ShortName + '</span></div><div class="select-item"><span class="select-trigger">联想E40-70-looogIFI（i5 4210U/4GB/500GB/Win7)</span></div></td>');
+                           tdfortr3.push('<td><div class="product-name-inner"><a href="#">' + json.data[i].Device.ShortName + '</a></div></td>');
+                           tdfortr4.push('<td><a href="#" target="_blank">' + json.data[i].Device.Name + '</a></td>');
+                           tdfortr5.push('<td> <div class="grade clearfix"><span class="score">' + json.data[i].Device.DeviceNo + '</span></td>');
+                           tdfortr6.push('<td><div class="param-content">' + json.data[i].Device.Manufacturer + '</div></td>');
+                           tdfortr7.push('<td><div class="param-content">' + json.data[i].Device.ManufacTime + '</div></td>');
+                           tdfortr8.push('<td><div class="param-content">' + json.data[i].Device.Spec + '</div></td>');
+                           tdfortr9.push('<td><div class="param-content">' + json.data[i].Device.Type + '</div></td>');
+                           tdfortr10.push('<td><div class="param-content">' + json.data[i].Device.BeginUseTime + '</div></td>');
+                           tdfortr11.push('<td><div class="param-content">' + json.data[i].Device.WorkSection + '</div></td>');
+                           tdfortr12.push('<td><div class="param-content">' + json.data[i].Device.WorkSection + '</div></td>');
+                           tdfortr13.push('<td><div class="param-content">' + json.data[i].Device.ShortName + '</div></td>');
+                           tdfortr14.push('<td><div class="param-content">' + json.data[i].Device.ShortName + '</div></td>');
+                           tdfortr15.push('<td><div class="param-content">' + json.data[i].DncReliability.BootTime + '</div></td>');
+                           tdfortr16.push('<td><div class="param-content">' + json.data[i].DncReliability.BootRate + '</div></td>');
+                           tdfortr17.push('<td><div class="param-content">' + json.data[i].MTBF + '</div></td>');
+                           tdfortr18.push('<td><div class="param-content">' + json.data[i].Alph + '</div></td>');
+                           tdfortr19.push('<td><div class="param-content">' + json.data[i].Beta + '</div></td>');
+
+                       }
+                       //for (var i = 3; i < 21; i++) {
+                       if (blanktdcount > 0) {
+                           for (var j = 0; j < blanktdcount; j++) {
+
+                               tdfortr3.push('<td class="unavailable"></td>');
+                           }
+                       }
+                       //}
+                       //tdfortr3.push('<td class="unavailable"></td>');
+                       tdfortr4.push('<td class="unavailable"></td>');
+                       tdfortr5.push('<td class="unavailable"></td>');
+                       tdfortr6.push('<td class="unavailable"></td>');
+                       tdfortr7.push('<td class="unavailable"></td>');
+                       tdfortr8.push('<td class="unavailable"></td>');
+                       tdfortr9.push('<td class="unavailable"></td>');
+                       tdfortr10.push('<td class="unavailable"></td>');
+                       tdfortr11.push('<td class="unavailable"></td>');
+                       tdfortr12.push('<td class="unavailable"></td>');
+                       tdfortr13.push('<td class="unavailable"></td>');
+                       tdfortr14.push('<td class="unavailable"></td>');
+                       tdfortr15.push('<td class="unavailable"></td>');
+                       tdfortr16.push('<td class="unavailable"></td>');
+                       tdfortr17.push('<td class="unavailable"></td>');
+                       tdfortr18.push('<td class="unavailable"></td>');
+                       tdfortr19.push('<td class="unavailable"></td>');
+
+                       $(".product-choose").html(tdfortr2);
+                       $("#tr3").html(tdfortr3);
+                       $("#tr4").html(tdfortr4);
+                       $("#tr5").html(tdfortr5);
+                       $("#tr6").html(tdfortr6);
+                       $("#tr7").html(tdfortr7);
+                       $("#tr8").html(tdfortr8);
+                       $("#tr9").html(tdfortr9);
+                       $("#tr10").html(tdfortr10);
+                       $("#tr11").html(tdfortr11);
+                       $("#tr12").html(tdfortr12);
+                       $("#tr13").html(tdfortr13);
+                       $("#tr14").html(tdfortr14);
+                       $("#tr15").html(tdfortr15);
+                       $("#tr16").html(tdfortr16);
+                       $("#tr17").html(tdfortr17);
+                       $("#tr18").html(tdfortr18);
+                       $("#tr19").html(tdfortr19);
+
+
+                       for (var i = 0; i < json.data.length; i++) {
+                           config = {
+                               //title: json.data[i].Curves[0].DisplayName,
+                               xdata: json.data[i].Curves[0].XValues,
+                               //ycount: json.data[i].Curves[0].YCountValues,
+                               ytime: json.data[i].Curves[0].YTimeValues,
+                           };
+                           configs.push(config);
+                       }
+                       CreatOption();
+                       myChart.setOption(options[0]);
+                   }
+               });
+
+
+
+
+        }
+
+
+        function CreatOption() {
+
+            for (var i = 0; i < configs.length; i++) {
+                var option = {
+                    title: {
+                        text: "可靠度"
+                    },
+                    tooltip: {},
+                    //toolbox: {
+                    //    show: true,
+                    //    feature: {
+                    //        dataView: { readOnly: false },
+                    //        restore: {},
+                    //        saveAsImage: {}
+                    //    }
+                    //},
+                    xAxis: {
+                        data: configs[i].xdata,
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    },
+                    yAxis: [{
+                        type: 'value',
+                        scale: true,
+                        name: 'R(t)',
+                        max: 1,
+                        min: 0,
+                        boundaryGap: [0.2, 0.2]
+                    }],
+                    series: [{
+                        name: '停工次数',
+                        type: 'line',
+                        data: configs[i].ytime
+                    }]
+                };
+                options.push(option);
+            }
+        }
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('failuretype'));
+
+    </script>
+}

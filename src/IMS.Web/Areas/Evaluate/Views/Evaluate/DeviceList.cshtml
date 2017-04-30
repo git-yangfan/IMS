@@ -1,0 +1,94 @@
+﻿@{
+    ViewBag.Title = "DeviceList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section StylesAfter{
+    <link href="~/Content/Compare.css" rel="stylesheet" />
+
+}
+<h2>DeviceList</h2>
+@section ContentBody{
+
+    <div>
+        <div id="v3CompareBox" class="v3-compare-box">
+            <div class="v3-compare-box-header">
+                <span id="v3CompareClose" class="v3-compare-box-close">关闭</span>
+                <h4 class="v3-compare-box-title">[<span id="v3CompareNum">3</span>/4] 对比框</h4>
+            </div>
+            <ul id="v3CompareItems" class="v3-compare-box-list">
+              @*  <li id="v3Compare-s1102695"><span id="v3CompareDel-s1102695" class="v3-compare-item-del">关闭</span><a class="pic" href="#" title="微软 " target="_blank"><img src="http://2d.zol-img.com.cn/product_small/12_60x45/765/ceqrVfCDoQNA.jpg" width="60" height="45" /><span>微软 Surface Pro 4</span></a><input type="hidden" name="pro_id[]" value="s1102695" /></li>*@
+            </ul>
+            <div class="v3-compare-box-buttons">
+                <form id="v3CompareButtons" method="post" action="" target="_blank">
+                    <button type="button" hidefocus="true" class="v3-compare-box-button" id="v3CompareParamBtn" onclick="Compare()">对比</button>
+                </form>
+                <em id="v3CompareDelAll" class="v3-compare-box-clear">清空对比栏</em>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="pic-mode-box">
+        <ul id="J_PicMode" class="clearfix"></ul>
+
+    </div>
+    <script>
+        var v3CompareNum;
+        $(function () {
+            v3CompareNum = $("#v3CompareItems li").length;
+            if (v3CompareNum == 0) {
+                $("#v3CompareBox").hide();
+            }
+            LoadDevices();
+        })
+        function LoadDevices() {
+            $.post("/Evaluate/Evaluate/DevicesBySection", { sectionName: "" }, function (Data) {
+                json = $.parseJSON(Data);
+                if (json.flag) {
+                    var liforul = '';
+                    for (var i = 0; i < json.data.length; i++) {
+                        liforul += '<li data-follow-id="设备1" class="" id="' + json.data[i].DeviceNo + '">';
+                        liforul += '<a href="#" class="pic" target="_blank"><img width="220" height="165" .src="http://pro.fd.zol-img.com.cn/t_s220x165/g5/M00/0C/07/ChMkJlj0NUaIX2rKAAhC9V2uiq8AAbuCQIb6GAACEMN519.jpg" alt="" src="http://pro.fd.zol-img.com.cn/t_s220x165/g5/M00/0C/07/ChMkJlj0NUaIX2rKAAhC9V2uiq8AAbuCQIb6GAACEMN519.jpg"></a>';
+                        liforul += '<h3><a href="#" title="惠普 OMEN 15-AX200系列酷睿7代处理器" target="_blank">' + json.data[i].DeviceNo + '<span>' + json.data[i].ShortName + '</span>';
+                        liforul += '</a></h3><div class="price-row"><span class="price-tip">';
+                        liforul += '所属工段：' + json.data[i].WorkSection + '</span> <span class="price price-normal"><b class="price-type">5499-7999</b></span><div class="goods-promotion"></div></div>';
+                        liforul += '<div class="function-v3"><label id="comps1164543" class="cansel-btn" hide-focus="true" title="点击把它添加到对比框里"><i></i> 对比</label></div></li>';
+                    }
+                    $("#J_PicMode").html(liforul);
+                }
+            });
+        }
+        $("#J_PicMode").on('click', '.function-v3', function () {
+            //$(".function-v3").click(function () {
+            var id = this.parentNode.id;
+            if (v3CompareNum < 4) {
+                //先判断要添加的元素存在不存在，存在了就删了，不存在就添加
+                $("#v3CompareItems ").each(function () {
+                    //alert($(this).id)
+                });
+                $("#v3CompareItems").append('<li id=' + id + '><span id="v3CompareDel-' + id + '"  class="v3-compare-item-del">关闭</span><a class="pic" href="#" title="微软 " target="_blank"><img src="http://2d.zol-img.com.cn/product_small/12_60x45/765/ceqrVfCDoQNA.jpg" width="60" height="45" /><span>' + id + '</span></a></li>');
+                v3CompareNum++;
+                if (v3CompareNum>0) {
+                    $("#v3CompareBox").show();
+                }
+            }
+            else { alert("抱歉，您只能选4台设备进行对比"); }
+        });
+        $("#v3CompareItems").on('click', '.v3-compare-item-del', function () {
+            $(this).closest('li').remove();
+            v3CompareNum--;
+        });
+
+        function Compare() {
+            var devs = [];
+            $("#v3CompareItems").find("li").each(function () {
+                devs.push(this.id);
+            })
+            location.href = "/Evaluate/Evaluate/Compare?devs=" + devs;
+        }
+
+    </script>
+}
+

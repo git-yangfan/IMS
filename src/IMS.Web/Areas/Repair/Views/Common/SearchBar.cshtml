@@ -100,7 +100,7 @@
             { sectionName: $("#select_worksection option:selected").text() },
             function (Data) {
                 $.each(Data.data, function (i, item) {
-                    $("<option></option>").val(item["DeviceNo"]).text(item["DeviceName"]).appendTo($("#select_device"));
+                    $("<option></option>").val(item["DeviceNo"]).text(item["ShortName"]).appendTo($("#select_device"));
                 })
             });
     }

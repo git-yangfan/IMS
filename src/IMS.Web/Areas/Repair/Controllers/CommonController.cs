@@ -69,7 +69,7 @@ namespace IMS.Web.Areas.Repair.Controllers
         public JsonResult GetDeviceNamesBySection(string sectionName)
         {
             var res = new JsonResult<List<DeviceDto>>();
-            List<Device> deviceList = CommonDAL.GetDeviceNamesBySection(sectionName);
+            List<Device> deviceList = CommonDAL.GetDevicesBySection(sectionName);
             var list = Mapper.Map<List<Device>, List<DeviceDto>>(deviceList);
             if (list != null)
             {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OracleSugar;
+using System.Data;
 
 namespace IMS.Data.DAL
 {
@@ -33,29 +34,33 @@ namespace IMS.Data.DAL
                 {
                     resultList = client.Queryable<Users>().Where(c => c.BanZu == teamName).ToList();
                 }
-               
+
                 return resultList;
             }
-         
+
         }
 
         public static List<Device> GetWorkSectionNameList()
         {
             using (var client = DbConfig.GetInstance())
             {
-               List<Device> deviceList = client.Queryable<Device>().ToList();
-               return deviceList;
+                List<Device> deviceList = client.Queryable<Device>().ToList();
+                return deviceList;
             }
-            
+
         }
-        public static List<Device> GetDeviceNamesBySection(string sectionName)
+        public static List<Device> GetDevicesBySection(string sectionName)
         {
             using (var client = DbConfig.GetInstance())
             {
-                List<Device> deviceList = client.Queryable<Device>().Where(c => c.WorkSection == sectionName).ToList();
+                List<Device> deviceList = new List<Device>();
+                if (!String.IsNullOrEmpty(sectionName))
+                    deviceList = client.Queryable<Device>().Where(c => c.WorkSection == sectionName).ToList();
+                else
+                    deviceList = client.Queryable<Device>().ToList();
                 return deviceList;
             }
-            
+
         }
 
     }

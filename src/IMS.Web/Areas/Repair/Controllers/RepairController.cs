@@ -83,6 +83,7 @@ namespace IMS.Web.Areas.Repair.Controllers
             applicationDto.FirstLocation = Request.Params["fstLevFailureLocation"];
             applicationDto.SecondLocation = Request.Params["secLevFailureLocation"];
             applicationDto.ThirdLocation = Request.Params["thiLevFailureLocation"];
+            applicationDto.FailureType = Request.Params["failureType"];
             applicationDto.ApplicantId = "报告人A";
             applicationDto.ApplicationTime = DateTime.Now;
             applicationDto.Status = "待审核";
@@ -99,7 +100,8 @@ namespace IMS.Web.Areas.Repair.Controllers
             string firstLocation = Request.Params["fstLevFailureLocation"];
             string secondLocation = Request.Params["secLevFailureLocation"];
             string thirdLocation = Request.Params["thiLevFailureLocation"];
-            bool result = repairDAL.UpdateApplication(id, appearance, description, firstLocation, secondLocation, thirdLocation);
+            string failureType = Request.Params["failureType"];
+            bool result = repairDAL.UpdateApplication(id, appearance, description, firstLocation, secondLocation, thirdLocation, failureType);
             if (result)
             {
                 return Content(new { msg = "成功", status = "success" }.ToJsonString());

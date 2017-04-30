@@ -160,6 +160,14 @@
   <ItemGroup>
     <Compile Include="Areas\Employee\Controllers\EmployeeController.cs" />
     <Compile Include="Areas\Employee\EmployeeAreaRegistration.cs" />
+    <Compile Include="Areas\Evaluate\Algorithms\Curve.cs" />
+    <Compile Include="Areas\Evaluate\Algorithms\DataUnit.cs" />
+    <Compile Include="Areas\Evaluate\Algorithms\FailureDataStas.cs" />
+    <Compile Include="Areas\Evaluate\Algorithms\FailureRecord.cs" />
+    <Compile Include="Areas\Evaluate\Algorithms\Reliability.cs" />
+    <Compile Include="Areas\Evaluate\Controllers\CommonController.cs" />
+    <Compile Include="Areas\Evaluate\Controllers\EvaluateController.cs" />
+    <Compile Include="Areas\Evaluate\EvaluateAreaRegistration.cs" />
     <Compile Include="Config\AutoMapperConfiguration.cs" />
     <Compile Include="Config\AutoMapperConfiguration.Partial.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -169,9 +177,12 @@
     <Compile Include="Areas\Repair\RepairAreaRegistration.cs" />
     <Compile Include="Areas\Repair\Controllers\CommonController.cs" />
     <Compile Include="Dto\BaseDto.cs" />
+    <Compile Include="Dto\CompareDto.cs" />
     <Compile Include="Dto\DeviceDto.cs" />
     <Compile Include="Dto\ApplicationDto.cs" />
+    <Compile Include="Dto\DeviceEvaluateDto.cs" />
     <Compile Include="Dto\DispatchDto.cs" />
+    <Compile Include="Dto\DncRelated.cs" />
     <Compile Include="Dto\EmployeeDto.cs" />
     <Compile Include="Dto\EngineerDto.cs" />
     <Compile Include="Dto\ResultDto.cs" />
@@ -185,6 +196,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Evaluate\Algorithms\JavaScript1.js" />
     <Content Include="Content\bootstrap\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.css" />
@@ -198,6 +210,7 @@
     <Content Include="Content\bootstrap\js\bootstrap-table-zh-CN.js" />
     <Content Include="Content\bootstrap\js\bootstrap.js" />
     <Content Include="Content\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Content\bootstrap\js\echarts.min.js" />
     <Content Include="Content\bootstrap\js\html5shiv.min.js" />
     <Content Include="Content\bootstrap\js\IMS.table.js" />
     <Content Include="Content\bootstrap\js\JavaScript1.js" />
@@ -280,6 +293,7 @@
     <Content Include="Content\bootstrap\table\extensions\tree-column\bootstrap-table-tree-column.min.js" />
     <Content Include="Content\bootstrap\table\locale\bootstrap-table-zh-CN.js" />
     <Content Include="Content\bootstrap\table\locale\bootstrap-table-zh-CN.min.js" />
+    <Content Include="Content\Compare.css" />
     <Content Include="Content\validation\jquery-validation-1.9.0\jquery.validate.js" />
     <Content Include="Content\validation\jquery-validation-1.9.0\jquery.validate.min.js" />
     <Content Include="Content\validation\jquery[1].validate.cn.js" />
@@ -313,6 +327,15 @@
     <Content Include="Areas\Repair\Views\Repair\ShowAllInOne.cshtml" />
     <Content Include="Areas\Employee\Views\web.config" />
     <Content Include="Areas\Employee\Views\Employee\Index.cshtml" />
+    <Content Include="Areas\Evaluate\Views\web.config" />
+    <Content Include="Areas\Evaluate\Views\Common\SearchBar.cshtml">
+      <SubType>
+      </SubType>
+    </Content>
+    <Content Include="Areas\Evaluate\Views\Common\Index.cshtml" />
+    <Content Include="Areas\Evaluate\Views\Evaluate\DeviceEvaluate.cshtml" />
+    <Content Include="Areas\Evaluate\Views\Evaluate\Compare.cshtml" />
+    <Content Include="Areas\Evaluate\Views\Evaluate\DeviceList.cshtml" />
     <None Include="Properties\PublishProfiles\IMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

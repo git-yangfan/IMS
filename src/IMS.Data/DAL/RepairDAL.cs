@@ -122,7 +122,7 @@ namespace IMS.Data.DAL
                 }
             }
         }
-        public bool UpdateApplication(int id, string app, string des, string firstLoc, string secondLoc, string thirdLoc)
+        public bool UpdateApplication(int id, string app, string des, string firstLoc, string secondLoc, string thirdLoc, string failureType)
         {
             bool isUpdateSuccess = false;
             try
@@ -136,7 +136,8 @@ namespace IMS.Data.DAL
                                FailureAppearance = app,
                                FirstLocation = firstLoc,
                                SecondLocation = secondLoc,
-                               ThirdLocation = thirdLoc
+                               ThirdLocation = thirdLoc,
+                               FailureType = failureType,
                            }, it => it.Id == id).ObjToBool();
                 }
             }
@@ -411,7 +412,8 @@ namespace IMS.Data.DAL
                         ThirdLocation = application.ThirdLocation,
                         FailureAppearance = application.FailureAppearance,
                         FailureDescription = application.FailureDescription,
-                        Status = CurrentStatus.已总结.ToString()
+                        Status = CurrentStatus.已总结.ToString(),
+                        SummarizeTime=DateTime.Now
                     }, it => it.Id == application.Id);
                 client.Update<SelfRepairPlan>(
                     new
