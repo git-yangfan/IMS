@@ -7,16 +7,59 @@
 
 }
 <h2>DeviceList</h2>
-@section ContentBody{
 
-    <div>
+@section ContentBody{
+    <div class="container">
+    <div class="panel-body" style="padding-bottom:0px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">查询条件</div>
+            <div class="panel-body">
+
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" for="select_worksection">所属工段</label>
+                        <div class="col-sm-3">
+                            <select id="select_worksection">
+                                <option value="-1">请选择</option>
+                            </select>
+                        </div>
+
+                        <label class="col-sm-1 control-label">开始时间</label>
+                        <div class="col-sm-3">
+                            <div class='input-group date ' id='div_search_begintime'>
+                                <input type='text' class="form-control" id="txt_begintime" />
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <label class="col-sm-1 control-label">结束时间</label>
+                        <div class="col-sm-3">
+                            <div class='input-group date ' id='div_search_endtime'>
+                                <input type='text' class="form-control" id="txt_endtime" />
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row">
         <div id="v3CompareBox" class="v3-compare-box">
             <div class="v3-compare-box-header">
                 <span id="v3CompareClose" class="v3-compare-box-close">关闭</span>
                 <h4 class="v3-compare-box-title">[<span id="v3CompareNum">3</span>/4] 对比框</h4>
             </div>
             <ul id="v3CompareItems" class="v3-compare-box-list">
-              @*  <li id="v3Compare-s1102695"><span id="v3CompareDel-s1102695" class="v3-compare-item-del">关闭</span><a class="pic" href="#" title="微软 " target="_blank"><img src="http://2d.zol-img.com.cn/product_small/12_60x45/765/ceqrVfCDoQNA.jpg" width="60" height="45" /><span>微软 Surface Pro 4</span></a><input type="hidden" name="pro_id[]" value="s1102695" /></li>*@
+                @*  <li id="v3Compare-s1102695"><span id="v3CompareDel-s1102695" class="v3-compare-item-del">关闭</span><a class="pic" href="#" title="微软 " target="_blank"><img src="http://2d.zol-img.com.cn/product_small/12_60x45/765/ceqrVfCDoQNA.jpg" width="60" height="45" /><span>微软 Surface Pro 4</span></a><input type="hidden" name="pro_id[]" value="s1102695" /></li>*@
             </ul>
             <div class="v3-compare-box-buttons">
                 <form id="v3CompareButtons" method="post" action="" target="_blank">
@@ -26,14 +69,59 @@
             </div>
         </div>
 
+        <div class="pic-mode-box">
+            <ul id="J_PicMode" class="clearfix">
+                @*<li data-follow-id="p1150362" class="">
+                    <span class="icon award award3_2016">
+                    </span>
+                    <a href="/series/16/20667_1.html" class="pic" target="_blank">
+                        <img width="220" height="165" .src="http://pro.fd.zol-img.com.cn/t_s220x165/g5/M00/0B/03/ChMkJljvVqGIFZdDAAbYz48YoN0AAbo4QJf5w8ABtjn753.jpg"
+                             alt="" src="http://pro.fd.zol-img.com.cn/t_s220x165/g5/M00/0B/03/ChMkJljvVqGIFZdDAAbYz48YoN0AAbo4QJf5w8ABtjn753.jpg">
+                    </a>
+                    <h3>
+                        <a href="/series/16/20667_1.html" title="联想 小新Air 13 Pro系列金属轻薄机身，940MX性能级独显，立体指纹验证"
+                           target="_blank">
+                            联想 小新Air 13 Pro系列
+                            <span>
+                                金属轻薄机身，940MX性能级独显，立体指纹验证
+                            </span>
+                        </a>
+                    </h3>
+                    <div class="price-row">
+                        <span class="price-tip">
+                            参考价：
+                        </span>
+                        <span class="price price-normal">
+                            <b class="price-sign">
+                                ￥
+                            </b>
+                            <b class="price-type">
+                                4999-7399
+                            </b>
+                        </span>
+                        <div class="goods-promotion">
+                            <span class="J_PicModeTuan" data-url="http://www.zol.com/detail/notebook/lenovo/28042505.html?skuId=10049052?spm=784.0"
+                                  data-price="4799" data-rel="modeTuan">
+                                团购
+                            </span>
+                        </div>
+                    </div>
+                 
+                    <div class="function-v3">
+                        <label id="comps1150362" class="cansel-btn" hide-focus="true" data-rel="s1150362,联想小新Air 13 Pro,/ultrabook/index1150362.shtml,http://2d.zol-img.com.cn/product/176_80x60/915/ceMDIu1jTveb.jpg,16"
+                               title="点击把它添加到对比框里">
+                            <i>
+                            </i>
+                            对比
+                        </label>
+                    </div>
+                  
+                </li>*@
+            </ul>
+        </div>
     </div>
 
-
-
-    <div class="pic-mode-box">
-        <ul id="J_PicMode" class="clearfix"></ul>
-
-    </div>
+</div>
     <script>
         var v3CompareNum;
         $(function () {
@@ -42,16 +130,42 @@
                 $("#v3CompareBox").hide();
             }
             LoadDevices();
+            $('#div_search_begintime').datetimepicker({
+                //日期格式化，只显示日期
+                language: 'zh-CN',     //中文化
+                todayBtn: true,
+                pickerPosition: "bottom-left"
+            });
+            $('#div_search_endtime').datetimepicker({
+                //日期格式化，只显示日期
+                language: 'zh-CN',     //中文化
+                todayBtn: true,
+                pickerPosition: "bottom-left"
+            });
+            LoadWorkSectionNames();
+            $("#select_worksection").change(function () {
+                LoadDevices();
+            });
         })
+        function LoadWorkSectionNames() {
+            $.post(
+                "/Repair/Common/GetWorkSectionNameList",
+                function (Data) {
+                    $.each(Data.data, function (i, item) {
+                        $("<option></option>").text(item["WorkSection"]).appendTo($("#select_worksection"));
+                    })
+                });
+        }
         function LoadDevices() {
-            $.post("/Evaluate/Evaluate/DevicesBySection", { sectionName: "" }, function (Data) {
+            var sectionName = $("#select_worksection option:selected").text() == "请选择" ? "" : $("#select_worksection option:selected").text();
+            $.post("/Evaluate/Evaluate/DevicesBySection", { sectionName: sectionName }, function (Data) {
                 json = $.parseJSON(Data);
                 if (json.flag) {
                     var liforul = '';
                     for (var i = 0; i < json.data.length; i++) {
                         liforul += '<li data-follow-id="设备1" class="" id="' + json.data[i].DeviceNo + '">';
-                        liforul += '<a href="#" class="pic" target="_blank"><img width="220" height="165" .src="http://pro.fd.zol-img.com.cn/t_s220x165/g5/M00/0C/07/ChMkJlj0NUaIX2rKAAhC9V2uiq8AAbuCQIb6GAACEMN519.jpg" alt="" src="http://pro.fd.zol-img.com.cn/t_s220x165/g5/M00/0C/07/ChMkJlj0NUaIX2rKAAhC9V2uiq8AAbuCQIb6GAACEMN519.jpg"></a>';
-                        liforul += '<h3><a href="#" title="惠普 OMEN 15-AX200系列酷睿7代处理器" target="_blank">' + json.data[i].DeviceNo + '<span>' + json.data[i].ShortName + '</span>';
+                        liforul += '<a href="#" class="pic" target="_blank"><img width="220" height="165"  alt="" src=' + json.data[i].Src + '></a>';
+                        liforul += '<h3><a href="#" title="" target="_blank">设备简称：<span>' + json.data[i].ShortName + '</span>';
                         liforul += '</a></h3><div class="price-row"><span class="price-tip">';
                         liforul += '所属工段：' + json.data[i].WorkSection + '</span> <span class="price price-normal"><b class="price-type">5499-7999</b></span><div class="goods-promotion"></div></div>';
                         liforul += '<div class="function-v3"><label id="comps1164543" class="cansel-btn" hide-focus="true" title="点击把它添加到对比框里"><i></i> 对比</label></div></li>';
@@ -61,33 +175,64 @@
             });
         }
         $("#J_PicMode").on('click', '.function-v3', function () {
-            //$(".function-v3").click(function () {
             var id = this.parentNode.id;
+            var imgsrc = $("#" + id).find("img").attr("src");
             if (v3CompareNum < 4) {
                 //先判断要添加的元素存在不存在，存在了就删了，不存在就添加
-                $("#v3CompareItems ").each(function () {
-                    //alert($(this).id)
+                var isLiExist = false;
+                $("#v3CompareItems").find("li").each(function () {
+                    if (this.id == id) {
+                        this.remove(); isLiExist = true;
+                        v3CompareNum--;
+                    }
                 });
-                $("#v3CompareItems").append('<li id=' + id + '><span id="v3CompareDel-' + id + '"  class="v3-compare-item-del">关闭</span><a class="pic" href="#" title="微软 " target="_blank"><img src="http://2d.zol-img.com.cn/product_small/12_60x45/765/ceqrVfCDoQNA.jpg" width="60" height="45" /><span>' + id + '</span></a></li>');
-                v3CompareNum++;
-                if (v3CompareNum>0) {
-                    $("#v3CompareBox").show();
+                if (!isLiExist) {
+                    $("#v3CompareItems").append('<li id=' + id + '><span id="v3CompareDel-' + id + '"  class="v3-compare-item-del">关闭</span><a class="pic" href="#" title="微软 " target="_blank"><img src=' +imgsrc+ ' width="60" height="45" /><span>' + id + '</span></a></li>');
+                    v3CompareNum++;
                 }
+                if (v3CompareNum>0) $("#v3CompareBox").show();
+                else $("#v3CompareBox").hide();
             }
             else { alert("抱歉，您只能选4台设备进行对比"); }
-        });
+        })
         $("#v3CompareItems").on('click', '.v3-compare-item-del', function () {
             $(this).closest('li').remove();
             v3CompareNum--;
-        });
-
-        function Compare() {
-            var devs = [];
+            if (v3CompareNum == 0) {
+                $("#v3CompareBox").hide();
+            }
+        })
+        $(".v3-compare-box-clear").click(function () {
             $("#v3CompareItems").find("li").each(function () {
-                devs.push(this.id);
-            })
-            location.href = "/Evaluate/Evaluate/Compare?devs=" + devs;
-        }
+                    this.remove();
+                    v3CompareNum--;
+            });
+        })
+        $(".v3-compare-box-close").click(function () {
+            $("#v3CompareItems").find("li").each(function () {
+                this.remove();
+                v3CompareNum--;
+            });
+            if (v3CompareNum == 0) {
+            $("#v3CompareBox").hide();
+        }})
+            
+
+            function Compare() {
+                var devs = [];
+                $("#v3CompareItems").find("li").each(function () {
+                    devs.push(this.id);
+                })
+                var stime = $("#txt_begintime").val();
+                if (stime == "") {
+                    alert("请选择开始时间"); return;
+                }
+                var etime = $("#txt_endtime").val();
+                if (etime=="") {
+                    alert("请选择结束时间"); return;
+                }
+                location.href = "/Evaluate/Evaluate/Compare?devs=" + devs+"&starttime="+stime+"&endtime="+etime;
+            }
 
     </script>
 }

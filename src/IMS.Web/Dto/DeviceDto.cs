@@ -24,5 +24,7 @@ namespace IMS.Web.Dto
        public string Spec { get; set; }
        public string Type { get; set; }
        public string UseDepart { get; set; }
+       public string Src { get; set; }
+
     }
 }

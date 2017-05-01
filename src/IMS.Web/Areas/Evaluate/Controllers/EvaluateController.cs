@@ -50,7 +50,7 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             DncRelated dncRelateReliability = Reliability.DncRelateReliability(dncData);
             deviceEvaluateDto.dncRelateReliability = dncRelateReliability;
 
-            string mtbfSql = "select gzjgsj as jgsj from csmtbfsj"; //测试的时候用的，实际调用时应该给定sql语句
+            string mtbfSql = "select gzjgsj as jgsj from csmtbfsj"; //测试的时候用的
             //string sql = "select FSSJ,Round((fssj-lag(fssj,1,null)over(order by fssj asc))*24,1) as JGSJ from sbgzxx  where sbbh='设备1'";
             DataTable data = evaluateDAL.GetDataTable(mtbfSql);
             List<double> intervar = new List<double>();
@@ -135,7 +135,11 @@ namespace IMS.Web.Areas.Evaluate.Controllers
         public ActionResult Compare()
         {
             string deviceNos = Request.QueryString["devs"];
+            string startTime =Convert.ToDateTime(Request.QueryString["starttime"]).ToShortDateString();
+            string endTime = Convert.ToDateTime(Request.QueryString["endtime"]).ToShortDateString();
             ViewData["devices"] = deviceNos;
+            ViewData["startTime"] = startTime;
+            ViewData["endTime"] = endTime;
             return View();
         }
         public ActionResult CompareDevice(List<string> devices, string starttime, string endtime)

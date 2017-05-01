@@ -53,9 +53,9 @@ namespace IMS.Data.DAL
             if (!String.IsNullOrEmpty(deviceNo))
                 strBuilder.Append("and sbbh='" + deviceNo+"'");
             if (!String.IsNullOrEmpty(startDate))
-                strBuilder.Append(" and to_date(mmdd,'yyyy-mm-dd') >to_date('" + startDate + "','yyyy-mm-dd')");
+                strBuilder.Append(" and to_date(mmdd,'yyyy-mm-dd') >to_date('" + startDate + "','yyyy-mm-dd ')");
             if (!String.IsNullOrEmpty(endDate))
-                strBuilder.Append(" and to_date(mmdd,'yyyy-mm-dd') <to_date('" + endDate + "','yyyy-mm-dd')");
+                strBuilder.Append(" and to_date(mmdd,'yyyy-mm-dd') <to_date('" + endDate + "','yyyy-mm-dd ')");
             string sql = strBuilder.ToString();
             using (var client = DbConfig.GetInstance())
             {

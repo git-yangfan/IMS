@@ -299,6 +299,11 @@
     <Content Include="Content\validation\jquery[1].validate.cn.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Img\Device\机床1.jpg" />
+    <Content Include="Img\Device\机床2.jpg" />
+    <Content Include="Img\Device\机床3.jpg" />
+    <Content Include="Img\Device\机床4.jpg" />
+    <Content Include="Img\Device\机床5.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">

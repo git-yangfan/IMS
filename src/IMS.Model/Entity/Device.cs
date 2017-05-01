@@ -22,5 +22,6 @@ namespace IMS.Model.Entity
 
         public string UseDepart { get; set; }
         public string  Status { get; set; }
+        public string  Src { get; set; }
     }
 }
