@@ -163,7 +163,6 @@
     <Compile Include="Areas\Evaluate\Algorithms\Curve.cs" />
     <Compile Include="Areas\Evaluate\Algorithms\DataUnit.cs" />
     <Compile Include="Areas\Evaluate\Algorithms\FailureDataStas.cs" />
-    <Compile Include="Areas\Evaluate\Algorithms\FailureRecord.cs" />
     <Compile Include="Areas\Evaluate\Algorithms\Reliability.cs" />
     <Compile Include="Areas\Evaluate\Controllers\CommonController.cs" />
     <Compile Include="Areas\Evaluate\Controllers\EvaluateController.cs" />
@@ -177,7 +176,10 @@
     <Compile Include="Areas\Repair\RepairAreaRegistration.cs" />
     <Compile Include="Areas\Repair\Controllers\CommonController.cs" />
     <Compile Include="Dto\BaseDto.cs" />
-    <Compile Include="Dto\CompareDto.cs" />
+    <Compile Include="Dto\BrandEvaluateDto.cs" />
+    <Compile Include="Dto\CompareBrandDto.cs" />
+    <Compile Include="Dto\CompareBase.cs" />
+    <Compile Include="Dto\CompareDeviceDto.cs" />
     <Compile Include="Dto\DeviceDto.cs" />
     <Compile Include="Dto\ApplicationDto.cs" />
     <Compile Include="Dto\DeviceEvaluateDto.cs" />
@@ -185,6 +187,7 @@
     <Compile Include="Dto\DncRelated.cs" />
     <Compile Include="Dto\EmployeeDto.cs" />
     <Compile Include="Dto\EngineerDto.cs" />
+    <Compile Include="Dto\EvaluateBase.cs" />
     <Compile Include="Dto\ResultDto.cs" />
     <Compile Include="Dto\SelfRepairPlanDto.cs" />
     <Compile Include="Dto\SubSystemDto.cs" />
@@ -341,6 +344,7 @@
     <Content Include="Areas\Evaluate\Views\Evaluate\DeviceEvaluate.cshtml" />
     <Content Include="Areas\Evaluate\Views\Evaluate\Compare.cshtml" />
     <Content Include="Areas\Evaluate\Views\Evaluate\DeviceList.cshtml" />
+    <Content Include="Areas\Evaluate\Views\Evaluate\CompareByBrand.cshtml" />
     <None Include="Properties\PublishProfiles\IMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

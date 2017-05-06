@@ -1,0 +1,299 @@
+﻿@{
+    ViewBag.Title = "CompareByBrand";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+    <script src="~/Content/bootstrap/js/echarts.min.js"></script>}
+@section StylesAfter{
+    <link href="~/Content/Compare.css" rel="stylesheet" />
+
+}
+<h2>CompareByBrand</h2>
+@section ContentBody{
+    <div class="row" style="margin:0;padding:15px;border:2px #E6E6E6 solid">
+        <div class="form-group">
+            <button type="button" class="btn btn-primary">机床类别:</button>
+            @foreach (var item in ViewData["machineTypes"] as List<string>)
+            {
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="@item"> @item
+                </label>
+            }
+        </div>
+        <div class="form-group form-inline">
+            <button type="button" class="btn btn-primary">机床品牌:</button>
+            <div id="divforbrand" class="form-group">
+                <label class="checkbox-inline"><input type="checkbox" value="">德玛吉</label>
+                <label class="checkbox-inline"><input type="checkbox" value="">ABB</label>
+                <label class="checkbox-inline"><input type="checkbox" value="">西门子</label>
+                <label class="checkbox-inline"><input type="checkbox" value="">三井精机</label>
+            </div>
+        </div>
+        <div class="form-group form-inline">
+
+            <button type="button" class="btn btn-primary">起止时间:</button>
+
+            <div class='input-group date ' id='div_search_begintime'>
+                <input type='text' class="form-control" id="txt_begintime" />
+                <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-calendar"></i>
+                </span>
+            </div><span style="margin:0px 15px 0px 15px">至</span>
+
+            <div class='input-group date ' id='div_search_endtime'>
+                <input type='text' class="form-control" id="txt_endtime" />
+                <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-calendar"></i>
+                </span>
+            </div>
+            <div class="pull-right"><button type="submit" class="btn btn-primary" onclick="Compare()">对比</button></div>
+
+        </div>
+    </div>
+    <table class="commpare-table param-compare param-table" id="paramTable">
+
+        <tr id="tr1" class="produce-pic">
+            <th class="compare-table-head">
+                机床种类
+            </th>
+            <td colspan="3" style="text-align:center" id="machinetypetd"></td>
+        </tr>
+        <tr id="tr2" class="produce-pic">
+            <th class="compare-table-head">
+                品牌
+            </th>
+
+        </tr>
+
+        <tr id="tr3" class="product-name">
+            <th>开始时间</th>
+            @*<div class="select-item">
+                <span class="select-trigger">lenovo（联想）</span>
+            </div>
+            <div class="select-item">
+                <span class="select-trigger">联想E40-70-IFI（i5 4210U/4GB/500GB/Win7）</span>
+            </div>*@
+
+            <td><div class="param-content" id="starttimetd"></div></td>
+            <th>结束时间</th>
+            <td><div class="param-content" id="endtimetd"></div></td>
+
+        </tr>
+        <tr id="tr3" class="product-name">
+            <th>平均无故障时间(最小二乘法)</th>
+            <td colspan="3"><div id="chartmtbf" style="width: 900px;height:200px;">  </div></td>
+        </tr>
+        <tr id="tr3" class="product-name">
+            <th>故障类别情况</th>
+            <td><div id="chart00" style="width: 300px;height:200px;">  </div></td>
+            <td><div id="chart10" style="width: 300px;height:200px;">  </div></td>
+            <td><div id="chart20" style="width: 300px;height:200px;">  </div></td>
+
+        </tr>
+        <tr id="tr4" class="product-price">
+            <th>故障部位情况</th>
+            <td><div id="chart01" style="width: 300px;height:200px;">  </div></td>
+            <td><div id="chart11" style="width: 300px;height:200px;">  </div></td>
+            <td><div id="chart21" style="width: 300px;height:200px;">  </div></td>
+
+        </tr>
+
+    </table>
+
+    <script>
+        var brands = [];
+        var mtbfs = [];
+        $(function () {
+            $('#div_search_begintime').datetimepicker({
+                //日期格式化，只显示日期
+                language: 'zh-CN',     //中文化
+                todayBtn: true,
+                pickerPosition: "bottom-left"
+            });
+            $('#div_search_endtime').datetimepicker({
+                //日期格式化，只显示日期
+                language: 'zh-CN',     //中文化
+                todayBtn: true,
+                pickerPosition: "bottom-left"
+            });
+            $("input:radio[name=type]").change(function () {
+                var type = $("input:radio[name=type]:checked").val();
+                LoadBrand(type);
+            });
+        })
+        function Compare() {
+            var type = $("input:radio[name=type]:checked").val();
+            var selectbrands = new Array();
+            $("[name = chkItem]:checkbox").each(function () {
+                if ($(this).is(":checked")) {
+                    selectbrands.push($(this).attr("value"));
+                }
+            });
+            if (selectbrands.length > 3) {
+                alert("不要太贪心，一次最多能对比三个品牌"); return;
+            }
+            var stime = $("#txt_begintime").val();
+            if (stime == "") {
+                alert("请选择开始时间"); return;
+            }
+            var etime = $("#txt_endtime").val();
+            if (etime == "") {
+                alert("请选择结束时间"); return;
+            }
+            Clear();
+            $.post("/Evaluate/Evaluate/CompareByBrand", { type: type, brands: selectbrands, startTime: stime, endTime: etime }, function (Data) {
+                json = $.parseJSON(Data);
+                if (json.flag) {
+                    $("#machinetypetd").html(json.data.MachineType);
+                    $("#starttimetd").html(json.data.StartTime);
+                    $("#endtimetd").html(json.data.EndTime);
+                    var tdfortr2 = [];
+                    tdfortr2.push('<th class="compare-table-head">品牌</th>');
+                    for (var i = 0; i < json.data.BrandList.length; i++) {//循环所有的brand
+                        tdfortr2.push('<td><div class="param-content">' + json.data.BrandList[i].Brand + '</div></td>');
+                        brands.push(json.data.BrandList[i].Brand);
+                        mtbfs.push(json.data.BrandList[i].MTBF);
+                        var curves = json.data.BrandList[i].Curves;
+                        for (var j = 0; j < curves.length; j++) {//循环一个牌子的所有曲线  curves  第一个是故障类别  第二个是故障部位
+                            config = {
+                                title: curves[j].DisplayName,
+                                xdata: curves[j].XValues,
+                                ycount: curves[j].YCountValues,
+                                ytime: curves[j].YTimeValues,
+                            };
+                            var option = CreatOption(config);
+                            echarts.init(document.getElementById('chart' + i + j)).setOption(option);
+
+                        }
+                    }
+                    DrawMtbfChart();
+                    $("#tr2").append(tdfortr2);
+                }
+            });
+        }
+
+        function Clear(){
+            $("#machinetypetd").empty();
+            $("#starttimetd").empty();
+            $("#endtimetd").empty();
+            $("#tr2").empty();
+            brands.length = 0;
+            mtbfs.length = 0;
+           
+        }
+        function LoadBrand(type) {
+            $.post("/Evaluate/Evaluate/BrandByMachineType", { machineType: type }, function (Data) {
+                json = $.parseJSON(Data);
+                if (json.flag) {
+                    $("#divforbrand").empty();
+                    $.each(json.data, function (i, item) {
+                        //添加复选框以及对应的值
+                        $("#divforbrand").append(
+                            '<label class="checkbox-inline"><input name="chkItem" type="checkbox"  value=' + item + '>' + item + '</label> ');
+                    });
+                }
+            })
+        }
+        function DrawMtbfChart() {
+            option = {
+                title: {
+                    text: 'MTBF',
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: brands
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    boundaryGap: [0, 0.01]
+                },
+                yAxis: {
+                    type: 'category',
+                    data: brands
+                },
+                series: [
+                    {
+                        name: brands,
+                        type: 'bar',
+                        data: mtbfs
+                    }
+                ]
+            };
+            echarts.init(document.getElementById('chartmtbf')).setOption(option);
+
+
+        }
+
+        function CreatOption(config) {
+            return option = {
+                title: {
+                    textStyle: {
+                        fontSize: 5,
+                    },
+                    text: config.title
+                },
+                tooltip: {},
+                legend: {
+                    textStyle: {
+                        fontSize: 1,
+                    },
+                    data: ['停工次数', '停工时间']
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataView: { readOnly: false },
+                        restore: {},
+                        saveAsImage: {}
+                    }, textStyle: {
+                        fontSize: 1,
+                    },
+                },
+                xAxis: {
+                    data: config.xdata,
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                },
+                yAxis: [{
+                    type: 'value',
+                    scale: true,
+                    name: '次数',
+                    max: 30,
+                    min: 0,
+                    boundaryGap: [0.2, 0.2]
+                }, {
+                    type: 'value',
+                    scale: true,
+                    name: '停工时间',
+                    max: 6000,
+                    min: 0,
+                    boundaryGap: [0.2, 0.2]
+                }],
+                series: [{
+                    name: '停工次数',
+                    type: 'bar',
+                    data: config.ycount
+                }, {
+                    name: '停工时间',
+                    type: 'bar',
+                    yAxisIndex: 1,
+                    data: config.ytime
+                }]
+            };
+        }
+
+    </script>
+}
+

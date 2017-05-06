@@ -11,7 +11,7 @@ namespace IMS.Web.Areas.Evaluate.Algorithms
     {
         public static double MTBF(List<double> interval, out double alph, out double beta)
         {
-            double MTBF = -999; alph = 0; beta = 0;
+            double MTBF =0; alph = 0; beta = 0;
             int n = interval.Count;
             if (n > 0)
             {

@@ -11,6 +11,7 @@ using IMS.Web.Dto;
 using IMS.Model.Entity;
 using System.Linq.Expressions;
 using AutoMapper;
+using System.Text;
 
 namespace IMS.Web.Areas.Evaluate.Controllers
 {
@@ -40,7 +41,7 @@ namespace IMS.Web.Areas.Evaluate.Controllers
         {
             DeviceEvaluateDto deviceEvaluateDto = new DeviceEvaluateDto();
             FailureDataStas failureStas;
-            DataTable sourceTable = evaluateDAL.GetPauseTimeData(deviceNo, startTime, endTime);
+            DataTable sourceTable = evaluateDAL.GetFailureRecords(deviceNo, startTime, endTime);
             List<string> groupNames = new List<string>() { "FailureType", "SecondLocation" };//按故障类别，二级故障部位统计，统计故障次数和故障时间
             List<Curve> curves = CreatCurves(sourceTable, groupNames, out failureStas);
             if (curves != null)
@@ -50,19 +51,17 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             DncRelated dncRelateReliability = Reliability.DncRelateReliability(dncData);
             deviceEvaluateDto.dncRelateReliability = dncRelateReliability;
 
-            string mtbfSql = "select gzjgsj as jgsj from csmtbfsj"; //测试的时候用的
-            //string sql = "select FSSJ,Round((fssj-lag(fssj,1,null)over(order by fssj asc))*24,1) as JGSJ from sbgzxx  where sbbh='设备1'";
-            DataTable data = evaluateDAL.GetDataTable(mtbfSql);
             List<double> intervar = new List<double>();
-            for (int i = 0; i < data.Rows.Count; i++)
-            {
-                intervar.Add(Convert.ToDouble(data.Rows[i]["jgsj"]));
-            }
+            //for (int i = 0; i < sourceTable.Rows.Count-1; i++)
+            //{
+            //    intervar.Add(Convert.ToDouble((Convert.ToDateTime(sourceTable.Rows[i + 1]["BeginTime"]) -  Convert.ToDateTime(sourceTable.Rows[i ]["BeginTime"])).Hours));
+            //}真实故障间隔数据
             double alph, beta;
+            string mtbfSql = "select gzjgsj as jgsj from csmtbfsj";
+            intervar = evaluateDAL.Interval(mtbfSql);//测试的时候用的
             deviceEvaluateDto.MTBF = Reliability.MTBF(intervar, out alph, out beta);
             return deviceEvaluateDto;
         }
-
         private List<Curve> CreatCurves(DataTable sourceTable, List<string> groupNames, out FailureDataStas stas)
         {
             List<Curve> curves = new List<Curve>();
@@ -70,7 +69,7 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             foreach (var item in groupNames)
             {
                 string curveName = string.Empty;
-                var dataUnitList = CalculateTimeAndCount(sourceTable, item);
+                var dataUnitList = GroupByColName(sourceTable, item);
                 stas.TotalCount = dataUnitList.Sum(d => d.Count);
                 stas.TotalPauseTime = dataUnitList.Sum(d => d.PauseTime);
                 switch (item)
@@ -98,15 +97,13 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             }
             return curves;
         }
-
-        private List<DataPoint> CalculateTimeAndCount(DataTable sourceTable, string colName)
+        private List<DataPoint> GroupByColName(DataTable sourceTable, string colName)
         {
             if (sourceTable.Columns.Contains(colName))
             {
                 //计算相同 故障部位或故障类别 的 总次数 总停工时间
                 string strKey = string.Empty;
                 List<DataPoint> pointCollection = new List<DataPoint>();
-
                 for (int i = 0; i < sourceTable.Rows.Count; i++)
                 {
                     strKey = sourceTable.Rows[i][colName].ToString();
@@ -131,38 +128,32 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             }
             else return null;
         }
-
         public ActionResult Compare()
         {
             string deviceNos = Request.QueryString["devs"];
-            string startTime =Convert.ToDateTime(Request.QueryString["starttime"]).ToShortDateString();
+            string startTime = Convert.ToDateTime(Request.QueryString["starttime"]).ToShortDateString();
             string endTime = Convert.ToDateTime(Request.QueryString["endtime"]).ToShortDateString();
             ViewData["devices"] = deviceNos;
             ViewData["startTime"] = startTime;
             ViewData["endTime"] = endTime;
             return View();
         }
-        public ActionResult CompareDevice(List<string> devices, string starttime, string endtime)
+        public ActionResult CompareDevice(List<string> devices, string startTime, string endTime)
         {
-            var res = new JsonResult<List<CompareDto>>();
-            List<CompareDto> compareResult = new List<CompareDto>();
+            var res = new JsonResult<List<CompareDeviceDto>>();
+            List<CompareDeviceDto> compareResult = new List<CompareDeviceDto>();
             foreach (var dev in devices)
             {
-                CompareDto dto = new CompareDto();
+                CompareDeviceDto dto = new CompareDeviceDto();
                 Expression<Func<Device, bool>> exp = item => item.DeviceNo == dev;
                 DeviceDto devDto = Mapper.Map<Device, DeviceDto>(evaluateDAL.Single(exp));
                 dto.Device = devDto;
-                MMDD_SBLY dncData = evaluateDAL.GetDncData(dev, starttime, endtime);
+                MMDD_SBLY dncData = evaluateDAL.GetDncData(dev, startTime, endTime);
                 DncRelated dncRelateReliability = Reliability.DncRelateReliability(dncData);
                 dto.DncReliability = dncRelateReliability;
                 string mtbfSql = "select gzjgsj as jgsj from csmtbfsj"; //测试的时候用的，实际调用时应该给定sql语句
                 //string sql = "select FSSJ,Round((fssj-lag(fssj,1,null)over(order by fssj asc))*24,1) as JGSJ from sbgzxx  where sbbh='设备1'";
-                DataTable data = evaluateDAL.GetDataTable(mtbfSql);
-                List<double> intervar = new List<double>();
-                for (int i = 0; i < data.Rows.Count; i++)
-                {
-                    intervar.Add(Convert.ToDouble(data.Rows[i]["jgsj"]));
-                }
+                List<double> intervar = evaluateDAL.Interval(mtbfSql);
                 double alph, beta;
                 dto.MTBF = Reliability.MTBF(intervar, out alph, out beta);
                 dto.Alph = alph; dto.Beta = beta;
@@ -187,17 +178,10 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             res.flag = true;
             return Content(res.ToJsonString());
         }
-
-
-
-
-
         public ActionResult DeviceList()
         {
             return View();
         }
-
-
         public ActionResult DevicesBySection(string sectionName)
         {
             var devs = CommonDAL.GetDevicesBySection(sectionName);
@@ -211,7 +195,79 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             return Content(res.ToJsonString());
         }
 
+        //按机床种类和品牌对比
+        public ActionResult CompareByBrand()
+        {
+            var machineTypes = evaluateDAL.MachineType();
+            ViewData["machineTypes"] = machineTypes;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult BrandByMachineType(string machineType)
+        {
+            var res = new JsonResult<List<string>>();
+            var brands = evaluateDAL.GetBrandsByType(machineType);
+            if (brands.Count > 0)
+            {
+                res.flag = true;
+                res.data = brands;
+            }
+            return Content(res.ToJsonString());
+        }
+        [HttpPost]
+        public ActionResult CompareByBrand(string type, List<string> brands, string startTime, string endTime)
+        {
+            //string type = "加工中心";
+            //List<string> brands = new List<string>() { "西门子","德玛吉" };
+            CompareBrandDto compareResultDto = new CompareBrandDto();
+            compareResultDto.MachineType = type;
+            compareResultDto.DisplayName = type + "对比结果";
+            compareResultDto.StartTime = startTime; compareResultDto.EndTime = endTime;
+            compareResultDto.BrandList = new List<BrandEvaluateDto>();
+            var res = new JsonResult<CompareBrandDto>();
+            res.flag = false;
 
-
+            if (brands.Count > 0)
+            {
+                foreach (var brand in brands)
+                {
+                    StringBuilder Sqlbuilder = new StringBuilder("select app.DeviceNo,app.FailureType,app.BeginTime,app.FirstLocation,app.SecondLocation,app.ThirdLocation, round((" +
+                          "(case when app.CHECKTIME is null then to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') else app.CHECKTIME end)-" +
+                          "(case WHEN app.BEGINTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') THEN app.BEGINTIME else to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') end)" +
+                          ") * 24, 2) AS pausetime " +
+                          "FROM REPAIRAPPLICATION app " +
+                          "WHERE app.CHECKTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
+                          "AND app.CHECKTIME < to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
+                          "OR app.CHECKTIME is null and deviceno in (select deviceno from device where type='" + type + "'");
+                    Sqlbuilder.Append(" and brand='" + brand + "'");
+                    Sqlbuilder.Append(" ) order by app.begintime");
+                    DataTable sourceTable = evaluateDAL.GetFailureRecords(Sqlbuilder.ToString());
+                    if (sourceTable.Rows.Count > 0)
+                    {
+                        res.flag = true;
+                        FailureDataStas failureStas;
+                        List<string> groupNames = new List<string>() { "FailureType", "SecondLocation" };//按故障类别，二级故障部位统计，统计故障次数和故障时间
+                        List<Curve> curves = CreatCurves(sourceTable, groupNames, out failureStas);
+                        BrandEvaluateDto brandDto = new BrandEvaluateDto();
+                        brandDto.Brand = brand;
+                        List<double> intervar = new List<double>();
+                        //for (int i = 0; i < sourceTable.Rows.Count-1; i++)
+                        //{
+                        //    intervar.Add(Convert.ToDouble((Convert.ToDateTime(sourceTable.Rows[i + 1]["BeginTime"]) -  Convert.ToDateTime(sourceTable.Rows[i ]["BeginTime"])).Hours));
+                        //}真实故障间隔数据
+                        double alph, beta;
+                        string mtbfSql = "select gzjgsj as jgsj from csmtbfsj";
+                        intervar = evaluateDAL.Interval(mtbfSql);////测试的时候用的
+                        double mtbf = Reliability.MTBF(intervar, out alph, out beta);
+                        brandDto.MTBF = mtbf;
+                        brandDto.Alph = alph; brandDto.Beta = beta;
+                        brandDto.Curves = curves;
+                        compareResultDto.BrandList.Add(brandDto);
+                    }
+                }
+                res.data = compareResultDto;
+            }
+            return Content(res.ToJsonString());
+        }
     }
 }

@@ -28,16 +28,45 @@ namespace IMS.Data.DAL
             }
             return resultTable;
         }
-        public DataTable GetPauseTimeData(string deviceNo, string startTime, string endTime)
+        public List<double> Interval(string sql) 
         {
-            string sql1 = "select app.*, round((" +
+            List<double> resultList = new List<double>();
+            using (var client = DbConfig.GetInstance())
+            {
+                resultList = client.SqlQuery<double>(sql).ToList<double>();
+            }
+            return resultList;
+        }
+        public List<double> Interval(string deviceNo,string startTime,string endTime)
+        {
+            List<double> resultList = new List<double>();
+            using (var client = DbConfig.GetInstance())
+            {
+                string sql = "select Round((BEGINTIME-lag(BEGINTIME,1,null)over(order by BEGINTIME asc))*24,1) as intervaltime from REPAIRAPPLICATION  where 1=1";
+                if (!String.IsNullOrEmpty(deviceNo))
+                    sql += " and DEVICENO='"+deviceNo+"'";
+                if (!String.IsNullOrEmpty(startTime))
+                    sql += " and CHECKTIME> to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') ";
+                if (!String.IsNullOrEmpty(endTime))
+                    sql += " and CHECKTIME< to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ";
+                resultList = Interval(sql);
+            }
+            return resultList;
+        }
+        public DataTable GetFailureRecords(string sql)
+        {
+            return GetDataTable(sql);
+        }
+        public DataTable GetFailureRecords(string deviceNo, string startTime, string endTime)
+        {
+            string sql1 = "select app.DeviceNo,app.FailureType,app.BeginTime,app.FirstLocation,app.SecondLocation,app.ThirdLocation, round((" +
                         "(case when app.CHECKTIME is null then to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') else app.CHECKTIME end)-" +
                         "(case WHEN app.BEGINTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') THEN app.BEGINTIME else to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') end)" +
                         ") * 24, 2) AS pausetime " +
                         "FROM REPAIRAPPLICATION app " +
                         "WHERE app.CHECKTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
                         "AND app.CHECKTIME < to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
-                        "OR app.CHECKTIME is null";
+                        "OR app.CHECKTIME is null order by app.begintime";
             if (!String.IsNullOrEmpty(deviceNo))
             {
                 sql1 += " and app.sbbh='" + deviceNo + "'";
@@ -65,5 +94,36 @@ namespace IMS.Data.DAL
             }
         }
 
+
+
+
+        public List<string> MachineType() 
+        {
+            List<string> res = new List<string>();
+            using (var client=DbConfig.GetInstance())
+            {
+                res = client.SqlQuery<string>("select distinct type from device").ToList();
+            }
+            return res;
+        }
+        public List<string> GetBrandsByType(string type) 
+        {
+            using (var client=DbConfig.GetInstance())
+            {
+                return client.SqlQuery<string>("select distinct brand from device where brand is not null and type='" + type + "'").ToList();
+            }
+        }
+        public DataTable GetPauseTimeByBrand()
+        {
+            return null;
+        }
+    
+    
+    
+    
+    
+    
+    
+    
     }
 }

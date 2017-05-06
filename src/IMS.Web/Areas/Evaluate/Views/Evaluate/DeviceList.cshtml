@@ -9,12 +9,10 @@
 <h2>DeviceList</h2>
 
 @section ContentBody{
-    <div class="container">
     <div class="panel-body" style="padding-bottom:0px;">
         <div class="panel panel-default">
             <div class="panel-heading">查询条件</div>
             <div class="panel-body">
-
                 <div class="form-horizontal">
                     <div class="form-group">
                         <label class="col-sm-1 control-label" for="select_worksection">所属工段</label>
@@ -43,7 +41,6 @@
                                 </span>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>
@@ -56,7 +53,7 @@
         <div id="v3CompareBox" class="v3-compare-box">
             <div class="v3-compare-box-header">
                 <span id="v3CompareClose" class="v3-compare-box-close">关闭</span>
-                <h4 class="v3-compare-box-title">[<span id="v3CompareNum">3</span>/4] 对比框</h4>
+                <div class="v3-compare-box-title">[<span id="v3CompareNum">3</span>/4] 对比框</div>
             </div>
             <ul id="v3CompareItems" class="v3-compare-box-list">
                 @*  <li id="v3Compare-s1102695"><span id="v3CompareDel-s1102695" class="v3-compare-item-del">关闭</span><a class="pic" href="#" title="微软 " target="_blank"><img src="http://2d.zol-img.com.cn/product_small/12_60x45/765/ceqrVfCDoQNA.jpg" width="60" height="45" /><span>微软 Surface Pro 4</span></a><input type="hidden" name="pro_id[]" value="s1102695" /></li>*@
@@ -121,7 +118,6 @@
         </div>
     </div>
 
-</div>
     <script>
         var v3CompareNum;
         $(function () {
@@ -163,12 +159,12 @@
                 if (json.flag) {
                     var liforul = '';
                     for (var i = 0; i < json.data.length; i++) {
-                        liforul += '<li data-follow-id="设备1" class="" id="' + json.data[i].DeviceNo + '">';
-                        liforul += '<a href="#" class="pic" target="_blank"><img width="220" height="165"  alt="" src=' + json.data[i].Src + '></a>';
-                        liforul += '<h3><a href="#" title="" target="_blank">设备简称：<span>' + json.data[i].ShortName + '</span>';
-                        liforul += '</a></h3><div class="price-row"><span class="price-tip">';
-                        liforul += '所属工段：' + json.data[i].WorkSection + '</span> <span class="price price-normal"><b class="price-type">5499-7999</b></span><div class="goods-promotion"></div></div>';
-                        liforul += '<div class="function-v3"><label id="comps1164543" class="cansel-btn" hide-focus="true" title="点击把它添加到对比框里"><i></i> 对比</label></div></li>';
+                        liforul += '<li id="' + json.data[i].DeviceNo + '">';
+                        liforul += '<a class="pic" ><img width="220" height="165"  alt="" src=' + json.data[i].Src + '></a>';
+                        liforul += '<h3>设备简称：<span>' + json.data[i].ShortName + '</span>';
+                        liforul += '</h3><div class="price-row"><span class="price-tip">';
+                        liforul += '所属工段：' + json.data[i].WorkSection + '</span></div>';
+                        liforul += '<div class="function-v3"><label  class="compare-btn" hide-focus="true" title="点击把它添加到对比框里"><i></i> 对比</label></div></li>';
                     }
                     $("#J_PicMode").html(liforul);
                 }
@@ -178,17 +174,25 @@
             var id = this.parentNode.id;
             var imgsrc = $("#" + id).find("img").attr("src");
             if (v3CompareNum < 4) {
+                if ($(this).children("label:first-child").hasClass("compare-btn")) {
+                    $(this).children("label:first-child").removeClass("compare-btn").addClass("cansel-btn");
+                }
+                else {
+                    $(this).children("label:first-child").removeClass("cansel-btn").addClass("compare-btn");
+                }
                 //先判断要添加的元素存在不存在，存在了就删了，不存在就添加
                 var isLiExist = false;
                 $("#v3CompareItems").find("li").each(function () {
                     if (this.id == id) {
                         this.remove(); isLiExist = true;
                         v3CompareNum--;
+                        $("#v3CompareNum").text(v3CompareNum);
                     }
                 });
                 if (!isLiExist) {
                     $("#v3CompareItems").append('<li id=' + id + '><span id="v3CompareDel-' + id + '"  class="v3-compare-item-del">关闭</span><a class="pic" href="#" title="微软 " target="_blank"><img src=' +imgsrc+ ' width="60" height="45" /><span>' + id + '</span></a></li>');
                     v3CompareNum++;
+                    $("#v3CompareNum").text(v3CompareNum);
                 }
                 if (v3CompareNum>0) $("#v3CompareBox").show();
                 else $("#v3CompareBox").hide();
@@ -196,22 +200,48 @@
             else { alert("抱歉，您只能选4台设备进行对比"); }
         })
         $("#v3CompareItems").on('click', '.v3-compare-item-del', function () {
+            var litodelid=this.parentNode.id;
+            $("#J_PicMode").find("li").each(function () {
+                if (this.id == litodelid) {
+                    //去掉ul下li下label上的勾
+                    $(this).children("div:last-child").children("label:first-child").removeClass("cansel-btn").addClass("compare-btn");
+                }
+            });
             $(this).closest('li').remove();
             v3CompareNum--;
+            $("#v3CompareNum").text(v3CompareNum);
             if (v3CompareNum == 0) {
                 $("#v3CompareBox").hide();
             }
         })
         $(".v3-compare-box-clear").click(function () {
             $("#v3CompareItems").find("li").each(function () {
+                var litodelid = this.id;
+                $("#J_PicMode").find("li").each(function () {
+                    if (this.id == litodelid) {
+                        //去掉ul下li下label上的勾
+                        $(this).children("div:last-child").children("label:first-child").removeClass("cansel-btn").addClass("compare-btn");
+                    }
+                });
                     this.remove();
                     v3CompareNum--;
+                    $("#v3CompareNum").text(v3CompareNum);
+
             });
         })
         $(".v3-compare-box-close").click(function () {
             $("#v3CompareItems").find("li").each(function () {
                 this.remove();
+                var litodelid = this.id;
+                $("#J_PicMode").find("li").each(function () {
+                    if (this.id == litodelid) {
+                        //去掉ul下li下label上的勾
+                        $(this).children("div:last-child").children("label:first-child").removeClass("cansel-btn").addClass("compare-btn");
+                    }
+                });
                 v3CompareNum--;
+                $("#v3CompareNum").text(v3CompareNum);
+
             });
             if (v3CompareNum == 0) {
             $("#v3CompareBox").hide();
