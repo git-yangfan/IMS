@@ -59,7 +59,7 @@
                 @*  <li id="v3Compare-s1102695"><span id="v3CompareDel-s1102695" class="v3-compare-item-del">关闭</span><a class="pic" href="#" title="微软 " target="_blank"><img src="http://2d.zol-img.com.cn/product_small/12_60x45/765/ceqrVfCDoQNA.jpg" width="60" height="45" /><span>微软 Surface Pro 4</span></a><input type="hidden" name="pro_id[]" value="s1102695" /></li>*@
             </ul>
             <div class="v3-compare-box-buttons">
-                <form id="v3CompareButtons" method="post" action="" target="_blank">
+                <form id="v3CompareButtons" >
                     <button type="button" hidefocus="true" class="v3-compare-box-button" id="v3CompareParamBtn" onclick="Compare()">对比</button>
                 </form>
                 <em id="v3CompareDelAll" class="v3-compare-box-clear">清空对比栏</em>
@@ -69,51 +69,51 @@
         <div class="pic-mode-box">
             <ul id="J_PicMode" class="clearfix">
                 @*<li data-follow-id="p1150362" class="">
-                    <span class="icon award award3_2016">
-                    </span>
-                    <a href="/series/16/20667_1.html" class="pic" target="_blank">
-                        <img width="220" height="165" .src="http://pro.fd.zol-img.com.cn/t_s220x165/g5/M00/0B/03/ChMkJljvVqGIFZdDAAbYz48YoN0AAbo4QJf5w8ABtjn753.jpg"
-                             alt="" src="http://pro.fd.zol-img.com.cn/t_s220x165/g5/M00/0B/03/ChMkJljvVqGIFZdDAAbYz48YoN0AAbo4QJf5w8ABtjn753.jpg">
-                    </a>
-                    <h3>
-                        <a href="/series/16/20667_1.html" title="联想 小新Air 13 Pro系列金属轻薄机身，940MX性能级独显，立体指纹验证"
-                           target="_blank">
-                            联想 小新Air 13 Pro系列
-                            <span>
-                                金属轻薄机身，940MX性能级独显，立体指纹验证
-                            </span>
+                        <span class="icon award award3_2016">
+                        </span>
+                        <a href="/series/16/20667_1.html" class="pic" target="_blank">
+                            <img width="220" height="165" .src="http://pro.fd.zol-img.com.cn/t_s220x165/g5/M00/0B/03/ChMkJljvVqGIFZdDAAbYz48YoN0AAbo4QJf5w8ABtjn753.jpg"
+                                 alt="" src="http://pro.fd.zol-img.com.cn/t_s220x165/g5/M00/0B/03/ChMkJljvVqGIFZdDAAbYz48YoN0AAbo4QJf5w8ABtjn753.jpg">
                         </a>
-                    </h3>
-                    <div class="price-row">
-                        <span class="price-tip">
-                            参考价：
-                        </span>
-                        <span class="price price-normal">
-                            <b class="price-sign">
-                                ￥
-                            </b>
-                            <b class="price-type">
-                                4999-7399
-                            </b>
-                        </span>
-                        <div class="goods-promotion">
-                            <span class="J_PicModeTuan" data-url="http://www.zol.com/detail/notebook/lenovo/28042505.html?skuId=10049052?spm=784.0"
-                                  data-price="4799" data-rel="modeTuan">
-                                团购
+                        <h3>
+                            <a href="/series/16/20667_1.html" title="联想 小新Air 13 Pro系列金属轻薄机身，940MX性能级独显，立体指纹验证"
+                               target="_blank">
+                                联想 小新Air 13 Pro系列
+                                <span>
+                                    金属轻薄机身，940MX性能级独显，立体指纹验证
+                                </span>
+                            </a>
+                        </h3>
+                        <div class="price-row">
+                            <span class="price-tip">
+                                参考价：
                             </span>
+                            <span class="price price-normal">
+                                <b class="price-sign">
+                                    ￥
+                                </b>
+                                <b class="price-type">
+                                    4999-7399
+                                </b>
+                            </span>
+                            <div class="goods-promotion">
+                                <span class="J_PicModeTuan" data-url="http://www.zol.com/detail/notebook/lenovo/28042505.html?skuId=10049052?spm=784.0"
+                                      data-price="4799" data-rel="modeTuan">
+                                    团购
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                 
-                    <div class="function-v3">
-                        <label id="comps1150362" class="cansel-btn" hide-focus="true" data-rel="s1150362,联想小新Air 13 Pro,/ultrabook/index1150362.shtml,http://2d.zol-img.com.cn/product/176_80x60/915/ceMDIu1jTveb.jpg,16"
-                               title="点击把它添加到对比框里">
-                            <i>
-                            </i>
-                            对比
-                        </label>
-                    </div>
-                  
-                </li>*@
+
+                        <div class="function-v3">
+                            <label id="comps1150362" class="cansel-btn" hide-focus="true" data-rel="s1150362,联想小新Air 13 Pro,/ultrabook/index1150362.shtml,http://2d.zol-img.com.cn/product/176_80x60/915/ceMDIu1jTveb.jpg,16"
+                                   title="点击把它添加到对比框里">
+                                <i>
+                                </i>
+                                对比
+                            </label>
+                        </div>
+
+                    </li>*@
             </ul>
         </div>
     </div>
@@ -190,17 +190,39 @@
                     }
                 });
                 if (!isLiExist) {
-                    $("#v3CompareItems").append('<li id=' + id + '><span id="v3CompareDel-' + id + '"  class="v3-compare-item-del">关闭</span><a class="pic" href="#" title="微软 " target="_blank"><img src=' +imgsrc+ ' width="60" height="45" /><span>' + id + '</span></a></li>');
+                    $("#v3CompareItems").append('<li id=' + id + '><span id="v3CompareDel-' + id + '"  class="v3-compare-item-del">关闭</span><a class="pic" href="#" ><img src=' + imgsrc + ' width="60" height="45" /><div>' + id + '</div></a></li>');
                     v3CompareNum++;
                     $("#v3CompareNum").text(v3CompareNum);
                 }
-                if (v3CompareNum>0) $("#v3CompareBox").show();
+                if (v3CompareNum > 0) $("#v3CompareBox").show();
                 else $("#v3CompareBox").hide();
             }
-            else { alert("抱歉，您只能选4台设备进行对比"); }
+            else {
+                //先判断要添加的元素存在不存在，存在了就删了，不存在就添加
+                var isLiExist = false;
+                $("#v3CompareItems").find("li").each(function () {
+                    if (this.id == id) {
+                        this.remove(); isLiExist = true;
+                        v3CompareNum--;
+                        $("#v3CompareNum").text(v3CompareNum);
+                    }
+                });
+                if (!isLiExist) {
+                    alert("抱歉，您只能选4台设备进行对比");
+                }
+                else {
+                    if ($(this).children("label:first-child").hasClass("compare-btn")) {
+                        $(this).children("label:first-child").removeClass("compare-btn").addClass("cansel-btn");
+                    }
+                    else {
+                        $(this).children("label:first-child").removeClass("cansel-btn").addClass("compare-btn");
+                    }
+                }
+
+            }
         })
         $("#v3CompareItems").on('click', '.v3-compare-item-del', function () {
-            var litodelid=this.parentNode.id;
+            var litodelid = this.parentNode.id;
             $("#J_PicMode").find("li").each(function () {
                 if (this.id == litodelid) {
                     //去掉ul下li下label上的勾
@@ -223,9 +245,9 @@
                         $(this).children("div:last-child").children("label:first-child").removeClass("cansel-btn").addClass("compare-btn");
                     }
                 });
-                    this.remove();
-                    v3CompareNum--;
-                    $("#v3CompareNum").text(v3CompareNum);
+                this.remove();
+                v3CompareNum--;
+                $("#v3CompareNum").text(v3CompareNum);
 
             });
         })
@@ -244,25 +266,26 @@
 
             });
             if (v3CompareNum == 0) {
-            $("#v3CompareBox").hide();
-        }})
-            
-
-            function Compare() {
-                var devs = [];
-                $("#v3CompareItems").find("li").each(function () {
-                    devs.push(this.id);
-                })
-                var stime = $("#txt_begintime").val();
-                if (stime == "") {
-                    alert("请选择开始时间"); return;
-                }
-                var etime = $("#txt_endtime").val();
-                if (etime=="") {
-                    alert("请选择结束时间"); return;
-                }
-                location.href = "/Evaluate/Evaluate/Compare?devs=" + devs+"&starttime="+stime+"&endtime="+etime;
+                $("#v3CompareBox").hide();
             }
+        })
+
+
+        function Compare() {
+            var devs = [];
+            $("#v3CompareItems").find("li").each(function () {
+                devs.push(this.id);
+            })
+            var stime = $("#txt_begintime").val();
+            if (stime == "") {
+                alert("请选择开始时间"); return;
+            }
+            var etime = $("#txt_endtime").val();
+            if (etime == "") {
+                alert("请选择结束时间"); return;
+            }
+            location.href = "/Evaluate/Evaluate/Compare?devs=" + devs + "&starttime=" + stime + "&endtime=" + etime;
+        }
 
     </script>
 }
