@@ -25,7 +25,6 @@ namespace IMS.Web.Areas.Evaluate.Controllers
         }
         public ActionResult DeviceEvaluate()
         {
-
             return View();
         }
         [HttpPost]
@@ -40,9 +39,21 @@ namespace IMS.Web.Areas.Evaluate.Controllers
         private DeviceEvaluateDto SingleDeviceEvaluate(string deviceNo, string startTime, string endTime)
         {
             DeviceEvaluateDto deviceEvaluateDto = new DeviceEvaluateDto();
-            FailureDataStas failureStas;
-            DataTable sourceTable = evaluateDAL.GetFailureRecords(deviceNo, startTime, endTime);
+            string recordsSql = "select app.DeviceNo,app.FailureType,app.BeginTime,app.FirstLocation,app.SecondLocation,app.ThirdLocation, round((" +
+                       "(case when app.CHECKTIME is null then to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') else app.CHECKTIME end)-" +
+                       "(app.BEGINTIME)) * 24, 2) AS pausetime " +
+                       "FROM REPAIRAPPLICATION app " +
+                       "WHERE (app.BEGINTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
+                       "AND app.BEGINTIME < to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss')) ";
+            if (!String.IsNullOrEmpty(deviceNo))
+            {
+                recordsSql += " and app.DeviceNo='" + deviceNo + "'";
+            }
+            recordsSql += " order by app.begintime";
+            DataTable sourceTable = evaluateDAL.GetFailureRecords(recordsSql);
             List<string> groupNames = new List<string>() { "FailureType", "SecondLocation" };//按故障类别，二级故障部位统计，统计故障次数和故障时间
+            FailureDataStas failureStas;//故障数据统计
+            
             List<Curve> curves = CreatCurves(sourceTable, groupNames, out failureStas);
             if (curves != null)
                 deviceEvaluateDto.Curves = curves;
@@ -54,7 +65,7 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             List<double> intervar = new List<double>();
             //for (int i = 0; i < sourceTable.Rows.Count-1; i++)
             //{
-            //    intervar.Add(Convert.ToDouble((Convert.ToDateTime(sourceTable.Rows[i + 1]["BeginTime"]) -  Convert.ToDateTime(sourceTable.Rows[i ]["BeginTime"])).Hours));
+            //    intervar.Add(Convert.ToDouble((Convert.ToDateTime(sourceTable.Rows[i + 1]["BeginTime"]) -  Convert.ToDateTime(sourceTable.Rows[i ]["BeginTime"])).TotalHours));
             //}真实故障间隔数据
             double alph, beta;
             string mtbfSql = "select gzjgsj as jgsj from csmtbfsj";
@@ -62,72 +73,7 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             deviceEvaluateDto.MTBF = Reliability.MTBF(intervar, out alph, out beta);
             return deviceEvaluateDto;
         }
-        private List<Curve> CreatCurves(DataTable sourceTable, List<string> groupNames, out FailureDataStas stas)
-        {
-            List<Curve> curves = new List<Curve>();
-            stas = new FailureDataStas();
-            foreach (var item in groupNames)
-            {
-                string curveName = string.Empty;
-                var dataUnitList = GroupByColName(sourceTable, item);
-                stas.TotalCount = dataUnitList.Sum(d => d.Count);
-                stas.TotalPauseTime = dataUnitList.Sum(d => d.PauseTime);
-                switch (item)
-                {
-                    case "FailureType":
-                        curveName = "故障类别";
-                        var freqType = dataUnitList.Find(d => d.Count == dataUnitList.Max<DataPoint>(c => c.Count));
-                        stas.FrequentType = freqType.XValueStr;
-                        stas.FrequentTypeCount = freqType.Count;
-                        stas.FrequentTypePauseTime = freqType.PauseTime;
-                        break;
-                    case "SecondLocation":
-                        curveName = "故障部位";
-                        var freqLoc = dataUnitList.Find(d => d.Count == dataUnitList.Max<DataPoint>(c => c.Count));
-                        stas.FrequentLoc = freqLoc.XValueStr;
-                        stas.FrequentLocCount = freqLoc.Count;
-                        stas.FrequentLocPauseTime = freqLoc.PauseTime;
-                        break;
-                    default:
-                        break;
-                }
-
-                Curve singleCurve = new Curve(curveName, dataUnitList);
-                curves.Add(singleCurve);
-            }
-            return curves;
-        }
-        private List<DataPoint> GroupByColName(DataTable sourceTable, string colName)
-        {
-            if (sourceTable.Columns.Contains(colName))
-            {
-                //计算相同 故障部位或故障类别 的 总次数 总停工时间
-                string strKey = string.Empty;
-                List<DataPoint> pointCollection = new List<DataPoint>();
-                for (int i = 0; i < sourceTable.Rows.Count; i++)
-                {
-                    strKey = sourceTable.Rows[i][colName].ToString();
-                    if (pointCollection.Any(t => t.XValueStr == strKey))
-                    {
-                        pointCollection.Find(t => t.XValueStr == strKey).Count++;
-                        pointCollection.Find(t => t.XValueStr == strKey).PauseTime += Convert.ToDouble(sourceTable.Rows[i]["pausetime"]);
-                    }
-                    else
-                    {
-                        DataPoint dataPoint = new DataPoint()
-                        {
-                            XValueStr = strKey,
-                            Count = 1,
-                            PauseTime = Convert.ToDouble(sourceTable.Rows[i]["pausetime"])
-                        };
-                        pointCollection.Add(dataPoint);
-                    }
-                }
-                return pointCollection;
-
-            }
-            else return null;
-        }
+      
         public ActionResult Compare()
         {
             string deviceNos = Request.QueryString["devs"];
@@ -152,8 +98,27 @@ namespace IMS.Web.Areas.Evaluate.Controllers
                 DncRelated dncRelateReliability = Reliability.DncRelateReliability(dncData);
                 dto.DncReliability = dncRelateReliability;
                 string mtbfSql = "select gzjgsj as jgsj from csmtbfsj"; //测试的时候用的，实际调用时应该给定sql语句
-                //string sql = "select FSSJ,Round((fssj-lag(fssj,1,null)over(order by fssj asc))*24,1) as JGSJ from sbgzxx  where sbbh='设备1'";
-                List<double> intervar = evaluateDAL.Interval(mtbfSql);
+                string recordsSql = "select app.DeviceNo,app.FailureType,app.BeginTime,app.FirstLocation,app.SecondLocation,app.ThirdLocation, round((" +
+                        "(case when app.CHECKTIME is null then to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') else app.CHECKTIME end)-" +
+                        "(app.BEGINTIME)) * 24, 2) AS pausetime " +
+                        "FROM REPAIRAPPLICATION app " +
+                        "WHERE (app.BEGINTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
+                        "AND app.BEGINTIME < to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss')) ";
+                if (!String.IsNullOrEmpty(dev))
+                {
+                    recordsSql += " and app.DeviceNo='" + dev + "'";
+                }
+                recordsSql += " order by app.begintime";
+
+                DataTable sourceTable = evaluateDAL.GetFailureRecords(recordsSql);
+                List<double> intervar = new List<double>();
+                for (int i = 0; i < sourceTable.Rows.Count - 1; i++)
+                {
+                    intervar.Add(Convert.ToDouble((Convert.ToDateTime(sourceTable.Rows[i + 1]["BeginTime"]) - Convert.ToDateTime(sourceTable.Rows[i]["BeginTime"])).TotalHours));
+                }//真实故障间隔数据
+
+
+                //intervar = evaluateDAL.Interval(mtbfSql);
                 double alph, beta;
                 dto.MTBF = Reliability.MTBF(intervar, out alph, out beta);
                 dto.Alph = alph; dto.Beta = beta;
@@ -233,12 +198,11 @@ namespace IMS.Web.Areas.Evaluate.Controllers
                 {
                     StringBuilder Sqlbuilder = new StringBuilder("select app.DeviceNo,app.FailureType,app.BeginTime,app.FirstLocation,app.SecondLocation,app.ThirdLocation, round((" +
                           "(case when app.CHECKTIME is null then to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') else app.CHECKTIME end)-" +
-                          "(case WHEN app.BEGINTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') THEN app.BEGINTIME else to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') end)" +
-                          ") * 24, 2) AS pausetime " +
+                          "(app.BEGINTIME)) * 24, 2) AS pausetime " +
                           "FROM REPAIRAPPLICATION app " +
-                          "WHERE app.CHECKTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
-                          "AND app.CHECKTIME < to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
-                          "OR app.CHECKTIME is null and deviceno in (select deviceno from device where type='" + type + "'");
+                          "WHERE (app.BEGINTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
+                          "AND app.BEGINTIME < to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss')) " +
+                          "and deviceno in (select deviceno from device where type='" + type + "'");
                     Sqlbuilder.Append(" and brand='" + brand + "'");
                     Sqlbuilder.Append(" ) order by app.begintime");
                     DataTable sourceTable = evaluateDAL.GetFailureRecords(Sqlbuilder.ToString());
@@ -251,13 +215,13 @@ namespace IMS.Web.Areas.Evaluate.Controllers
                         BrandEvaluateDto brandDto = new BrandEvaluateDto();
                         brandDto.Brand = brand;
                         List<double> intervar = new List<double>();
-                        //for (int i = 0; i < sourceTable.Rows.Count-1; i++)
-                        //{
-                        //    intervar.Add(Convert.ToDouble((Convert.ToDateTime(sourceTable.Rows[i + 1]["BeginTime"]) -  Convert.ToDateTime(sourceTable.Rows[i ]["BeginTime"])).Hours));
-                        //}真实故障间隔数据
+                        for (int i = 0; i < sourceTable.Rows.Count-1; i++)
+                        {
+                            intervar.Add(Convert.ToDouble((Convert.ToDateTime(sourceTable.Rows[i + 1]["BeginTime"]) -  Convert.ToDateTime(sourceTable.Rows[i ]["BeginTime"])).TotalHours));
+                        }//真实故障间隔数据
                         double alph, beta;
                         string mtbfSql = "select gzjgsj as jgsj from csmtbfsj";
-                        intervar = evaluateDAL.Interval(mtbfSql);////测试的时候用的
+                        //intervar = evaluateDAL.Interval(mtbfSql);////测试的时候用的
                         double mtbf = Reliability.MTBF(intervar, out alph, out beta);
                         brandDto.MTBF = mtbf;
                         brandDto.Alph = alph; brandDto.Beta = beta;
@@ -269,5 +233,98 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             }
             return Content(res.ToJsonString());
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        private List<Curve> CreatCurves(DataTable sourceTable, List<string> groupNames, out FailureDataStas stas)
+        {
+            List<Curve> curves = new List<Curve>();
+            stas = new FailureDataStas();
+            foreach (var item in groupNames)
+            {
+                string curveName = string.Empty;
+                var dataUnitList = GroupByColName(sourceTable, item);
+                stas.TotalCount = dataUnitList.Sum(d => d.Count);
+                stas.TotalPauseTime = dataUnitList.Sum(d => d.PauseTime);
+                switch (item)
+                {
+                    case "FailureType":
+                        curveName = "故障类别";
+                        var freqType = dataUnitList.Find(d => d.Count == dataUnitList.Max<DataPoint>(c => c.Count));
+                        if (freqType != null)
+                        {
+                            stas.FrequentType = freqType.XValueStr;
+                            stas.FrequentTypeCount = freqType.Count;
+                            stas.FrequentTypePauseTime = Math.Round(freqType.PauseTime, 2);
+                        }
+                        break;
+                    case "SecondLocation":
+                        curveName = "故障部位";
+                        var freqLoc = dataUnitList.Find(d => d.Count == dataUnitList.Max<DataPoint>(c => c.Count));
+                        if (freqLoc != null)
+                        {
+                            stas.FrequentLoc = freqLoc.XValueStr;
+                            stas.FrequentLocCount = freqLoc.Count;
+                            stas.FrequentLocPauseTime = Math.Round(freqLoc.PauseTime, 2);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                Curve singleCurve = new Curve(curveName, dataUnitList);
+                curves.Add(singleCurve);
+            }
+            return curves;
+        }
+        private List<DataPoint> GroupByColName(DataTable sourceTable, string colName)
+        {
+            if (sourceTable.Columns.Contains(colName))
+            {
+                //计算相同 故障部位或故障类别 的 总次数 总停工时间
+                string strKey = string.Empty;
+                List<DataPoint> pointCollection = new List<DataPoint>();
+                for (int i = 0; i < sourceTable.Rows.Count; i++)
+                {
+                    strKey = sourceTable.Rows[i][colName].ToString();
+                    if (pointCollection.Any(t => t.XValueStr == strKey))
+                    {
+                        pointCollection.Find(t => t.XValueStr == strKey).Count++;
+                        pointCollection.Find(t => t.XValueStr == strKey).PauseTime += Math.Round(Convert.ToDouble(sourceTable.Rows[i]["pausetime"]), 2);
+                    }
+                    else
+                    {
+                        if (!String.IsNullOrEmpty(strKey))
+                        {
+                            DataPoint dataPoint = new DataPoint()
+                            {
+                                XValueStr = strKey,
+                                Count = 1,
+                                PauseTime = Math.Round(Convert.ToDouble(sourceTable.Rows[i]["pausetime"]), 2)
+                            };
+                            pointCollection.Add(dataPoint);
+                        }
+
+                    }
+                }
+                return pointCollection;
+
+            }
+            else return null;
+        }
+
     }
 }

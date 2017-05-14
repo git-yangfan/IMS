@@ -50,56 +50,61 @@
 
         </div>
     </div>
-    <table class="commpare-table param-compare param-table" id="paramTable">
+    <div id="brandcompareresult">
+        <table class="commpare-table param-compare param-table" id="paramTable">
 
-        <tr id="tr1" class="produce-pic">
-            <th class="compare-table-head">
-                机床种类
-            </th>
-            <td colspan="3" style="text-align:center" id="machinetypetd"></td>
-        </tr>
-        <tr id="tr2" class="produce-pic">
-            <th class="compare-table-head">
-                品牌
-            </th>
+            <tr id="tr1" class="produce-pic">
+                <th class="compare-table-head">
+                    机床种类
+                </th>
+                <td colspan="3" style="text-align:center" id="machinetypetd"></td>
+            </tr>
+            <tr id="tr2" class="produce-pic">
+                <th class="compare-table-head">
+                    品牌
+                </th>
 
-        </tr>
+            </tr>
 
-        <tr id="tr3" class="product-name">
-            <th>开始时间</th>
-            @*<div class="select-item">
-                <span class="select-trigger">lenovo（联想）</span>
-            </div>
-            <div class="select-item">
-                <span class="select-trigger">联想E40-70-IFI（i5 4210U/4GB/500GB/Win7）</span>
-            </div>*@
+            <tr id="tr3" class="product-name">
+                <th>开始时间</th>
+                @*<div class="select-item">
+                        <span class="select-trigger">lenovo（联想）</span>
+                    </div>
+                    <div class="select-item">
+                        <span class="select-trigger">联想E40-70-IFI（i5 4210U/4GB/500GB/Win7）</span>
+                    </div>*@
 
-            <td><div class="param-content" id="starttimetd"></div></td>
-            <th>结束时间</th>
-            <td><div class="param-content" id="endtimetd"></div></td>
+                <td><div class="param-content" id="starttimetd"></div></td>
+                <th>结束时间</th>
+                <td><div class="param-content" id="endtimetd"></div></td>
 
-        </tr>
-        <tr id="tr3" class="product-name">
-            <th>平均无故障时间(最小二乘法)</th>
-            <td colspan="3"><div id="chartmtbf" style="width: 900px;height:200px;">  </div></td>
-        </tr>
-        <tr id="tr3" class="product-name">
-            <th>故障类别情况</th>
-            <td><div id="chart00" style="width: 300px;height:200px;">  </div></td>
-            <td><div id="chart10" style="width: 300px;height:200px;">  </div></td>
-            <td><div id="chart20" style="width: 300px;height:200px;">  </div></td>
+            </tr>
+            <tr id="tr4" class="product-name">
+                <th>平均无故障时间(最小二乘法)</th>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="tr3" class="product-name">
+                <th>平均无故障时间(最小二乘法)</th>
+                <td colspan="3"><div id="chartmtbf" style="width: 900px;height:200px;">  </div></td>
+            </tr>
+            <tr id="tr3" class="product-name">
+                <th>故障类别情况</th>
+                <td><div id="chart00" style="width: 300px;height:200px;">  </div></td>
+                <td><div id="chart10" style="width: 300px;height:200px;">  </div></td>
+                <td><div id="chart20" style="width: 300px;height:200px;">  </div></td>
 
-        </tr>
-        <tr id="tr4" class="product-price">
-            <th>故障部位情况</th>
-            <td><div id="chart01" style="width: 300px;height:200px;">  </div></td>
-            <td><div id="chart11" style="width: 300px;height:200px;">  </div></td>
-            <td><div id="chart21" style="width: 300px;height:200px;">  </div></td>
-
-        </tr>
-
-    </table>
-
+            </tr>
+            <tr id="tr4" class="product-price">
+                <th>故障部位情况</th>
+                <td><div id="chart01" style="width: 300px;height:200px;">  </div></td>
+                <td><div id="chart11" style="width: 300px;height:200px;">  </div></td>
+                <td><div id="chart21" style="width: 300px;height:200px;">  </div></td>
+            </tr>
+        </table>
+    </div>
     <script>
         var brands = [];
         var mtbfs = [];
@@ -153,6 +158,7 @@
                         tdfortr2.push('<td><div class="param-content">' + json.data.BrandList[i].Brand + '</div></td>');
                         brands.push(json.data.BrandList[i].Brand);
                         mtbfs.push(json.data.BrandList[i].MTBF);
+                        $("#tr4").children("td").eq(i).html('<div class="param-content">' + json.data.BrandList[i].MTBF + '小时</div>');
                         var curves = json.data.BrandList[i].Curves;
                         for (var j = 0; j < curves.length; j++) {//循环一个牌子的所有曲线  curves  第一个是故障类别  第二个是故障部位
                             config = {
@@ -172,14 +178,14 @@
             });
         }
 
-        function Clear(){
+        function Clear() {
             $("#machinetypetd").empty();
             $("#starttimetd").empty();
             $("#endtimetd").empty();
             $("#tr2").empty();
             brands.length = 0;
             mtbfs.length = 0;
-           
+
         }
         function LoadBrand(type) {
             $.post("/Evaluate/Evaluate/BrandByMachineType", { machineType: type }, function (Data) {
@@ -208,15 +214,12 @@
                 legend: {
                     data: brands
                 },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
                 xAxis: {
                     type: 'value',
-                    boundaryGap: [0, 0.01]
+                    boundaryGap: [0, 0.01],
+                    axisLabel: {
+                        formatter: '{value} 小时'
+                    }
                 },
                 yAxis: {
                     type: 'category',
@@ -226,13 +229,19 @@
                     {
                         name: brands,
                         type: 'bar',
-                        data: mtbfs
-                    }
-                ]
+                        data: mtbfs,
+                        itemStyle: {
+                            normal: {
+                                color: function (params) {
+                                    // build a color map as your need.
+                                    var colorList = ['#F0805A', '#61C0DE', '#F4E001'];
+                                    return colorList[params.dataIndex]
+                                }
+                            }
+                        }
+                    }]
             };
             echarts.init(document.getElementById('chartmtbf')).setOption(option);
-
-
         }
 
         function CreatOption(config) {
@@ -260,6 +269,7 @@
                         fontSize: 1,
                     },
                 },
+
                 xAxis: {
                     data: config.xdata,
                     axisTick: {
@@ -270,16 +280,16 @@
                     type: 'value',
                     scale: true,
                     name: '次数',
-                    max: 30,
+                    //max: 30,
                     min: 0,
-                    boundaryGap: [0.2, 0.2]
+                   
                 }, {
                     type: 'value',
                     scale: true,
                     name: '停工时间',
-                    max: 6000,
+                    //max: 6000,
                     min: 0,
-                    boundaryGap: [0.2, 0.2]
+                   
                 }],
                 series: [{
                     name: '停工次数',

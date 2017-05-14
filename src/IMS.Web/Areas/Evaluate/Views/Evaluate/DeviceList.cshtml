@@ -172,6 +172,7 @@
         }
         $("#J_PicMode").on('click', '.function-v3', function () {
             var id = this.parentNode.id;
+            var shortname = $("#" + id).find("span").eq(0).text();
             var imgsrc = $("#" + id).find("img").attr("src");
             if (v3CompareNum < 4) {
                 if ($(this).children("label:first-child").hasClass("compare-btn")) {
@@ -190,7 +191,7 @@
                     }
                 });
                 if (!isLiExist) {
-                    $("#v3CompareItems").append('<li id=' + id + '><span id="v3CompareDel-' + id + '"  class="v3-compare-item-del">关闭</span><a class="pic" href="#" ><img src=' + imgsrc + ' width="60" height="45" /><div>' + id + '</div></a></li>');
+                    $("#v3CompareItems").append('<li id=' + id + '><span id="v3CompareDel-' + id + '"  class="v3-compare-item-del">关闭</span><a class="pic" href="#" ><img src=' + imgsrc + ' width="60" height="45" /><div>' + shortname + '</div></a></li>');
                     v3CompareNum++;
                     $("#v3CompareNum").text(v3CompareNum);
                 }

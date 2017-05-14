@@ -91,8 +91,8 @@ namespace IMS.Web.Areas.Evaluate.Algorithms
 
                 double B = (Sigmaxy - n * xbar * ybar) / (Sigmaxx - n * xbar * xbar);
                 double A = ybar - B * xbar;
-                double Alph = Math.Exp(-A / B);
-                double Beta = B;
+                double Alph = Math.Round(Math.Exp(-A / B), 2);
+                double Beta = Math.Round(B,2);
 
                 double Rho = (Sigmaxy - n * xbar * ybar) / (Math.Pow((Sigmaxx - n * xbar * xbar) * (Sigmayy - n * ybar * ybar), 0.5));
                 double RHO = 1.645 / Math.Pow((n - 1), 0.5);
@@ -170,10 +170,10 @@ namespace IMS.Web.Areas.Evaluate.Algorithms
         public static DncRelated DncRelateReliability(MMDD_SBLY dncData) 
         {
             DncRelated dncRelatedReliability = new DncRelated();
-            dncRelatedReliability.BootTime = dncData.RunTime + dncData.RunNull + dncData.RunDelay + dncData.PauseTime;
-            dncRelatedReliability.OutWorkTime = dncData.RepairTime + dncData.DelayTime;
-            dncRelatedReliability.SpindleRunningRate=dncData.RunTime_KB/(dncData.RunTime_KB+dncData.RunDelay+dncData.RunNull);
-            dncRelatedReliability.BootRate = (dncData.RunTime + dncData.RunNull + dncData.RunDelay + dncData.PauseTime) / dncData.RunTime_KB;
+            dncRelatedReliability.BootTime = Math.Round(dncData.RunTime + dncData.RunNull + dncData.RunDelay + dncData.PauseTime,2);
+            dncRelatedReliability.OutWorkTime = Math.Round(dncData.RepairTime + dncData.DelayTime,2);
+            dncRelatedReliability.SpindleRunningRate=Math.Round(dncData.RunTime_KB/(dncData.RunTime_KB+dncData.RunDelay+dncData.RunNull),2);
+            dncRelatedReliability.BootRate =Math.Round( (dncData.RunTime + dncData.RunNull + dncData.RunDelay + dncData.PauseTime) / dncData.RunTime_KB,2);
             return dncRelatedReliability;
         }
      

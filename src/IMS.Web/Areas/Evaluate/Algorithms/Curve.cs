@@ -25,7 +25,7 @@ namespace IMS.Web.Areas.Evaluate.Algorithms
                 {
                     x.Add(item.XValueStr);
                     yc.Add(item.Count);
-                    yt.Add(item.PauseTime);
+                    yt.Add(Math.Round(item.PauseTime,2));
                 }
                 this.XValues = x.ToArray();
                 this.YCountValues = yc.ToArray();

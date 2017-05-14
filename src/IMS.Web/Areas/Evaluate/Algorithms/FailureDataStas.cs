@@ -5,6 +5,10 @@ using System.Web;
 
 namespace IMS.Web.Areas.Evaluate.Algorithms
 {
+    /// <summary>
+    /// 故障数据统计
+    /// 统计总次数，总停工时间，常发故障等
+    /// </summary>
     public class FailureDataStas
     {
         public int TotalCount { get; set; }

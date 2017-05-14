@@ -64,13 +64,14 @@ namespace IMS.Data.DAL
                         "(case WHEN app.BEGINTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') THEN app.BEGINTIME else to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') end)" +
                         ") * 24, 2) AS pausetime " +
                         "FROM REPAIRAPPLICATION app " +
-                        "WHERE app.CHECKTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
+                        "WHERE (app.CHECKTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
                         "AND app.CHECKTIME < to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
-                        "OR app.CHECKTIME is null order by app.begintime";
+                        "OR app.CHECKTIME is null) ";
             if (!String.IsNullOrEmpty(deviceNo))
             {
-                sql1 += " and app.sbbh='" + deviceNo + "'";
+                sql1 += " and app.DeviceNo='" + deviceNo + "'";
             }
+            sql1 += " order by app.begintime";
             return GetDataTable(sql1);
         }
 
@@ -102,7 +103,7 @@ namespace IMS.Data.DAL
             List<string> res = new List<string>();
             using (var client=DbConfig.GetInstance())
             {
-                res = client.SqlQuery<string>("select distinct type from device").ToList();
+                res = client.SqlQuery<string>("select distinct type from device where type is not null").ToList();
             }
             return res;
         }
