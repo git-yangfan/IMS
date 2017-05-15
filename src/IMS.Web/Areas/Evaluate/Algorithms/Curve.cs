@@ -13,7 +13,7 @@ namespace IMS.Web.Areas.Evaluate.Algorithms
         public int[] YCountValues { get; set; }
 
         public Curve() { }
-        public Curve(string name, List<DataPoint> data) 
+        public Curve(string name, List<DataUnit> data) 
         {
             this.DisplayName = name;
             if (data.Count>0)

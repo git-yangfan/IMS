@@ -168,7 +168,13 @@
                                 ytime: curves[j].YTimeValues,
                             };
                             var option = CreatOption(config);
-                            echarts.init(document.getElementById('chart' + i + j)).setOption(option);
+                            if (curves[j].DisplayName == "故障类别") {
+                                echarts.init(document.getElementById('chart' + i + '0')).setOption(option);
+                            }
+                            if (curves[j].DisplayName == "故障部位") {
+                                echarts.init(document.getElementById('chart' + i + '1')).setOption(option);
+                            }
+                           
 
                         }
                     }
