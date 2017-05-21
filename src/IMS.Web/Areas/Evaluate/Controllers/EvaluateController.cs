@@ -22,7 +22,8 @@ namespace IMS.Web.Areas.Evaluate.Controllers
         {
             return View();
         }
-        //单机评价
+
+        #region 单机评价
         public ActionResult DeviceEvaluate()
         {
             return View();
@@ -67,9 +68,10 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             intervar = evaluateDAL.Interval(mtbfSql);//测试的时候用的
             deviceEvaluateDto.MTBF = Reliability.MTBF(intervar, out alph, out beta);
             return deviceEvaluateDto;
-        }
+        } 
+        #endregion
 
-        //整机对比
+        #region 整机对比
         public ActionResult Compare()
         {
             string deviceNos = Request.QueryString["devs"];
@@ -96,10 +98,8 @@ namespace IMS.Web.Areas.Evaluate.Controllers
                 //string mtbfSql = "select gzjgsj as jgsj from csmtbfsj"; //测试的时候用的，实际调用时应该给定sql语句
                 string recordsSql = "select app.DeviceNo,app.FailureType,app.BeginTime,app.FirstLocation,app.SecondLocation,app.ThirdLocation, round((" +
                                     "(case when app.CHECKTIME is null then to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') else app.CHECKTIME end)-" +
-                                    "(app.BEGINTIME)) * 24, 2) AS pausetime " +
-                                    "FROM REPAIRAPPLICATION app " +
-                                    "WHERE (app.BEGINTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') " +
-                                    "AND app.BEGINTIME < to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss')) ";
+                                    "(app.BEGINTIME)) * 24, 2) AS pausetime FROM REPAIRAPPLICATION app " +
+                                    "WHERE (app.BEGINTIME > to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss') AND app.BEGINTIME < to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss'))";
                 if (!String.IsNullOrEmpty(dev))
                 {
                     recordsSql += " and app.DeviceNo='" + dev + "'";
@@ -151,9 +151,11 @@ namespace IMS.Web.Areas.Evaluate.Controllers
                 res.flag = true;
             }
             return Content(res.ToJsonString());
-        }
+        } 
+        #endregion
 
-        //按机床种类和品牌对比
+        #region 按机床种类和品牌对比
+
         public ActionResult CompareByBrand()
         {
             var machineTypes = evaluateDAL.MachineType();
@@ -215,8 +217,10 @@ namespace IMS.Web.Areas.Evaluate.Controllers
             }
             return Content(res.ToJsonString());
         }
+        
+        #endregion
 
-        //公用的
+        #region 公用的
         private List<DataUnit> GroupByColName(DataTable sourceData, List<string> groupNames)
         {
             List<DataUnit> groupedData = new List<DataUnit>();
@@ -296,6 +300,9 @@ namespace IMS.Web.Areas.Evaluate.Controllers
                 curves.Add(singleCurve);
             }
             return curves;
-        }
+        } 
+        #endregion
+
+
     }
 }

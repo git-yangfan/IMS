@@ -158,6 +158,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\DataExchange\Controllers\DataExchangeController.cs" />
+    <Compile Include="Areas\DataExchange\DataExchangeAreaRegistration.cs" />
     <Compile Include="Areas\Employee\Controllers\EmployeeController.cs" />
     <Compile Include="Areas\Employee\EmployeeAreaRegistration.cs" />
     <Compile Include="Areas\Evaluate\Algorithms\Curve.cs" />
@@ -207,6 +209,65 @@
     <Content Include="Content\bootstrap\css\bootstrap.css" />
     <Content Include="Content\bootstrap\css\bootstrap.min.css" />
     <Content Include="Content\bootstrap\css\style2.css" />
+    <Content Include="Content\bootstrap\fileinput\.gitignore" />
+    <Content Include="Content\bootstrap\fileinput\css\fileinput.css" />
+    <Content Include="Content\bootstrap\fileinput\css\fileinput.min.css" />
+    <Content Include="Content\bootstrap\fileinput\examples\index.html" />
+    <Content Include="Content\bootstrap\fileinput\img\loading-sm.gif" />
+    <Content Include="Content\bootstrap\fileinput\img\loading.gif" />
+    <Content Include="Content\bootstrap\fileinput\js\fileinput.js" />
+    <Content Include="Content\bootstrap\fileinput\js\fileinput.min.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\ar.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\bg.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\ca.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\cr.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\cz.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\da.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\de.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\el.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\es.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\et.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\fa.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\fi.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\fr.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\gl.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\hu.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\id.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\it.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\ja.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\kr.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\kz.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\LANG.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\nl.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\no.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\pl.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\pt-BR.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\pt.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\ro.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\ru.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\sk.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\sl.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\sv.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\th.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\tr.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\uk.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\vi.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\zh-TW.js" />
+    <Content Include="Content\bootstrap\fileinput\js\locales\zh.js" />
+    <Content Include="Content\bootstrap\fileinput\js\plugins\canvas-to-blob.js" />
+    <Content Include="Content\bootstrap\fileinput\js\plugins\canvas-to-blob.min.js" />
+    <Content Include="Content\bootstrap\fileinput\js\plugins\purify.js" />
+    <Content Include="Content\bootstrap\fileinput\js\plugins\purify.min.js" />
+    <Content Include="Content\bootstrap\fileinput\js\plugins\sortable.js" />
+    <Content Include="Content\bootstrap\fileinput\js\plugins\sortable.min.js" />
+    <Content Include="Content\bootstrap\fileinput\themes\explorer\theme.css" />
+    <Content Include="Content\bootstrap\fileinput\themes\explorer\theme.js" />
+    <Content Include="Content\bootstrap\fileinput\themes\explorer\theme.min.css" />
+    <Content Include="Content\bootstrap\fileinput\themes\explorer\theme.min.js" />
+    <Content Include="Content\bootstrap\fileinput\themes\fa\theme.js" />
+    <Content Include="Content\bootstrap\fileinput\themes\fa\theme.min.js" />
+    <Content Include="Content\bootstrap\fileinput\themes\gly\theme.js" />
+    <Content Include="Content\bootstrap\fileinput\themes\gly\theme.min.js" />
     <Content Include="Content\bootstrap\js\bootstrap-datetimepicker.js" />
     <Content Include="Content\bootstrap\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\bootstrap\js\bootstrap-datetimepicker.zh-CN.js" />
@@ -345,6 +406,20 @@
     <Content Include="Areas\Evaluate\Views\Evaluate\Compare.cshtml" />
     <Content Include="Areas\Evaluate\Views\Evaluate\DeviceList.cshtml" />
     <Content Include="Areas\Evaluate\Views\Evaluate\CompareByBrand.cshtml" />
+    <Content Include="Areas\DataExchange\Views\web.config" />
+    <Content Include="Areas\DataExchange\Views\DataExchange\ImportFromExcel.cshtml" />
+    <Content Include="Content\bootstrap\fileinput\.github\CONTRIBUTING.md" />
+    <Content Include="Content\bootstrap\fileinput\.github\ISSUE_TEMPLATE.md" />
+    <Content Include="Content\bootstrap\fileinput\.github\PULL_REQUEST_TEMPLATE.md" />
+    <Content Include="Content\bootstrap\fileinput\bower.json" />
+    <Content Include="Content\bootstrap\fileinput\CHANGE.md" />
+    <Content Include="Content\bootstrap\fileinput\composer.json" />
+    <Content Include="Content\bootstrap\fileinput\LICENSE.md" />
+    <Content Include="Content\bootstrap\fileinput\nuget\build.bat" />
+    <Content Include="Content\bootstrap\fileinput\nuget\Package.nuspec" />
+    <Content Include="Content\bootstrap\fileinput\package.json" />
+    <Content Include="Content\bootstrap\fileinput\README.md" />
+    <Content Include="Content\bootstrap\fileinput\sass\fileinput.scss" />
     <None Include="Properties\PublishProfiles\IMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -375,7 +450,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\DataExchange\Views\Shared\" />
     <Folder Include="Controllers\" />
+    <Folder Include="files\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

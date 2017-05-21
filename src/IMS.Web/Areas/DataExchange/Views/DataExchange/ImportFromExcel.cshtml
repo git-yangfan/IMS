@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "ImportFromExcel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+<script src="~/Content/bootstrap/fileinput/js/fileinput.min.js"></script>
+<script src="~/Content/bootstrap/fileinput/js/locales/zh.js"></script>
+}
+@section StylesAfter{
+   
+<link href="~/Content/bootstrap/fileinput/css/fileinput.min.css" rel="stylesheet" />
+}
+<h2>ImportFromExcel</h2>
+@section ContentBody{
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">故障记录表</div>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <p>
+                            注意事项：
+                            <ul>
+                                <li>Excel文件必须为xlsx格式；</li>
+                                <li>Excel工作表必须包含的列：Id（故障单编号）,DeviceNo（设备编号）,BeginTime（发生时间）,FailureType（故障类别）,SecondLocation（二级故障部位）</li>
+                                <li>Excel工作表请尽可能的包含如下列：ApplicationTime（申请时间）,ApplicantId（申请人ID）,FailureAppearance（故障现象）,FailureDescription（故障描述）,FirstLocation（一级故障部位）,ThirdLocation（三级故障部位）等信息</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">选择文件</label>
+                    <div class="col-sm-5">
+                        <input type="file" name="fileUpload1" id="fileUpload1" class="projectfile" data-show-caption="true" data-show-preview="false" />
+                    </div>
+                 
+                </div>
+            </div>
+        </div>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">设备表</div>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <p>
+                            注意事项：
+                            <ul>
+                                <li>Excel文件必须为xlsx格式；</li>
+                                <li>Excel工作表必须包含的列：Id,DeviceNo（设备编号）,ShortName（设备简称）,Manufacturer（厂商）,Type（类别）,WorkSection（所属工段）,Src（图片地址）</li>
+                                <li>Excel工作表请尽可能的包含如下列：ManufacTime（出厂时间）,BuyTime（购买时间）,BeginUseTime（投产时间）,UseDepart（使用部门）,Spec（规格）,Status（当前状态）等信息</li>
+                            </ul>
+                        </p>
+                    </div>
+
+
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">选择文件</label>
+                    <div class="col-sm-5">
+                        <input type="file" name="fileUpload2" id="fileUpload2" class="projectfile" data-show-caption="true" data-show-preview="false" />
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            //0.初始化fileinput
+            var oFileInput = new FileInput();
+            oFileInput.Init("fileUpload1", "/DataExchange/DataExchange/ImportApplications");
+            oFileInput.Init("fileUpload2", "/DataExchange/DataExchange/ImportDevices");
+
+        });
+        //初始化fileinput
+        var FileInput = function () {
+            var oFile = new Object();
+
+            //初始化fileinput控件（第一次初始化）
+            oFile.Init = function (ctrlName, uploadUrl) {
+                var control = $('#' + ctrlName);
+                //初始化上传控件的样式
+                control.fileinput({
+                    language: 'zh', //设置语言
+                    uploadUrl: uploadUrl, //上传的地址
+                    allowedFileExtensions: ['xlsx'],//接收的文件后缀
+                    showUpload: true, //是否显示上传按钮
+                    showCaption: false,//是否显示标题
+                    browseClass: "btn btn-primary", //按钮样式     
+                    dropZoneEnabled: false,//是否显示拖拽区域
+                    maxFileCount: 10, //表示允许同时上传的最大文件个数
+                    enctype: 'multipart/form-data',
+                    validateInitialCount: true,
+                    previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                    msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+                });
+                //导入文件上传完成之后的事件
+                $(control).on("fileuploaded", function (event, data, previewId, index) {
+                    var data = data.response;
+                    alert(data.msg);
+                });
+            }
+            return oFile;
+        };
+    </script>
+}

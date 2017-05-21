@@ -9,6 +9,7 @@ namespace IMS.Model.Entity
 {
     public class RepairApplication : BaseEntity
     {
+        
         public string DeviceNo { get; set; }
         public DateTime? BeginTime { get; set; }
         public DateTime? ApplicationTime { get; set; }

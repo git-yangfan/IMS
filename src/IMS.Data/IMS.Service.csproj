@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DAL\CommonDAL.cs" />
+    <Compile Include="DAL\DataExchangeDAL.cs" />
     <Compile Include="DAL\EmployeeDAL.cs" />
     <Compile Include="DAL\EvaluateDAL.cs" />
     <Compile Include="DAL\RepairDAL.cs" />
