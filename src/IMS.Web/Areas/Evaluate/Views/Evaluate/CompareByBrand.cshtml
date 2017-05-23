@@ -34,14 +34,14 @@
             <button type="button" class="btn btn-primary">起止时间:</button>
 
             <div class='input-group date ' id='div_search_begintime'>
-                <input type='text' class="form-control" id="txt_begintime" />
+                <input type='text' class="form-control" id="txt_begintime" readonly="readonly" />
                 <span class="input-group-addon">
                     <i class="glyphicon glyphicon-calendar"></i>
                 </span>
             </div><span style="margin:0px 15px 0px 15px">至</span>
 
             <div class='input-group date ' id='div_search_endtime'>
-                <input type='text' class="form-control" id="txt_endtime" />
+                <input type='text' class="form-control" id="txt_endtime" readonly="readonly" />
                 <span class="input-group-addon">
                     <i class="glyphicon glyphicon-calendar"></i>
                 </span>
@@ -212,10 +212,7 @@
                     text: 'MTBF',
                 },
                 tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'shadow'
-                    }
+                   show:true
                 },
                 legend: {
                     data: brands
@@ -233,13 +230,11 @@
                 },
                 series: [
                     {
-                        name: brands,
                         type: 'bar',
                         data: mtbfs,
                         itemStyle: {
                             normal: {
                                 color: function (params) {
-                                    // build a color map as your need.
                                     var colorList = ['#F0805A', '#61C0DE', '#F4E001'];
                                     return colorList[params.dataIndex]
                                 }

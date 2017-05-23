@@ -421,6 +421,7 @@
     <Content Include="Content\bootstrap\fileinput\README.md" />
     <Content Include="Content\bootstrap\fileinput\sass\fileinput.scss" />
     <None Include="Properties\PublishProfiles\IMS.pubxml" />
+    <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

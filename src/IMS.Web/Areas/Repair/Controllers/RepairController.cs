@@ -54,12 +54,12 @@ namespace IMS.Web.Areas.Repair.Controllers
                 DateTime _endTime = Convert.ToDateTime(endTime);
                 exp = exp.And(g => g.BeginTime < _endTime);
             }
-            var applicationList = repairDAL.ApplicationsByRole(sectionName, orderName, order, exp, limit, offset);
+            var applicationList = repairDAL.ApplicationsByRole(sectionName, orderName, order, exp); 
             List<ApplicationDto> ApplicationDtoList = Mapper.Map<List<RepairApplication>, List<ApplicationDto>>(applicationList);
             if (ApplicationDtoList != null)
             {
                 var total = ApplicationDtoList.Count;
-                var rows = ApplicationDtoList;
+                var rows = ApplicationDtoList.Skip(offset).Take(limit).ToList();
                 var result = new { total = total, rows = rows };
                 return Content(result.ToJsonString());
             }

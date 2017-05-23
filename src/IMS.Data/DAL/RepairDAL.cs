@@ -45,7 +45,7 @@ namespace IMS.Data.DAL
             return result;
         }
 
-        public List<RepairApplication> ApplicationsByRole(string sectionName, string ordername, string order, System.Linq.Expressions.Expression<Func<RepairApplication, bool>> exp, int limit, int offset)
+        public List<RepairApplication> ApplicationsByRole(string sectionName, string ordername, string order, System.Linq.Expressions.Expression<Func<RepairApplication, bool>> exp)
         {
             using (var client = DbConfig.GetInstance())
             {
@@ -72,7 +72,8 @@ namespace IMS.Data.DAL
                 }
                 try
                 {
-                    listWithDeviceNo = sql.Skip(offset).Take(limit).ToList();
+                    var a = sql.ToSql();
+                    listWithDeviceNo = sql.ToList();
                 }
                 catch (Exception)
                 {
