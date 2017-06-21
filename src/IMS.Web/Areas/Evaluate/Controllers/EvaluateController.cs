@@ -155,7 +155,6 @@ namespace IMS.Web.Areas.Evaluate.Controllers
         #endregion
 
         #region 按机床种类和品牌对比
-
         public ActionResult CompareByBrand()
         {
             var machineTypes = evaluateDAL.MachineType();
@@ -216,8 +215,7 @@ namespace IMS.Web.Areas.Evaluate.Controllers
                 res.data = compareResultDto;
             }
             return Content(res.ToJsonString());
-        }
-        
+        }        
         #endregion
 
         #region 公用的
